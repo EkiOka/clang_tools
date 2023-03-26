@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
+void hello();
 int main(void);
 
 /**
@@ -9,6 +11,14 @@ int main(void);
  */
 int main(void)
 {
-    printf("hello world?");
+    hello();
     return 0;
+}
+void hello(void)
+{
+    printf("hello world?");
+}
+int abcd( int xxx, const int yyy, char* zzz)
+{
+    return xxx;
 }
