@@ -114,6 +114,8 @@ def __add_memberdef(src:dict,dest:dict):
     __add_single_text(src,memberdef,"definition")
     __add_single_text(src,memberdef,"argsstring")
     __add_single_text(src,memberdef,"name")
+    __add_single_text(src,memberdef,"definition")
+    __add_single_text(src,memberdef,"initializer")
 
     #param
     for param in __get_children( src, "param"):
@@ -164,8 +166,10 @@ def __add_single_text(src:dict,dest:dict,name:str):
     cs = __get_children(src,name)
     if len(cs)>0:
         c = cs[0]
-        text = c["text"]
-        if text.isspace():
+        text = c.get("text","")
+        if text == None:
+            dest[name]=""
+        elif text.isspace():
             dest[name]=""
         else:
             dest[name]=text

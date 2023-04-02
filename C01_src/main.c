@@ -3,6 +3,8 @@
 
 void hello();
 int main(void);
+const int abcd_res = 1;
+static char array[5]={1,2,3,4,5};
 
 /**
  * @brief aaaa
@@ -11,8 +13,9 @@ int main(void);
  */
 int main(void)
 {
+    const int res = 0;
     hello();
-    return 0;
+    return res;
 }
 void hello(void)
 {
@@ -20,5 +23,5 @@ void hello(void)
 }
 int abcd( int xxx, const int yyy, char* zzz)
 {
-    return xxx;
+    return abcd_res;
 }
