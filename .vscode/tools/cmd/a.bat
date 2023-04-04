@@ -12,8 +12,8 @@ set "path_marge_yml=%path_doxygen_yml%\marge.yml"
 set "cnvyml=%tools_folder%\cnv_doxygen_yml.py"
 set "path_nrm_yml=%path_doxygen_yml%\normalization.yml"
 
-set "cdcflt=%tools_folder%\cdc_filter.py"
-set "path_flt_yml=%path_doxygen_yml%\flt.yml"
+set "chkyml=%tools_folder%\chk_doxygen_yml.py"
+set "path_rpt_yml=%path_doxygen_yml%\report.yml"
 
 
 rem ----------------------------------------------------------------------
@@ -33,7 +33,6 @@ py %xml2yml% "-src_masks:%path_doxygen_xml%\*_8c.xml" "-dis_masks:" "-dest_path:
 rem convert yml file
 py %cnvyml% "-src_path:%path_marge_yml%" "-dest_path:%path_nrm_yml%"
 
-rem code check items filter
-py %cdcflt% "-src_path:%path_nrm_yml%" "-dest_path:%path_flt_yml%"
+rem check yml file
 
-rem code check
+py %chkyml% "-src_path:%path_nrm_yml%" "-dest_path:%path_rpt_yml%"
