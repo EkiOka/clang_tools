@@ -44,14 +44,14 @@ def __cnv(src:dict)->dict:
         無駄なフィールドを極力削除して整理したYAMLデータ
     """
     res = {}
+    compounddef_list = []
+    res["compounddef"]=compounddef_list
     for xml_file_name in src:
         xml_file_value = src[xml_file_name]
         version = __get_attribute(xml_file_value,"version")
-        compounddefs = []
         res["version"] = version
-        res["compounddefs"]=compounddefs
         for compounddef in __get_children(xml_file_value,"compounddef"):
-                compounddefs.append(__cnv_compounddef(compounddef))
+                compounddef_list.append(__cnv_compounddef(compounddef))
     return res
 
 
@@ -186,12 +186,8 @@ __args_cfg={
     "dest_path":{"type":"text"}
 }
 
-# デバッグ用の値
-__debug_args = ['C:\\_data\\text\\dev\\clang_tools\\.vscode\\tools\\cnv_doxygen_yml.py', '-src_path:C:\\_data\\text\\dev\\clang_tools\\Z01_out\\doxygen\\yml\\marge.yml', '-dest_path:C:\\_data\\text\\dev\\clang_tools\\Z01_out\\doxygen\\yml\\normalization.yml']
-
 lib.cmd_app.start(
     __name__,
     __func,
-    __args_cfg,
-    __debug_args
+    __args_cfg
     )
