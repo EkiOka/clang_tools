@@ -1,13 +1,46 @@
-import xml.etree.ElementTree as ET
-import yaml
-import codecs
-import json
-import glob
-import re
-import sys
+
+# import standard library
+import uuid
+import datetime
+import hashlib
 import os
+import sys
+import pathlib
+import shutil
+import glob
+import json
+import codecs
+import tkinter
+import logging
+import logging.config
+import traceback
+import re
+import string
+import inspect
+import platform
+import xml.etree.ElementTree as ET
+
+# import pip install library
+import openpyxl                                             # pip install openpyxl
+import markdown                                             # pip install markdown
+from markdown_include.include import MarkdownInclude        # pip install markdown-include
+from markdown_checklist.extension import ChecklistExtension # pip install markdown-checklist
+import yaml                                                 # pip install pyyaml
+
+
+
 
 class lib:
+
+    class text:
+
+        @staticmethod
+        def load(path:str)->str:
+            res = ""
+            with open(path, encoding="utf-8") as f:
+                res = f.read()
+            return res
+
     class json:
 
         @staticmethod
@@ -48,7 +81,7 @@ class lib:
             """object to yaml file.
             """
             with open(path, mode="w", encoding="utf-8_sig") as f:
-                yaml.dump(obj,f,default_flow_style=False)
+                yaml.dump(obj,f, allow_unicode=True, default_flow_style=False)
                 return
             
     class xml:
@@ -168,3 +201,102 @@ class lib:
                 params = lib.cmd_app.__set_params(func,args_cfg,args,prefix)
                 lib.cmd_app.__set_args_value(args_cfg,params)
                 func(params)
+    class markdown:
+        @staticmethod
+        def cnv(src:str, include_base_path=".")->str:
+
+            md = markdown.Markdown(extensions=[
+                lib.markdown.my_extension(),
+                "admonition",
+                "tables",
+                "toc",
+                "nl2br",
+                "codehilite",
+                "fenced_code",
+                ChecklistExtension(),
+                MarkdownInclude(configs={'base_path':include_base_path}),
+                ]
+                )
+            res = md.convert(src)
+            return res
+        class my_preprocessor(markdown.preprocessors.Preprocessor):
+
+            has_mermaid = False
+
+            def run_lines(self, lines):
+                # ca = code area
+                pat_ca_start = re.compile(
+                    r"^(?P<code_area_sign>[\~\`]{3})[\ \t]*(?P<code_area_name>[a-zA-Z_]*)[\ \t]*$")
+                pat_ca_end = re.compile(
+                    r"^(?P<code_area_sign>[\~\`]{3})[\ \t]*$")
+
+                result_lines = []
+                code_area_sign = ""
+                code_area_name = ""
+                for line in lines:
+                    code_changed = False
+                    src_line = line
+                    print_line = ''.join(filter(lambda x: x in string.printable, line))
+
+                    match code_area_name:
+                        case "":
+                            mat = pat_ca_start.match(print_line)
+                            if mat:
+                                code_area_sign = mat.group("code_area_sign")
+                                code_area_name = mat.group("code_area_name")
+                                if code_area_name == "mermaid":
+                                    result_lines.append('<div class="mermaid">')
+                                    self.has_mermaid = True
+                                    code_changed = True
+                                else:
+                                    code_area_name = "-"
+
+                        case "mermaid":
+                            mat = pat_ca_end.match(print_line)
+                            if mat:
+                                if mat.group("code_area_sign") == code_area_sign:
+                                    result_lines.append("</div>")
+                                    result_lines.append("")
+                                    code_area_name = "" # area end
+                                    code_changed = True
+                            if not code_changed:
+                                result_lines.append(src_line.strip())
+                                code_changed = True
+
+                        case "-": # not supported area
+                            mat = pat_ca_end.match(print_line)
+                            if mat:
+                                if mat.group("code_area_sign") == code_area_sign:
+                                    code_area_name = "" # area end
+                            pass
+
+                    if not code_changed:
+                        result_lines.append(src_line)
+
+                return result_lines
+
+            def run(self, lines):
+                result_lines = self.run_lines(lines)
+                if self.has_mermaid:
+                    result_lines.append("")
+                    result_lines.append("<script>mermaid.initialize({startOnLoad:true});</script>")
+                    result_lines.append("")
+                return result_lines
+        class my_post_processor(markdown.postprocessors.Postprocessor):
+
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+
+            def run(self, html):
+                result_html = html
+                return result_html
+
+        class my_extension(markdown.Extension):
+            def extendMarkdown(self, md, md_globals=None):
+                """ add extension instance. """
+                md.preprocessors.register(lib.markdown.my_preprocessor(md), 'my_pre_proc', 35)
+                #md.postprocessors.register(mul.markdown.my_preprocessor(md), 'my_post_proc', 50)
+                md.registerExtension(self)
+
+            def makeExtension(**kwargs):
+                return lib.markdown.my_extension(**kwargs)
