@@ -25,23 +25,10 @@ def __func(params:dict):
     dest_path = params["dest_path"]
     src = lib.yaml.load(src_path)
     cfg = lib.yaml.load(cfg_path)
-    dest = __chk(src,cfg)
-    lib.yaml.save(dest_path,dest)
+    #dest = __chk(src,cfg)
+    #lib.yaml.save(dest_path,dest)
 
 
-def __chk(src:dict, cfg:dict):
-    res = dict()
-    compounddef = src["compounddef"]
-    res.update( __chk_compounddef(compounddef,cfg) )
-    return res
-
-def __chk_compounddef(src_compounddef, cfg:dict):
-    res = dict()
-
-    for compounddef in src_compounddef:
-        compoundname = compounddef["compoundname"]
-
-    return res
 
 
 #####################################################################
