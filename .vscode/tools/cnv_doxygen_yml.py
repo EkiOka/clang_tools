@@ -108,6 +108,8 @@ def __pre_prpc(src:dict):
     name = src.get("tag","")
 
     match(name):
+        case "includes":
+            pass
         case "para":
             pass
         case "briefdescription":
@@ -172,7 +174,7 @@ def __cnv_element(src:dict):
         elif text.isspace():
             pass
         else:
-            res["text"]=text
+            dest["text"]=text
     else:
         text = src.get("text","")
         if text == None:
@@ -208,5 +210,5 @@ else:
         __name__,
         __func,
         __args_cfg,
-        [".vscode\\tools\\cnv_doxygen_yml.py", '-src_path:C:\\_data\\text\\dev\\clang_tools\\Z01_out\\doxygen\\yml\\marge.yml', '-dest_path:C:\\_data\\text\\dev\\clang_tools\\Z01_out\\doxygen\\yml\\normalization.yml']
+        [".vscode\\tools\\cnv_doxygen_yml.py", '-src_path:Z01_out\\doxygen\\yml\\marge.yml', '-dest_path:Z01_out\\doxygen\\yml\\normalization.yml']
         )
