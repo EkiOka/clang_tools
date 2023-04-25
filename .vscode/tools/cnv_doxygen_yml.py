@@ -12,7 +12,42 @@ from lib import lib
 # variables
 #####################################################################
 
+# 削除するキー名
+delete_name = "_"
+
+# 置換キー名テーブル
+# 「○○の下の××だけ△△に置換したい」とか器用なことはできませんので注意
 __key_name_cnv_table={
+    "@version"                       : "version",
+    "@xml:lang"                      : "language",
+    "@language"                      : "language",
+    "@kind"                          : "kind",
+    "@xsi:noNamespaceSchemaLocation" : delete_name,
+    "@xmlns:xsi"                     : delete_name,
+    "@id"                            : "id",
+    "@file"                          : "file",
+    "@refid"                         : "reference_id",
+    "@relation"                      : "relation",
+    "@local"                         : "local",
+    "#text"                          : "value",
+    "@mutable"                         : "mutable",
+    "@prot"                         : "protect",
+    "@static"                         : "static",
+    "@bodyend"                         : "body_end",
+    "@bodyfile"                         : "body_file",
+    "@bodystart"                         : "body_start",
+    "@column"                         : "column",
+    "@file"                         : "file",
+    "@line"                         : "line",
+    "@const"                         : "const",
+    "@explicit"                         : "explicit",
+    "@inline"                         : "inline",
+    "@virt"                         : "virtual",
+    "@declcolumn"                         : "prototype_declaration_column",
+    "@declfile"                         : "prototype_declaration_file",
+    "@declline"                         : "prototype_declaration_line",
+    "@direction"                         : "direction",
+
     "compounddef"  : "src_file",
 
     "compoundname" : "src_name",
@@ -50,7 +85,6 @@ __key_name_cnv_table={
     "virt"            : "virtual",
     "param"            : "param",
     "declname"            : "param_name",
-    "version":"version",
     "incdepgraph": "dependency_graph",
     "node":"node",
     "link":"link",
@@ -91,23 +125,20 @@ def __func(params:dict):
 
 def __cnv(src:dict)->dict:
     res = {}
-    doxygen = []
-    res["doxygen"] = doxygen
+    dest_doxygen = []
+    res["doxygen"] = dest_doxygen
 
-    for xml_v in src.values():
-        xml_children = xml_v.get("children",[])
-        for dg_child in xml_children: # dg = doxygen
-            element=__cnv_element(dg_child)
-            doxygen.append(element)
+    for src_xml_file in src.values():
+        for src_doxygen in src_xml_file.values():
+            element=__cnv_element(src_doxygen)
+            dest_doxygen.append(element)
             pass
 
     return res    
 
-def __pre_prpc(src:dict):
+def __pre_prpc(key,value):
 
-    name = src.get("tag","")
-
-    match(name):
+    match(key):
         case "includes":
             pass
         case "para":
@@ -121,12 +152,13 @@ def __pre_prpc(src:dict):
         case _:
             pass
 
-    res_name = __key_name_cnv_table[name]
+    res_key_name = __key_name_cnv_table[key]
+    res_key_value = value
 
-    return res_name
+    return res_key_name, res_key_value
 
-def __post_prpc(src:dict, dest:dict, name:str):
-    match(name):
+def __post_prpc(key,value):
+    match(key):
         case "para":
             pass
         case "briefdescription":
@@ -140,51 +172,34 @@ def __post_prpc(src:dict, dest:dict, name:str):
     return
 
 
-def __cnv_element(src:dict):
+def __cnv_element(src):
 
-    res = {}
-    dest=dict()
-    name = __pre_prpc(src)
-
-    src_attrs = src.get("attrib",{})
-    src_children = src.get("children",[])
-
-    for attrib_key, attrib_value in src_attrs.items():
-        dest[attrib_key]=attrib_value
-    
-    if len(src_children)>0:
-        children = []
-        for child in src_children:
-            dest_child = __cnv_element(child)
-            if len(dest_child.keys())>0:
-                children.append(dest_child)
-        if len(children)>0:
-            for d in children:
-                for k,v in d.items():
-                    dest_target = dest.get(k,[])
-                    dest_target.append(v)
-                    dest[k]=dest_target
-            res[name]=dest
-
-    elif len(src_attrs)>0:
-        res[name]=dest
-        text = src.get("text","")
-        if text == None:
-            pass
-        elif text.isspace():
-            pass
-        else:
-            dest["text"]=text
+    res  = None
+ 
+    if isinstance(src, dict):
+        # 辞書型
+        res = dict()
+        for src_key, src_value in src.items():
+            dest_key,dest_value = __pre_prpc(src_key,src_value)
+            if dest_key == delete_name:
+                # 処理しないで削除する
+                pass
+            else:
+                dest_value = __cnv_element( dest_value )
+                if dest_value == None:
+                    # 追加しない
+                    pass
+                else:
+                    res[dest_key]=dest_value
+    elif isinstance(src, list):
+        # リスト型
+        res = list()
+        for src_item in src:
+            dest_item = __cnv_element( src_item )
+            res.append(dest_item)
     else:
-        text = src.get("text","")
-        if text == None:
-            pass
-        elif text.isspace():
-            pass
-        else:
-            res[name]=text
-
-    __post_prpc( src, res, name )
+        # 単純型
+        res = src
 
     return res
 

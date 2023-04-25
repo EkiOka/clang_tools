@@ -1,25 +1,11 @@
 from lib import lib
 import os
 
-def __cnv_child(xml):
-    res = dict()
-    res["tag"]=xml.tag
-    res["attrib"]=xml.attrib
-    res["text"]=xml.text
-    res["children"]=list()
-    children = res["children"]
-    for child in xml:
-        children.append(__cnv_child(child))
-    return res
-
 def __cnv_root(files:list):
     res = dict()
     for f in files:
-        xml_root = lib.xml.load(f)
-        yml_root = dict()
-        res[os.path.basename(f)]= __cnv_child(xml_root)
-
-
+        xml_root = lib.xml.load_dict(f)
+        res[os.path.basename(f)]= xml_root
     return res
 
 def __func(params:dict):

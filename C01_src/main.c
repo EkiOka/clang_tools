@@ -1,4 +1,5 @@
 #include "sub.h"
+#include <stdlib.h>
 
 int main(void);
 const int abcd_res = 1;

@@ -20,13 +20,13 @@ import inspect
 import platform
 import xml.etree.ElementTree as ET
 
-# import pip install library
+# import pip install library                                  python -m pip install --upgrade pip
 import openpyxl                                             # pip install openpyxl
 import markdown                                             # pip install markdown
 from markdown_include.include import MarkdownInclude        # pip install markdown-include
 from markdown_checklist.extension import ChecklistExtension # pip install markdown-checklist
 import yaml                                                 # pip install pyyaml
-
+import xmltodict                                            # pip install xmltodict
 
 
 
@@ -40,6 +40,14 @@ class lib:
             with open(path, encoding="utf-8") as f:
                 res = f.read()
             return res
+
+        @staticmethod
+        def to_sha256(text:str)->str:
+            return hashlib.sha256(text.encode()).hexdigest()
+
+        @staticmethod
+        def to_sha512(text:str)->str:
+            return hashlib.sha512(text.encode()).hexdigest()
 
     class json:
 
@@ -95,6 +103,15 @@ class lib:
                 return obj
             except OSError as e:
                 return None
+        
+        def load_dict(path:str)->dict:
+            res = ""
+            with open(path, encoding='utf-8') as file:
+                # xml読み込み
+                xml_data = file.read()
+                # xml → dict
+                res = xmltodict.parse(xml_data)
+            return res
 
     class glob():
         @staticmethod
