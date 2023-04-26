@@ -49,6 +49,19 @@ class lib:
         def to_sha512(text:str)->str:
             return hashlib.sha512(text.encode()).hexdigest()
 
+    class hashlib:
+
+        @staticmethod
+        def cnv_file_to_sha256( path : str)->str:
+            with open(path, 'rb') as file:
+                fileData = file.read()
+                res = hashlib.sha256(fileData).hexdigest()
+            return res
+
+        @staticmethod
+        def cnv_str_to_sha256( string:str)->str:
+            return hashlib.sha256(string.encode("utf-8")).hexdigest()
+
     class json:
 
         @staticmethod
@@ -62,14 +75,40 @@ class lib:
             except Exception as e:
                 return dict()
 
+
         @staticmethod
-        def save(path: str,data):
+        def save(path: str,data, no_updated_file_over_write=True):
             """ jsonファイルとしてデータを保存する
+                dictデータは順序が保証されないので比較できないため注意
+                また既存のデータと内容が同じ場合は書き込みを行いません。
             """
             enc = "utf-8"
             ensure_ascii=False
-            with codecs.open(path , "w", enc) as f:
-                json.dump(data, f, ensure_ascii=ensure_ascii,indent=4, sort_keys=True)
+            new_data = data
+            old_data_str = ""
+            if isinstance(data,dict):
+                new_data = dict(sorted(data.items()))
+                old_data_str = "{}"
+            elif isinstance(data,list):
+                new_data = list(sorted(data))
+                old_data_str = "[]"
+            if no_updated_file_over_write:
+                with codecs.open(path , "w", enc) as f:
+                    json.dump(new_data, f, ensure_ascii=ensure_ascii,indent=4, sort_keys=True)
+            else:
+                try:
+                    old_data_str =json.dumps(lib.json.load(path),ensure_ascii=ensure_ascii,indent=4, sort_keys=True)
+                    new_data_str =json.dumps(new_data,ensure_ascii=ensure_ascii,indent=4, sort_keys=True)
+                except:
+                    old_data_str = "{}"
+                old_hash = lib.hashlib.cnv_str_to_sha256(old_data_str)
+                new_hash = lib.hashlib.cnv_str_to_sha256(new_data_str)
+                if old_hash == new_hash:
+                    pass
+                else:
+                    with codecs.open(path , "w", enc) as f:
+                        json.dump(data, f, ensure_ascii=ensure_ascii,indent=4, sort_keys=True)
+
 
     class yaml:
 
