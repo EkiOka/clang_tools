@@ -21,6 +21,7 @@ import platform
 import xml.etree.ElementTree as ET
 
 # import pip install library                                  python -m pip install --upgrade pip
+import jinja2                                               # pip install jinja2
 import openpyxl                                             # pip install openpyxl
 import markdown                                             # pip install markdown
 from markdown_include.include import MarkdownInclude        # pip install markdown-include
@@ -31,6 +32,73 @@ import xmltodict                                            # pip install xmltod
 
 
 class lib:
+    class log:
+        @staticmethod
+        def enable(cfg=None):
+            if cfg == None:            
+                cfg = {
+                    "version": 1,
+                    "disable_existing_loggers": False,
+                    "formatters": {
+                        # フォーマットの説明は以下参照
+                        # https://docs.python.org/ja/3/library/logging.html#logrecord-attributes
+                        "standard": {
+                            "format": "python(%(levelname)s) > %(message)s"
+                        },
+                        "add_position": {
+                            "format": "python(%(levelname)s) > %(funcName)s %(lineno)s %(message)s"
+                        }
+                    },
+
+                    "handlers": {
+                        "console": {
+                            "class": "logging.StreamHandler",
+                            "level": "DEBUG",
+                            "formatter": "standard",
+                            "stream": "ext://sys.stdout"
+                        },
+                        # "file": {
+                        #     "class": "logging.FileHandler",
+                        #     "level": "INFO",
+                        #     "formatter": "standard",
+                        #     "filename": f"{__name__}.log"
+                        # },
+                        "null": {
+                            "class": "logging.NullHandler"
+                        }
+                    },
+
+                    "loggers": {
+                        f"{__name__}": {
+                            "level": "DEBUG",
+                            "handlers": ["console"],
+                            "propagate": False
+                        }
+                    },
+
+                    "root": {
+                        "level": "INFO"
+                    }
+                }
+
+            logging.config.dictConfig(cfg)
+
+        @staticmethod
+        def debug(text:str,name:str=__name__):
+            log = logging.getLogger(name)
+            log.debug(text)
+        @staticmethod
+        def info(text:str,name:str=__name__):
+            log = logging.getLogger(name)
+            log.info(text)
+        @staticmethod
+        def warning(text:str,name:str=__name__):
+            log = logging.getLogger(name)
+            log.info(text)
+        @staticmethod
+        def critical(text:str,name:str=__name__):
+            log = logging.getLogger(name)
+            log.critical(text)
 
     class text:
 
@@ -40,6 +108,11 @@ class lib:
             with open(path, encoding="utf-8") as f:
                 res = f.read()
             return res
+
+        @staticmethod
+        def save(path:str,text:str):
+            with open(path, mode="w", encoding="utf-8") as f:
+                f.write(text)
 
         @staticmethod
         def to_sha256(text:str)->str:
@@ -193,12 +266,12 @@ class lib:
         @staticmethod
         def __display_head(args,func,args_cfg,prefix):
             pf = prefix
-            print(f"{pf}---------------------------------------------------")
-            print(f"{pf}{args[0]}")
-            print(f"{pf}---------------------------------------------------")
-            print(f"{pf}cur_dir  : {os.getcwd()}")
-            print(f"{pf}sys.argv : {args}")
-            print(f"{pf}args_cfg : {args_cfg}")
+            lib.log.debug(f"{pf}---------------------------------------------------")
+            lib.log.debug(f"{pf}{args[0]}")
+            lib.log.debug(f"{pf}---------------------------------------------------")
+            lib.log.debug(f"{pf}cur_dir  : {os.getcwd()}")
+            lib.log.debug(f"{pf}sys.argv : {args}")
+            lib.log.debug(f"{pf}args_cfg : {args_cfg}")
 
         @staticmethod
         def __set_params(func,args_cfg:dict,args:list,prefix:str):
@@ -215,10 +288,10 @@ class lib:
                     k = m.group("key")
                     v = m.group("value")
                     params[k]=v
-                    print( f"{pf}{k.ljust(key_max)} : {v}")
+                    lib.log.debug( f"{pf}{k.ljust(key_max)} : {v}")
                 else:
                     params[k]=v
-                    print( f"{pf}{k.ljust(key_max)} : {v}")
+                    lib.log.debug( f"{pf}{k.ljust(key_max)} : {v}")
             if "debug" in params:
                 func(params)
             else:
@@ -356,3 +429,64 @@ class lib:
 
             def makeExtension(**kwargs):
                 return lib.markdown.my_extension(**kwargs)
+    def get_parent_dir(src:str)->str:
+        """親ディレクトリ取得
+
+        Parameters
+        ----------
+        src : str
+            親ディレクトリを取得する元となるディレクトリ
+
+        Returns
+        -------
+        str
+            親ディレクトリのパス
+        """
+        p = pathlib.Path(src)
+        res = str(p.parent)
+        return res
+
+
+    class jinja2:
+
+        @staticmethod
+        def __debug(text:str):
+            """テンプレート処理中にデバッグ情報として標準出力を行います
+            """
+            lib.log.debug(text)
+            return ""
+
+        @staticmethod
+        def convert(data:dict,template_path:str)->str:
+
+            cur = os.getcwd()
+            tmp_dir = os.path.dirname(template_path)
+            os.chdir(tmp_dir)
+            tmp_file = os.path.basename(template_path)
+
+            loader         = jinja2.FileSystemLoader( searchpath=tmp_dir, encoding='utf-8')
+            environment    = jinja2.Environment(loader=loader)
+            environment.filters["debug"]=lib.jinja2.__debug
+
+            try:
+                template  = environment.get_template(name=tmp_file)
+                out_text  = template.render(data)
+            except jinja2.exceptions.UndefinedError as e:
+                lib.log.debug( f"テンプレートへ入力しているデータをダンプします。")
+                lib.log.debug(data)
+                lib.log.debug(traceback.format_exc())
+                lib.log.debug(e)
+                sys.exit(1)
+            except jinja2.exceptions.TemplateNotFound as e:
+                lib.log.debug(traceback.format_exc())
+                lib.log.debug(e)
+                lib.log.debug( f"template_path : {template_path}")
+                lib.log.debug( f"tmp_dir       : {tmp_dir}")
+                lib.log.debug( f"tmp_file      : {tmp_file}")
+                lib.log.debug( f"cur           : {cur} -> {os.getcwd()}")
+                lib.log.debug( f"raise ファイル「{e}」が見つかりませんでした。")
+                sys.exit(1)
+
+            os.chdir(cur)
+
+            return out_text

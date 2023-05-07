@@ -1,42 +1,14 @@
-@echo off
-rem ----------------------------------------------------------------------
-rem automation
-rem ----------------------------------------------------------------------
-set "path_doxygen_file=%workspace_folder%\B01_prj_doxygen\Doxyfile"
-set "path_doxygen_xml=%workspace_folder%\Z01_out\doxygen\xml"
-set "path_doxygen_yml=%workspace_folder%\Z01_out\doxygen\yml"
-
-set "path_rule_file=%workspace_folder%\D50_coding_check\rule.yml"
-
-
-
-
-rem ----------------------------------------------------------------------
-rem make directory
-rem ----------------------------------------------------------------------
-md "%path_doxygen_xml%"
-md "%path_doxygen_yml%"
+@echo on
 
 rem ----------------------------------------------------------------------
 rem doxygen
 rem ----------------------------------------------------------------------
-doxygen.exe %path_doxygen_file%
 
-rem xml file to yml
-set "xml2yml=%tools_folder%\xml2yml.py"
-set "path_marge_yml=%path_doxygen_yml%\marge.yml"
+rem run doxygen
+doxygen.exe "%path_doxygen_file%"
 
-py %xml2yml% "-src_masks:%path_doxygen_xml%\*_8c.xml" "-dis_masks:" "-dest_path:%path_marge_yml%"
+rem build makefile
+py "%gen_doxygen_mk%" "-src_path:%path_doxygen_xml_files%" "-tmp_path:%tmp_doxygen_mk%" "-dest_path:%out_doxygen_makefile%"
 
-rem convert yml file
-set "cnvyml=%tools_folder%\cnv_doxygen_yml.py"
-set "path_nrm_yml=%path_doxygen_yml%\normalization.yml"
-
-py %cnvyml% "-src_path:%path_marge_yml%" "-dest_path:%path_nrm_yml%"
-
-rem check yml file
-set "chkyml=%tools_folder%\chk_doxygen_yml.py"
-set "path_rpt_yml=%path_doxygen_yml%\report.yml"
-
-py %chkyml% "-src_path:%path_nrm_yml%" "-cfg_path:%path_rule_file%" "-dest_path:%path_rpt_yml%"
-
+rem run makefile
+make "--makefile=%out_doxygen_makefile%" "all"
