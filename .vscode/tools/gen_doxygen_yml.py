@@ -9,6 +9,7 @@ import sys
 from lib import lib
 import doxygen_compound as doxygen
 from xsdata.formats.dataclass.parsers import XmlParser
+from copy import deepcopy
 
 #####################################################################
 # 内部関数定義
@@ -117,7 +118,11 @@ def __sectiondef_functions(src:list[doxygen.SectiondefType]):
                     dest_type             = src_param.type.content[0]
                     if src_param.declname != None:
                         dest_declaration_name = src_param.declname
-                    if src_param.defname != None:
+                        if src_param.defname != None:
+                            dest_define_name = src_param.defname
+                        else:
+                            dest_define_name = src_param.declname
+                    elif src_param.defname != None:
                         dest_define_name      = src_param.defname
 
                     dest_param["declaration_name"] = dest_declaration_name
@@ -142,8 +147,8 @@ def __sectiondef_functions(src:list[doxygen.SectiondefType]):
                 dest_location_body["file"]  = member.location.bodyfile
 
                 # comment
-                dest_func["brief"] = __contents(member.briefdescription.content)
-                dest_func["details"] = __contents(member.detaileddescription.content)
+                dest_func["brief"]   = __contents(member.briefdescription.content)
+                dest_func["details"] = __contents(member.detaileddescription.content, dest_params )
 
     return res
 
@@ -216,14 +221,14 @@ def __member_relation(references:list[doxygen.ReferenceType],referencedby:list[d
 #############################################################################
 
 
-def __contents(src:list[object]):
+def __contents(src:list[object],dest_params:list=[]):
     """descript関係のcontentsを変換します。
     """
     res = list()
 
     for src_item in src:
         if isinstance(src_item,doxygen.DocParaType):
-            dest_content = __contents( src_item.content )
+            dest_content = __contents( src_item.content,dest_params )
             res.extend(dest_content)
         elif isinstance(src_item, str):
             dest_item = dict()
@@ -231,7 +236,7 @@ def __contents(src:list[object]):
             dest_item["type"]=""
             res.append(dest_item)
         elif isinstance(src_item, doxygen.DocSimpleSectType):
-            dest_para = __contents( src_item.para )
+            dest_para = __contents( src_item.para, dest_params )
             __replace_contents_type(dest_para, src_item.kind.value)
             res.extend(dest_para)
             pass
@@ -251,12 +256,32 @@ def __contents(src:list[object]):
                             if n.direction.value != None:
                                 dest_param_direction = n.direction.value
                         dest_param_name      = n.content
-                dest_description = __contents(param_item.parameterdescription.content)
+                dest_description = __contents(param_item.parameterdescription.content, dest_params)
                 dest_param = dict()
-                dest_param["name"       ] = dest_param_name
+                if len(dest_param_name)>0:
+                    dest_param_name = dest_param_name[0]
+                    dest_param["name"       ] = dest_param_name
+                else:
+                    dest_param["name"       ] = ""
+                    dest_param_name = ""
+
                 dest_param["direction"  ] = dest_param_direction
-                dest_param["description"] = dest_description
+                if len(dest_description)>0:
+                    dest_param["description"] = dest_description[0].get("value","")
+                else:
+                    dest_param["description"] = ""
                 params.append(dest_param)
+
+                # 引数情報にコメントを追加
+                for dp in dest_params:
+                    if dp.get("define_name","#") == dest_param_name:
+                        dp["doxygen_comment_name"       ]=dest_param_name
+                        dp["doxygen_comment_direction"  ]=dest_param_direction
+                        if len(dest_description)>0:
+                            dp["doxygen_comment_description"]=dest_description[0].get("value","")
+                        else:
+                            dp["doxygen_comment_description"]=""
+
         else:
             raise Exception(f"未対応の型を検出しました({type(src_item)})")
 
