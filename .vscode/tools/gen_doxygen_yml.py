@@ -9,7 +9,7 @@ import sys
 from lib import lib
 import doxygen_compound as doxygen
 from xsdata.formats.dataclass.parsers import XmlParser
-from copy import deepcopy
+
 
 #####################################################################
 # 内部関数定義

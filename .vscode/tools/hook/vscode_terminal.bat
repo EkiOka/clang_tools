@@ -51,6 +51,7 @@ rem --------------------------------------------------------------------------
 
 md %out_doxygen_root%
 md %out_doxygen_mk%
+md %out_doxygen_result%
 md %out_doxygen_xml%
 md %out_doxygen_yml%
 md %out_filelist%
