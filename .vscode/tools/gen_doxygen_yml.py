@@ -96,7 +96,7 @@ def __sectiondef_functions(src:list[doxygen.SectiondefType]):
                 res.append(dest_func)
 
                 dest_func["name"       ] = member.name
-                dest_func["return_type"] = member.type.content[0]
+                dest_func["return_type"] = __type(member.type.content)
                 dest_func["const"      ] = __bool(member.const)
                 dest_func["inline"     ] = __bool(member.inline)
                 dest_func["static"     ] = __bool(member.static)
@@ -115,7 +115,7 @@ def __sectiondef_functions(src:list[doxygen.SectiondefType]):
 
                     dest_declaration_name = ""
                     dest_define_name      = ""
-                    dest_type             = src_param.type.content[0]
+                    dest_type             = __type(src_param.type.content)
                     if src_param.declname != None:
                         dest_declaration_name = src_param.declname
                         if src_param.defname != None:
@@ -162,7 +162,7 @@ def __sectiondef_variables(src:list[doxygen.SectiondefType]):
                 dest_var = dict()
                 res.append(dest_var)
                 dest_var["name"  ] = member.name
-                dest_var["type"  ] = member.type.content[0]
+                dest_var["type"  ] = __type(member.type.content)
                 dest_var["static"] = __bool(member.static)
                 dest_var["references"] = __member_relation(
                         [],
@@ -281,7 +281,8 @@ def __contents(src:list[object],dest_params:list=[]):
                             dp["doxygen_comment_description"]=dest_description[0].get("value","")
                         else:
                             dp["doxygen_comment_description"]=""
-
+        elif isinstance(src_item,doxygen.DocEmptyType):
+            pass
         else:
             raise Exception(f"未対応の型を検出しました({type(src_item)})")
 
@@ -310,6 +311,16 @@ def __id(src:str):
     res = ""
     if src != None:
         res = lib.hashlib.cnv_str_to_sha256(src)
+    return res
+
+def __type(src)->str:
+    res = ""
+
+    content = src[0]
+    if isinstance(content,doxygen.DoxRefKind):
+        res = content.value
+    else:
+        res = content
     return res
 
 #####################################################################
