@@ -13,10 +13,16 @@ from lib import lib
 #####################################################################
 
 def __main(params:dict):
+
+    lib.log.enable()
+
     src_path = params["src_path"]
     dest_path = params["dest_path"]
 
-    yml_data = lib.yaml(src_path)
+    lib.log.debug(f"src_path={src_path}")
+    lib.log.debug(f"dest_path={dest_path}")
+
+    yml_data = lib.yaml.load(src_path)
     rpt_data = cnv(yml_data)
     lib.yaml.save(dest_path,rpt_data)
 

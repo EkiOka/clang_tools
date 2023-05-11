@@ -34,6 +34,7 @@ rem tools
 
 set "gen_files_tool=%tools_folder%\filelist.py"
 set "gen_doxygen_yml=%tools_folder%\gen_doxygen_yml.py"
+set "gen_doxygen_rpt=%tools_folder%\gen_doxygen_rpt.py"
 set "gen_doxygen_mk=%tools_folder%\gen_doxygen_mk.py"
 set "marge_doxygen_yml=%tools_folder%\marge_doxygen_yml.py"
 
@@ -44,6 +45,8 @@ set "path_doxygen_xml_files=%out_filelist%\doxygen_xml_files.yml"
 set "tmp_doxygen_mk=%tmp_root%\doxygen\doxygen.mk"
 set "out_doxygen_makefile=%out_doxygen_mk%\doxygen.mk"
 set "out_doxygen_result_file=%out_doxygen_result%\result.yml"
+set "out_doxygen_report_file=%out_doxygen_result%\report.yml"
+set "out_doxygen_warning_txt=%out_doxygen_result%\warning.txt"
 
 rem --------------------------------------------------------------------------
 rem remake directory
