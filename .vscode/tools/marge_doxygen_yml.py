@@ -12,7 +12,6 @@ from lib import lib
 
 def marge_files(src_mask:str, dest_path:str):
 
-    lib.log.enable()
     dest_data = dict()
     dest_root = dict()
     dest_data["doxygen"]=dest_root

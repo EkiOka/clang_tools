@@ -12,8 +12,6 @@ from lib import lib
 #####################################################################
 
 def gen(src_path:str, tmp_path:str, dest_path:str):
-    lib.log.enable()
-
     src_data = lib.yaml.load(src_path)
     lib.log.debug(f"src_data={src_data}")
     dst_data = __cnv(src_data)
