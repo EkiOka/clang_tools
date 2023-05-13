@@ -241,52 +241,92 @@ def __contents(src:list[object],dest_params:list=[]):
             res.extend(dest_para)
             pass
         elif isinstance(src_item,doxygen.DocParamListType):
-            dest_item = dict()
-            params = list()
-            res.append(dest_item)
-            dest_item["value"]=params
-            dest_item["type"]="params"
-            
-            for param_item in src_item.parameteritem:
-                dest_param_direction = ""
-                dest_param_name      = ""
-                for name in param_item.parameternamelist:
-                    for n in name.parametername:
-                        if n.direction != None:
-                            if n.direction.value != None:
-                                dest_param_direction = n.direction.value
-                        dest_param_name      = n.content
-                dest_description = __contents(param_item.parameterdescription.content, dest_params)
-                dest_param = dict()
-                if len(dest_param_name)>0:
-                    dest_param_name = dest_param_name[0]
-                    dest_param["name"       ] = dest_param_name
-                else:
-                    dest_param["name"       ] = ""
-                    dest_param_name = ""
-
-                dest_param["direction"  ] = dest_param_direction
-                if len(dest_description)>0:
-                    dest_param["description"] = dest_description[0].get("value","")
-                else:
-                    dest_param["description"] = ""
-                params.append(dest_param)
-
-                # 引数情報にコメントを追加
-                for dp in dest_params:
-                    if dp.get("define_name","#") == dest_param_name:
-                        dp["doxygen_comment_name"       ]=dest_param_name
-                        dp["doxygen_comment_direction"  ]=dest_param_direction
-                        if len(dest_description)>0:
-                            dp["doxygen_comment_description"]=dest_description[0].get("value","")
-                        else:
-                            dp["doxygen_comment_description"]=""
+            if src_item.kind.value == doxygen.DoxParamListKind.PARAM.value:
+                res_params = __contents_params(src_item,dest_params)
+                res.extend(res_params)
+            elif src_item.kind.value == doxygen.DoxParamListKind.RETVAL.value:
+                res_params = __contents_retval(src_item,dest_params)
+                res.extend(res_params)
+            else:
+                raise Exception(f"未サポートの種別です({src_item.kind.value})")
         elif isinstance(src_item,doxygen.DocEmptyType):
             pass
         else:
             raise Exception(f"未対応の型を検出しました({type(src_item)})")
 
     return res
+
+def __contents_retval(src_item:list[object],dest_params:list=[]):
+    res = list()
+    dest_item = dict()
+    res.append(dest_item)
+    dest_item["type"]="retval"
+
+    vals = list()
+    dest_item["value"]=vals
+    
+    for item in src_item.parameteritem:
+        if isinstance(item, doxygen.DocParamListItem):
+            for name_list in item.parameternamelist:
+                for name in name_list.parametername:
+                    content = __contents(name.content)
+                    val = dict()
+                    for c in content:
+                        val["value"]= val.get("value","") + c["value"]
+                    descript = __contents(item.parameterdescription.content)
+                    for d in descript:
+                        val["descript"]= val.get("descript","") + d["value"]
+                    vals.append(val)
+                    pass
+        else:
+            raise Exception(f"未対応の型です。({type(item)})")
+    return res
+
+def __contents_params(src_item:list[object],dest_params:list=[]):
+    res = list()
+    dest_item = dict()
+    params = list()
+    res.append(dest_item)
+    dest_item["value"]=params
+    dest_item["type"]="params"
+    
+    for param_item in src_item.parameteritem:
+        dest_param_direction = ""
+        dest_param_name      = ""
+        for name in param_item.parameternamelist:
+            for n in name.parametername:
+                if n.direction != None:
+                    if n.direction.value != None:
+                        dest_param_direction = n.direction.value
+                dest_param_name      = n.content
+        dest_description = __contents(param_item.parameterdescription.content, dest_params)
+        dest_param = dict()
+        if len(dest_param_name)>0:
+            dest_param_name = dest_param_name[0]
+            dest_param["name"       ] = dest_param_name
+        else:
+            dest_param["name"       ] = ""
+            dest_param_name = ""
+
+        dest_param["direction"  ] = dest_param_direction
+        if len(dest_description)>0:
+            dest_param["description"] = dest_description[0].get("value","")
+        else:
+            dest_param["description"] = ""
+        params.append(dest_param)
+
+        # 引数情報にコメントを追加
+        for dp in dest_params:
+            if dp.get("define_name","#") == dest_param_name:
+                dp["doxygen_comment_name"       ]=dest_param_name
+                dp["doxygen_comment_direction"  ]=dest_param_direction
+                if len(dest_description)>0:
+                    dp["doxygen_comment_description"]=dest_description[0].get("value","")
+                else:
+                    dp["doxygen_comment_description"]=""
+    return res
+
+
 
 def __replace_contents_type(src:list, type_name:str):
     """contentのtypeを置換します。
@@ -315,12 +355,20 @@ def __id(src:str):
 
 def __type(src)->str:
     res = ""
-
-    content = src[0]
-    if isinstance(content,doxygen.DoxRefKind):
-        res = content.value
+    if isinstance(src,doxygen.DoxRefKind):
+        res = src.value
+    elif isinstance(src,list):
+        for item in src:
+            item_res = __type(item)
+            res = res + item_res + " "
+        if len(res)>0:
+            res = res[0:len(res)-1]
+    elif isinstance(src,str):
+        res = src
+    elif isinstance(src,doxygen.RefTextType):
+        res = src.value
     else:
-        res = content
+        raise Exception(f"{type(src)}型は未サポートです。")
     return res
 
 #####################################################################

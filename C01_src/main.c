@@ -64,6 +64,7 @@ int main(void)
  * @param yyy var name is yyy.
  * @param zzz var name is zzz.
  * @return int return type is int.
+ * @retval 0 value descript
  */
 int abcd( int xxx, const int yyy, char* zzz)
 {
