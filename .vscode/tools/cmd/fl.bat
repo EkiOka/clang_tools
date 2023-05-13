@@ -1,7 +1,7 @@
 @echo off
 
 rem =========================================================================
-rem 環境設定
+rem environment
 rem =========================================================================
 
 set bat_name=%~n0
@@ -11,7 +11,7 @@ echo %bat_name% ^> %%tools_folder%%=%tools_folder%
 echo %bat_name% ^> %%out_filelist%%=%out_filelist%
 
 rem =========================================================================
-rem Doxygenのxmlファイルリスト生成
+rem generate Doxygen xml file list
 rem =========================================================================
 
 set "ena_masks=%out_doxygen_xml%\**\*_8c.xml"
