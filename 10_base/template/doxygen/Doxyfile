@@ -1,5 +1,5 @@
-OUTPUT_DIRECTORY       = Z01_out/doxygen
-INPUT                  = C01_src
+OUTPUT_DIRECTORY       = {{"clt_tmp_dox_xml" | env_var }}
+INPUT                  = {{"clt_src_dir"     | env_var }}
 RECURSIVE              = YES
 
 DOXYFILE_ENCODING      = UTF-8

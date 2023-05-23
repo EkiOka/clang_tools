@@ -1,7 +1,2 @@
-/.vscode/tools/lib/__pycache__
-/Z01_out/doxygen/xml
-/Z01_out/doxygen/yml
-/.vscode/tools/lib/doxygen_compound/__pycache__/*.pyc
-/Z01_out/doxygen/mk
-/Z01_out/doxygen/result
-/Z01_out/filelist
+00_fix/lib/__pycache__/
+00_fix/lib/doxygen_compound/__pycache__/

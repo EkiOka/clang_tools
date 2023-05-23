@@ -1,0 +1,16 @@
+{
+    "uuid_text_down": {
+        "body": [
+            "${UUID/([0-9a-z]+)\\-([0-9a-z]+)\\-([0-9a-z]+)\\-([0-9a-z]+)\\-([0-9a-z]+)/${1:/downcase}${2:/downcase}${3:/downcase}${4:/downcase}${5:/downcase}/gi}"
+        ],
+        "description": "guid/uuid",
+        "prefix": "gg"
+    },
+    "uuid_text_up": {
+        "body": [
+            "${UUID/([0-9a-z]+)\\-([0-9a-z]+)\\-([0-9a-z]+)\\-([0-9a-z]+)\\-([0-9a-z]+)/${1:/upcase}${2:/upcase}${3:/upcase}${4:/upcase}${5:/upcase}/gi}"
+        ],
+        "description": "guid/uuid",
+        "prefix": "GG"
+    },	
+}

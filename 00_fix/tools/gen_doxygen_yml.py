@@ -6,7 +6,7 @@
 #####################################################################
 
 import sys
-from lib import lib
+from lib_a48c5c3ad4e94017bcc275492c101193 import ul
 import doxygen_compound as doxygen
 from xsdata.formats.dataclass.parsers import XmlParser
 
@@ -15,8 +15,7 @@ from xsdata.formats.dataclass.parsers import XmlParser
 # 内部関数定義
 #####################################################################
 
-
-def __func(params:dict):
+def __main(src_path:str, dest_path:str):
     """シェル起動基点
 
     Parameters
@@ -24,13 +23,11 @@ def __func(params:dict):
     params : dict
         起動引数
     """
-    src_path = params["src_path"]
-    dest_path = params["dest_path"]
-    src_txt = lib.text.load(src_path)
+    src_txt = ul.load_text(src_path)
     parser = XmlParser()
     xml_data = parser.from_string(src_txt, doxygen.DoxygenType)
     dest = __cnv(xml_data)
-    lib.yaml.save(dest_path,dest)
+    ul.save_yaml(dest_path,dest)
 
 #--------------------------------------------------------------------
 # 各要素の変換関数
@@ -350,7 +347,7 @@ def __id(src:str):
     """
     res = ""
     if src != None:
-        res = lib.hashlib.cnv_str_to_sha256(src)
+        res = ul.cnv_text_to_sha256(src)
     return res
 
 def __type(src)->str:
@@ -375,22 +372,10 @@ def __type(src)->str:
 # シェル起動
 #####################################################################
 
-__args_cfg={
-    "script":{"type":"text"},
+app = ul.cmd_app()
+app.args_cfg={
+    "py":{"type":"text"},
     "src_path":{"type":"text"},
     "dest_path":{"type":"text"}
 }
-
-if "debugpy" not in sys.modules:
-    lib.cmd_app.start(
-        __name__,
-        __func,
-        __args_cfg
-        )
-else:
-    lib.cmd_app.start(
-        __name__,
-        __func,
-        __args_cfg,
-        [".vscode\\tools\\cnv_doxygen_yml.py", '-src_path:Z01_out\\doxygen\\xml\\main_8c.xml', '-dest_path:Z01_out\\doxygen\\yml\\main_8c.yml']
-        )
+app.start(__name__,__main)

@@ -1,5 +1,13 @@
+
+rem generate Doxfile from template
+
+py "%clt_tools_gen_txt%" "-src_path:" "-temp_path:%clt_tmpl_dox_file%" "-dest_path:"
+
+exit /b 0
+
 rem run doxygen
 doxygen.exe "%path_doxygen_file%" 1> nul 2> "%out_doxygen_warning_txt%"
+pause
 
 call fl.bat 1> nul
 
