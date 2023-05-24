@@ -26,6 +26,8 @@ import openpyxl                                             # pip install openpy
 import markdown                                             # pip install markdown
 from markdown_include.include import MarkdownInclude        # pip install markdown-include
 from markdown_checklist.extension import ChecklistExtension # pip install markdown-checklist
+from md2html_links import CustomLinkExtension               # download https://github.com/ricmua/markdown-md2html_links
+                                                            # and copy md2html_links.py to python lib
 import yaml                                                 # pip install pyyaml
 
 class ul:
@@ -743,6 +745,7 @@ class ul:
             "codehilite",
             "fenced_code",
             MarkdownInclude(configs={'base_path':include_base_path}),
+            CustomLinkExtension(),
             ]
             )
         res = md.convert(src)
@@ -1033,8 +1036,6 @@ class ul:
                     self.params[k]=v
                     ul.log_debug( f"{pf}{k.ljust(key_max)} : {v}")
             self.params["vscode_debug"]=ul.is_vscode_debug()
-            if ul.is_vscode_debug():
-                ul.log_enable()
 
         def __set_args_value(self):
 
@@ -1058,6 +1059,8 @@ class ul:
             return
 
         def start(self,name,func,args:list=sys.argv):
+            if ul.is_vscode_debug():
+                ul.log_enable()
             if name == "__main__":
                 self.prefix = f"{name} > "
                 self.args = args
