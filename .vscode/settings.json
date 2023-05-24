@@ -9,7 +9,9 @@
     "**/__pycache__":true
   },
   "python.analysis.extraPaths": [
-    "${workspaceFolder}/00_fix/lib"
+    "${workspaceFolder}/00_fix/lib",
+    "${workspaceFolder}/20_user/lib",
+    "${workspaceFolder}/10_base/lib"
   ],
   "terminal.integrated.defaultProfile.windows": "cmd",
   "terminal.integrated.profiles.windows": {
