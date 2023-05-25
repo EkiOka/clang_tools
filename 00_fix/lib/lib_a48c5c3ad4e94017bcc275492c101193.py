@@ -19,6 +19,7 @@ import string
 import inspect
 import platform
 import xml.etree.ElementTree as ET
+import subprocess
 
 # import pip install library                                  python -m pip install --upgrade pip
 import jinja2                                               # pip install jinja2
@@ -170,6 +171,26 @@ class ul:
     @staticmethod
     def gen_uuid_lower()->str:
         return uuid.uuid4().hex.lower()
+
+    #========================================================================
+    #
+    # PROCESS AND ENVIRONMENT
+    #
+    #========================================================================
+
+    @staticmethod
+    def get_start_params()->list[str]:
+        return sys.argv
+
+    @staticmethod
+    def get_env_vars()->dict:
+        return dict(os.environ)
+    
+    @staticmethod
+    def start_proc(params:list[str])->subprocess.CompletedProcess[bytes]:
+        cp = subprocess.run(params)
+        return cp
+
     #========================================================================
     #
     # FILE CONTROL
