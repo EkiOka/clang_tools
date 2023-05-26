@@ -1,9 +1,17 @@
 from lib_a48c5c3ad4e94017bcc275492c101193 import ul
 
 def initialize(py:str, vscode_debug:bool):
+
+    prefix = f"{ul.get_file_name_ext(py)} > "
+
+    ul.log_enable(prefix=prefix)
+    ul.log_info(f"stat initialize.")
     id = ul.get_env_id()
     if id == ul.id:
-        raise Exception("環境変数 env_id が設定されていません。")
+        ul.raise_NotFound(
+            target=f"env_id",
+            type_name="environment variable",
+            prefix=prefix)
 
     path_list = ul.load_path()
     dest = path_list.get(id,{})
@@ -47,6 +55,14 @@ def initialize(py:str, vscode_debug:bool):
     dest[ "file_tmp_dox_marge_yml"  ] = f"{ws}\\50_out_tmp\\doxygen\\result\\marge.yml"
 
     ul.update_path(path_list,id)
+
+    key_max_len = ul.get_max_dict_key_len(dest)
+
+    for k,v in dest.items():
+        if k.find("dir_") == 0:
+           ul.log_debug(f"key : {k:<{key_max_len}} / value : {v}")
+           ul.make_dir(v)
+    ul.log_info(f"complete initialize.")
 
 app = ul.cmd_app()
 app.start(__name__,initialize)

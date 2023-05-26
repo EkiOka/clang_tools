@@ -24,11 +24,9 @@ set "clt_tools_dir=%clt_root_dir%\00_fix\tools"
 set "clt_lib_dir=%clt_root_dir%\00_fix\lib"
 set "clt_cmd_dir=%clt_root_dir%\00_fix\cmd"
 
-set "clt_base_tools_dir=%clt_root_dir%\10_base\tools"
 set "clt_base_lib_dir=%clt_root_dir%\10_base\lib"
 set "clt_base_cmd_dir=%clt_root_dir%\10_base\cmd"
 
-set "clt_user_tools_dir=%clt_root_dir%\20_user\tools"
 set "clt_user_lib_dir=%clt_root_dir%\20_user\lib"
 set "clt_user_cmd_dir=%clt_root_dir%\20_user\cmd"
 
@@ -36,22 +34,15 @@ set "path=%clt_cmd_dir%;%clt_user_cmd_dir%;%clt_base_cmd_dir%;%path%"
 set "pythonpath=%clt_lib_dir%;%clt_user_lib_dir%;%clt_base_lib_dir%;%pythonpath%"
 
 echo %proc_name% ^> clt_root_dir  : %clt_root_dir%
-
 echo %proc_name% ^> clt_tools_dir : %clt_tools_dir%
-echo %proc_name% ^> clt_lib_dir   : %clt_lib_dir%
-echo %proc_name% ^> clt_cmd_dir   : %clt_cmd_dir%
-
-echo %proc_name% ^> clt_base_tools_dir : %clt_base_tools_dir%
-echo %proc_name% ^> clt_base_lib_dir   : %clt_base_lib_dir%
-echo %proc_name% ^> clt_base_cmd_dir   : %clt_base_cmd_dir%
-
-echo %proc_name% ^> clt_user_tools_dir : %clt_user_tools_dir%
-echo %proc_name% ^> clt_user_lib_dir   : %clt_user_lib_dir%
-echo %proc_name% ^> clt_user_cmd_dir   : %clt_user_cmd_dir%
 
 echo %proc_name% ^> ---------------------------------------------------------
 
-call py_cmd init.py
+if not exist "%clt_user_cmd_dir%" call :initialize
 
 cmd /k
 
+rem ----------------------------------------------------------------------
+:initialize
+rem ----------------------------------------------------------------------
+call py_cmd init.py

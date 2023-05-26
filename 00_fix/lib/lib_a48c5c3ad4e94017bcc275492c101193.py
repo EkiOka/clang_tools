@@ -52,8 +52,22 @@ class ul:
         if "debugpy" in sys.modules:
             res = True
         return res
+
+    LOG_COLOR_BLACK   = "\033[30m" # 標準出力の文字色を黒にする文字列
+    LOG_COLOR_RED     = "\033[31m" # 標準出力の文字色を赤にする文字列
+    LOG_COLOR_GREEN   = "\033[32m" # 標準出力の文字色を緑にする文字列
+    LOG_COLOR_YELLOW  = "\033[33m" # 標準出力の文字色を黄にする文字列
+    LOG_COLOR_BLUE    = "\033[34m" # 標準出力の文字色を青にする文字列
+    LOG_COLOR_MAGENTA = "\033[35m" # 標準出力の文字色をマゼンタにする文字列
+    LOG_COLOR_CYAN    = "\033[36m" # 標準出力の文字色をシアンにする文字列
+    LOG_COLOR_WHITE   = "\033[37m" # 標準出力の文字色を白にする文字列
+    LOG_COLOR_END     = "\033[0m"  # 標準出力の文字色・装飾を終了する文字列
+    LOG_COLOR_REVERSE = "\033[7m"  # 標準出力の文字色・背景色を反転させる文字列
+    LOG_BOLD          = "\033[1m"  # 標準出力の文字を太字にする文字列
+    LOG_UNDER_LINE    = "\033[4m"  # 標準出力の文字に下線を付ける文字列
+
     @staticmethod
-    def log_enable(cfg=None):
+    def log_enable(prefix="python",cfg=None):
         if cfg == None:            
             cfg = {
                 "version": 1,
@@ -62,10 +76,10 @@ class ul:
                     # フォーマットの説明は以下参照
                     # https://docs.python.org/ja/3/library/logging.html#logrecord-attributes
                     "standard": {
-                        "format": "python(%(levelname)s) > %(message)s"
+                        "format": f"{prefix}(%(levelname)s) %(message)s"
                     },
                     "add_position": {
-                        "format": "python(%(levelname)s) > %(funcName)s %(lineno)s %(message)s"
+                        "format": f"{prefix}(%(levelname)s) %(funcName)s %(lineno)s %(message)s"
                     }
                 },
 
@@ -103,6 +117,12 @@ class ul:
         logging.config.dictConfig(cfg)
     @staticmethod
     def log_debug(text:str,name:str=__name__):
+        s = ""
+        s = s + ul.LOG_COLOR_CYAN
+        s = s + ul.LOG_COLOR_REVERSE
+        e = ""
+        e = e + ul.LOG_COLOR_END
+        text = f"{s}{text}{e}"
         log = logging.getLogger(name)
         log.debug(text)
     @staticmethod
@@ -111,12 +131,72 @@ class ul:
         log.info(text)
     @staticmethod
     def log_warning(text:str,name:str=__name__):
+        s = ""
+        s = s + ul.LOG_COLOR_YELLOW
+        e = ""
+        e = e + ul.LOG_COLOR_END
+        text = f"{s}{text}{e}"
         log = logging.getLogger(name)
-        log.info(text)
+        log.warning(text)
     @staticmethod
     def log_critical(text:str,name:str=__name__):
+        s = ""
+        s = s + ul.LOG_COLOR_RED
+        s = s + ul.LOG_BOLD
+        e = ""
+        e = e + ul.LOG_COLOR_END
+        text = f"{s}{text}{e}"
         log = logging.getLogger(name)
         log.critical(text)
+    @staticmethod
+    def raise_Exception(text:str,prefix:str=""):
+        s = ""
+        s = s + ul.LOG_COLOR_RED
+        s = s + ul.LOG_BOLD
+        e = ""
+        e = e + ul.LOG_COLOR_END
+        text = f"{prefix}{s}{text}{e}"
+        raise Exception(text)
+    @staticmethod
+    def raise_FileNotFound(path:str,prefix:str=""):
+        s = ""
+        s = s + ul.LOG_COLOR_RED
+        s = s + ul.LOG_BOLD
+        e = ""
+        e = e + ul.LOG_COLOR_END
+        text = f"{prefix}file not found ({s}{path}{e})."
+        raise FileNotFoundError(text)
+    @staticmethod
+    def raise_NotFound(target:str,type_name:str="",prefix:str=""):
+        s = ""
+        s = s + ul.LOG_COLOR_RED
+        s = s + ul.LOG_BOLD
+        e = ""
+        e = e + ul.LOG_COLOR_END
+        text = f"{prefix}{type_name}({s}{target}{e}) not found."
+        raise Exception(text)
+    @staticmethod
+    def raise_ValueRange(value,min=None,max=None,prefix:str=""):
+        s = ""
+        s = s + ul.LOG_COLOR_RED
+        s = s + ul.LOG_BOLD
+        e = ""
+        e = e + ul.LOG_COLOR_END
+        if min != None:
+            if max != None:
+                text = f"{prefix}value is over.( {min} < {s}{value}{e} < {max} )."
+                raise ValueError(text)
+            else:
+                text = f"{prefix}value is over.( {min} < {s}{value}{e} )."
+                raise ValueError(text)
+        else:
+            if max != None:
+                text = f"{prefix}value is over.( {s}{value}{e} < {max} )."
+                raise ValueError(text)
+            else:
+                text = f"{prefix}min and max is None.( {s}min : {min} / max : {max}{e} )."
+                raise ValueError(text)
+
     @staticmethod
     def get_caller_file_name():
         return inspect.currentframe().f_back.f_back.f_code.co_filename
@@ -171,6 +251,13 @@ class ul:
     @staticmethod
     def gen_uuid_lower()->str:
         return uuid.uuid4().hex.lower()
+
+    #------------------------------------------------------------------------
+    # DICT
+    #------------------------------------------------------------------------
+    def get_max_dict_key_len(src:dict)->int:
+        res = max([len(key) for key in src.keys()])
+        return res
 
     #========================================================================
     #
