@@ -53,18 +53,28 @@ class ul:
             res = True
         return res
 
-    LOG_COLOR_BLACK   = "\033[30m" # 標準出力の文字色を黒にする文字列
-    LOG_COLOR_RED     = "\033[31m" # 標準出力の文字色を赤にする文字列
-    LOG_COLOR_GREEN   = "\033[32m" # 標準出力の文字色を緑にする文字列
-    LOG_COLOR_YELLOW  = "\033[33m" # 標準出力の文字色を黄にする文字列
-    LOG_COLOR_BLUE    = "\033[34m" # 標準出力の文字色を青にする文字列
-    LOG_COLOR_MAGENTA = "\033[35m" # 標準出力の文字色をマゼンタにする文字列
-    LOG_COLOR_CYAN    = "\033[36m" # 標準出力の文字色をシアンにする文字列
-    LOG_COLOR_WHITE   = "\033[37m" # 標準出力の文字色を白にする文字列
-    LOG_COLOR_END     = "\033[0m"  # 標準出力の文字色・装飾を終了する文字列
-    LOG_COLOR_REVERSE = "\033[7m"  # 標準出力の文字色・背景色を反転させる文字列
-    LOG_BOLD          = "\033[1m"  # 標準出力の文字を太字にする文字列
-    LOG_UNDER_LINE    = "\033[4m"  # 標準出力の文字に下線を付ける文字列
+    LOG_COLOR_BLACK      = "\033[30m" # 標準出力の文字色を黒にする文字列
+    LOG_COLOR_RED        = "\033[31m" # 標準出力の文字色を赤にする文字列
+    LOG_COLOR_GREEN      = "\033[32m" # 標準出力の文字色を緑にする文字列
+    LOG_COLOR_YELLOW     = "\033[33m" # 標準出力の文字色を黄にする文字列
+    LOG_COLOR_BLUE       = "\033[34m" # 標準出力の文字色を青にする文字列
+    LOG_COLOR_MAGENTA    = "\033[35m" # 標準出力の文字色をマゼンタにする文字列
+    LOG_COLOR_CYAN       = "\033[36m" # 標準出力の文字色をシアンにする文字列
+    LOG_COLOR_WHITE      = "\033[37m" # 標準出力の文字色を白にする文字列
+
+    LOG_BG_COLOR_BLACK   = "\033[40m" # 標準出力の文字色を黒にする文字列
+    LOG_BG_COLOR_RED     = "\033[41m" # 標準出力の文字色を赤にする文字列
+    LOG_BG_COLOR_GREEN   = "\033[42m" # 標準出力の文字色を緑にする文字列
+    LOG_BG_COLOR_YELLOW  = "\033[43m" # 標準出力の文字色を黄にする文字列
+    LOG_BG_COLOR_BLUE    = "\033[44m" # 標準出力の文字色を青にする文字列
+    LOG_BG_COLOR_MAGENTA = "\033[45m" # 標準出力の文字色をマゼンタにする文字列
+    LOG_BG_COLOR_CYAN    = "\033[46m" # 標準出力の文字色をシアンにする文字列
+    LOG_BG_COLOR_WHITE   = "\033[47m" # 標準出力の文字色を白にする文字列
+
+    LOG_END              = "\033[0m"  # 標準出力の文字色・装飾を終了する文字列
+    LOG_COLOR_REVERSE    = "\033[7m"  # 標準出力の文字色・背景色を反転させる文字列
+    LOG_BOLD             = "\033[1m"  # 標準出力の文字を太字にする文字列
+    LOG_UNDER_LINE       = "\033[4m"  # 標準出力の文字に下線を付ける文字列
 
     @staticmethod
     def log_enable(prefix="python",cfg=None):
@@ -119,9 +129,8 @@ class ul:
     def log_debug(text:str,name:str=__name__):
         s = ""
         s = s + ul.LOG_COLOR_CYAN
-        s = s + ul.LOG_COLOR_REVERSE
         e = ""
-        e = e + ul.LOG_COLOR_END
+        e = e + ul.LOG_END
         text = f"{s}{text}{e}"
         log = logging.getLogger(name)
         log.debug(text)
@@ -134,7 +143,7 @@ class ul:
         s = ""
         s = s + ul.LOG_COLOR_YELLOW
         e = ""
-        e = e + ul.LOG_COLOR_END
+        e = e + ul.LOG_END
         text = f"{s}{text}{e}"
         log = logging.getLogger(name)
         log.warning(text)
@@ -144,17 +153,20 @@ class ul:
         s = s + ul.LOG_COLOR_RED
         s = s + ul.LOG_BOLD
         e = ""
-        e = e + ul.LOG_COLOR_END
+        e = e + ul.LOG_END
         text = f"{s}{text}{e}"
         log = logging.getLogger(name)
         log.critical(text)
+    @staticmethod
+    def log_std(text:str):
+        print(text)
     @staticmethod
     def raise_Exception(text:str,prefix:str=""):
         s = ""
         s = s + ul.LOG_COLOR_RED
         s = s + ul.LOG_BOLD
         e = ""
-        e = e + ul.LOG_COLOR_END
+        e = e + ul.LOG_END
         text = f"{prefix}{s}{text}{e}"
         raise Exception(text)
     @staticmethod
@@ -163,7 +175,7 @@ class ul:
         s = s + ul.LOG_COLOR_RED
         s = s + ul.LOG_BOLD
         e = ""
-        e = e + ul.LOG_COLOR_END
+        e = e + ul.LOG_END
         text = f"{prefix}file not found ({s}{path}{e})."
         raise FileNotFoundError(text)
     @staticmethod
@@ -172,7 +184,7 @@ class ul:
         s = s + ul.LOG_COLOR_RED
         s = s + ul.LOG_BOLD
         e = ""
-        e = e + ul.LOG_COLOR_END
+        e = e + ul.LOG_END
         text = f"{prefix}{type_name}({s}{target}{e}) not found."
         raise Exception(text)
     @staticmethod
@@ -181,7 +193,7 @@ class ul:
         s = s + ul.LOG_COLOR_RED
         s = s + ul.LOG_BOLD
         e = ""
-        e = e + ul.LOG_COLOR_END
+        e = e + ul.LOG_END
         if min != None:
             if max != None:
                 text = f"{prefix}value is over.( {min} < {s}{value}{e} < {max} )."
@@ -196,7 +208,6 @@ class ul:
             else:
                 text = f"{prefix}min and max is None.( {s}min : {min} / max : {max}{e} )."
                 raise ValueError(text)
-
     @staticmethod
     def get_caller_file_name():
         return inspect.currentframe().f_back.f_back.f_code.co_filename
@@ -258,32 +269,26 @@ class ul:
     def get_max_dict_key_len(src:dict)->int:
         res = max([len(key) for key in src.keys()])
         return res
-
     #========================================================================
     #
     # PROCESS AND ENVIRONMENT
     #
     #========================================================================
-
     @staticmethod
     def get_start_params()->list[str]:
         return sys.argv
-
     @staticmethod
     def get_env_vars()->dict:
         return dict(os.environ)
-    
     @staticmethod
     def start_proc(params:list[str])->subprocess.CompletedProcess[bytes]:
         cp = subprocess.run(params)
         return cp
-
     #========================================================================
     #
     # FILE CONTROL
     #
     #========================================================================
-
     #------------------------------------------------------------------------
     # FILE/DIRECTORY/PATH
     #------------------------------------------------------------------------
@@ -1108,24 +1113,20 @@ class ul:
 
         def __init__(self,cfg={"py":TYPE_TXT}) -> None:
             self.args_cfg = cfg
-
             try:
                 self.path_list = ul.load_path()
             except:
                 pass
-
             self.env_id = ul.get_env_id()
             self.path_names = self.path_list.get(self.env_id,{})
-
         def __display_head(self):
             pf = self.prefix
-            ul.log_debug(f"{pf}---------------------------------------------------")
-            ul.log_debug(f"{pf}{self.args[0]}")
-            ul.log_debug(f"{pf}---------------------------------------------------")
-            ul.log_debug(f"{pf}cur_dir  : {os.getcwd()}")
-            ul.log_debug(f"{pf}sys.argv : {self.args}")
-            ul.log_debug(f"{pf}args_cfg : {self.args_cfg}")
-
+            ul.log_debug(f"---------------------------------------------------")
+            ul.log_debug(f"{self.args[0]}")
+            ul.log_debug(f"---------------------------------------------------")
+            ul.log_debug(f"cur_dir  : {os.getcwd()}")
+            ul.log_debug(f"sys.argv : {self.args}")
+            ul.log_debug(f"args_cfg : {self.args_cfg}")
         def __set_params(self):
             pf = self.prefix
             ptn = re.compile("^-(?P<key>[a-zA-Z][0-9a-zA-Z_]*):(?P<value>.*)$")
@@ -1144,9 +1145,7 @@ class ul:
                     self.params[k]=v
                     ul.log_debug( f"{pf}{k.ljust(key_max)} : {v}")
             self.params["vscode_debug"]=ul.is_vscode_debug()
-
         def __set_args_value(self):
-
             for cfg_key,cfg_val in self.args_cfg.items():
                 cfg_type = cfg_val.get("type","")
                 prm_val  = self.params[cfg_key]
@@ -1160,15 +1159,13 @@ class ul:
                         if prm_val in self.path_names.keys():
                             self.params[cfg_key] = self.path_names[prm_val]
                         else:
-                            raise Exception(f"(起動引数({cfg_key})で指定されたパス名({prm_val})は存在しません。")
+                            ul.raise_Exception(f"起動引数({cfg_key})で指定されたパス名({prm_val})は存在しません。")
                     case _:
                         pass
-
             return
-
         def start(self,name,func,args:list=sys.argv):
             if ul.is_vscode_debug():
-                ul.log_enable()
+                ul.log_enable(prefix=ul.get_file_name_ext(args[0]))
             if name == "__main__":
                 self.prefix = f"{name} > "
                 self.args = args
@@ -1176,12 +1173,9 @@ class ul:
                 self.__set_params()
                 self.__set_args_value()
                 func(**self.params)
-
-
         @staticmethod
-        def __gen_txt(self,py:str, src_path:str,temp_path:str,dest_path:str, vscode_debug:bool):
-            if vscode_debug:
-                ul.log_enable()
+        def __gen_txt(py:str, src_path:str,temp_path:str,dest_path:str, vscode_debug:bool):
+            ul.cmd_app.__debug_on(py,vscode_debug)
 
             src_data = {}
             if src_path != "":
@@ -1191,10 +1185,30 @@ class ul:
 
             ul.save_text(dest_path,dest_text)
             return
+        @staticmethod
+        def __gen_txt_name(py:str, src_name:str,temp_name:str,dest_name:str, vscode_debug:bool):
+            ul.cmd_app.__gen_txt(py,src_name,temp_name,dest_name,vscode_debug)
 
         @staticmethod
-        def __gen_txt_name(self,py:str, src_name:str,temp_name:str,dest_name:str, vscode_debug:bool):
-            ul.cmd_app.__gen_txt(py,src_name,temp_name,dest_name,vscode_debug)
+        def __md2html(py:str, src_md_path:str,src_cfg_path:str,src_tmp_path:str, dest_path:str, vscode_debug:bool):
+            ul.cmd_app.__debug_on(py,vscode_debug)
+            src_md_text  = ul.load_text(src_md_path)
+            src_cfg_data = ul.load_yaml(src_cfg_path)
+            html_text = ul.cnv_markdown_to_html(src_md_text)
+            cfg_data = dict()
+            cfg_data["cfg"]=src_cfg_data
+            cfg_data["contents"]=html_text
+            dst_text = ul.cnv_template_to_text(cfg_data,src_tmp_path)
+            ul.save_text(dest_path,dst_text)
+        def __md2html_name(py:str, src_md_name:str,src_cfg_name:str,src_tmp_name:str, dest_name:str, vscode_debug:bool):
+            ul.cmd_app.__md2html_name(
+                py, src_md_name, src_cfg_name, src_tmp_name, dest_name, vscode_debug
+            )
+
+        def __debug_on(py:str,vscode_debug:bool):
+            if vscode_debug:
+                ul.log_enable(prefix=ul.get_file_name_ext(py))
+
 
         @staticmethod
         def start_ex(name:str,app_type:str):
@@ -1228,13 +1242,31 @@ class ul:
                 case "gen_txt(name)":
                     app.args_cfg={
                         "py"        : ul.cmd_app.TYPE_TXT,
-                        "src_name"  : {"type":"text"},
-                        "temp_name" : {"type":"text"},
-                        "dest_name" : {"type":"text"}
+                        "src_name"  : ul.cmd_app.TYPE_PATH_NAME,
+                        "temp_name" : ul.cmd_app.TYPE_PATH_NAME,
+                        "dest_name" : ul.cmd_app.TYPE_PATH_NAME
                     }
                     app.start(name,ul.cmd_app.__gen_txt_name)
+                case "md2html(path)":
+                    app.args_cfg={
+                        "py"           : ul.cmd_app.TYPE_TXT,
+                        "src_md_path"  : ul.cmd_app.TYPE_TXT,
+                        "src_cfg_path" : ul.cmd_app.TYPE_TXT,
+                        "src_tmp_path" : ul.cmd_app.TYPE_TXT,
+                        "dest_path"    : ul.cmd_app.TYPE_TXT
+                    }
+                    app.start(name,ul.cmd_app.__md2html)
+                case "md2html(name)":
+                    app.args_cfg={
+                        "py"           : ul.cmd_app.TYPE_TXT,
+                        "src_md_path"  : ul.cmd_app.TYPE_PATH_NAME,
+                        "src_cfg_path" : ul.cmd_app.TYPE_PATH_NAME,
+                        "src_tmp_path" : ul.cmd_app.TYPE_PATH_NAME,
+                        "dest_path"    : ul.cmd_app.TYPE_PATH_NAME
+                    }
+                    app.start(name,ul.cmd_app.__md2html_name)
                 case _:
-                    raise Exception(f"未対応のapp_type({app_type})が指定されました。")
+                    ul.raise_Exception(f"未対応のapp_type({app_type})が指定されました。")
 
     #------------------------------------------------------------------------
     # PATH CONTROL
@@ -1251,7 +1283,6 @@ class ul:
         dest[id]=dest_id
         path = ul.get_path_list_path()
         ul.save_json(path,dest)
-
     def load_path()->dict:
         path = ul.get_path_list_path()
         ul.log_debug(f"{ul.get_caller_function_name()} : path : {path}")
