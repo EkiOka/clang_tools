@@ -1,2 +1,5 @@
 00_fix/lib/__pycache__/
 00_fix/lib/doxygen_compound/__pycache__/
+10_base/template/notes/mermaid.min.js
+20_user/
+50_out_tmp/

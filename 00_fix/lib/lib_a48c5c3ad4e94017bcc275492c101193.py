@@ -850,7 +850,7 @@ class ul:
     @staticmethod
     def cnv_markdown_to_html(src:str, include_base_path=".")->str:
         md = markdown.Markdown(extensions=[
-            ul.__md_extension(),
+            ul.Z__md_extension(),
             "admonition",
             "tables",
             "toc",
@@ -863,7 +863,7 @@ class ul:
             )
         res = md.convert(src)
         return res
-    class __md_preprocessor(markdown.preprocessors.Preprocessor):
+    class Z__md_preprocessor(markdown.preprocessors.Preprocessor):
 
         has_mermaid = False
 
@@ -921,15 +921,12 @@ class ul:
 
         def run(self, lines):
             result_lines = self.run_lines(lines)
-            if self.has_mermaid:
-                result_lines.append("")
-                result_lines.append("<script>mermaid.initialize({startOnLoad:true});</script>")
-                result_lines.append("")
             return result_lines
-    class __md_extension(markdown.Extension):
-        def extendMarkdown(self, md, md_globals=None):
+    class Z__md_extension(markdown.Extension):
+        def extendMarkdown(self, md:markdown.core.Markdown, md_globals=None):
             """ add extension instance. """
-            md.preprocessors.register(ul.__md_preprocessor(md), 'my_pre_proc', 35)
+            pp =ul.Z__md_preprocessor(md)
+            md.preprocessors.register(pp, 'my_pre_proc', 35)
             md.registerExtension(self)
 
         def makeExtension(**kwargs):
@@ -941,35 +938,42 @@ class ul:
     def cnv_template_to_text(data:dict,template_path:str)->str:
 
         cur = os.getcwd()
-        tmp_dir = os.path.dirname(template_path)
-        os.chdir(tmp_dir)
+        tmp_abs_path = os.path.abspath(template_path)
+        tmp_dir = os.path.dirname(tmp_abs_path)
         tmp_file = os.path.basename(template_path)
+        tmp_file = tmp_file.replace("\\","/")
+        tmp_dir = tmp_dir.replace("\\","/")
+        tmp_abs_path = tmp_abs_path.replace("\\","/")
+        tmp_file_name = os.path.basename(tmp_abs_path)
+        os.chdir(tmp_dir)
 
         loader         = jinja2.FileSystemLoader( searchpath=tmp_dir, encoding='utf-8')
         environment    = jinja2.Environment(loader=loader)
         environment.filters["debug"]=ul.log_debug
 
         temp_data = dict()
-        temp_data["4d22a990e03e4ff0b66061daa1674a0d"]=dict(os.environ)
-        temp_data["root"]=data
+        temp_data["data_4d22a990e03e4ff0b66061daa1674a0d"]=dict(os.environ)
+        temp_data.update(data)
 
         try:
-            template  = environment.get_template(name=tmp_file)
+            template  = environment.get_template(name=tmp_file_name)
             out_text  = template.render(temp_data)
         except jinja2.exceptions.UndefinedError as e:
-            ul.log_debug( f"テンプレートへ入力しているデータをダンプします。")
-            ul.log_debug(temp_data)
-            ul.log_debug(traceback.format_exc())
-            ul.log_debug(e)
+            ul.log_std( f"テンプレートへ入力しているデータをダンプします。")
+            ul.log_std(temp_data)
+            ul.log_std(traceback.format_exc())
+            ul.log_std(e)
+            os.chdir(cur)
             sys.exit(1)
         except jinja2.exceptions.TemplateNotFound as e:
-            ul.log_debug(traceback.format_exc())
-            ul.log_debug(e)
-            ul.log_debug( f"template_path : {template_path}")
-            ul.log_debug( f"tmp_dir       : {tmp_dir}")
-            ul.log_debug( f"tmp_file      : {tmp_file}")
-            ul.log_debug( f"cur           : {cur} -> {os.getcwd()}")
-            ul.log_debug( f"raise ファイル「{e}」が見つかりませんでした。")
+            ul.log_std(traceback.format_exc())
+            ul.log_std(e)
+            ul.log_std( f"template_path : {template_path}")
+            ul.log_std( f"tmp_dir       : {tmp_dir}")
+            ul.log_std( f"tmp_file      : {tmp_file}")
+            ul.log_std( f"cur           : {cur} -> {os.getcwd()}")
+            ul.log_std( f"raise ファイル「{e}」が見つかりませんでした。")
+            os.chdir(cur)
             sys.exit(1)
 
         os.chdir(cur)
@@ -1086,13 +1090,11 @@ class ul:
         else:
             ws.cell(row=row, column=column,value=value)
         return
-
     #========================================================================
     #
     # FRAMEWORK
     #
     #========================================================================
-
     #------------------------------------------------------------------------
     # COMMAND LINE APPLICATION
     #------------------------------------------------------------------------
@@ -1101,6 +1103,13 @@ class ul:
         TYPE_TXT:dict = { "type":"text" }
         TYPE_PATH_NAME:dict = { "type":"path_name" }
         TYPE_PATH_LIST:dict = { "type":"path_list" }
+
+        EX_TYPE_GEN_TXT_PATH ="gen_txt(path)"
+        EX_TYPE_GEN_TXT_NAME ="gen_txt(name)"
+        EX_TYPE_MD2HTML_PATH ="md2html(path)"
+        EX_TYPE_MD2HTML_NAME ="md2html(path)"
+        EX_TYPE_GEN_FILE_LIST_PATH="gen_file_list(path)"
+        EX_TYPE_GEN_FILE_LIST_NAME="gen_file_list(name)"
 
         args_cfg:dict = { "py":TYPE_TXT }
         prefix:str=""
@@ -1174,6 +1183,78 @@ class ul:
                 self.__set_args_value()
                 func(**self.params)
         @staticmethod
+        def start_ex(name:str,app_type:str,args:list=sys.argv):
+            """定型化されたコマンドラインアプリケーションを開始する。
+
+            Parameters
+            ----------
+            name : str
+                起動元の__name__をセットしてください。
+            app_type : str
+                アプリケーションのタイプをセットしてください。
+
+            Raises
+            ------
+            Exception
+                _description_
+            """
+            app = ul.cmd_app()
+            match app_type:
+                case ul.cmd_app.EX_TYPE_GEN_TXT_PATH:
+                    app.args_cfg={
+                        "py"        : ul.cmd_app.TYPE_TXT,
+                        "src_path"  : ul.cmd_app.TYPE_TXT,
+                        "temp_path" : ul.cmd_app.TYPE_TXT,
+                        "dest_path" : ul.cmd_app.TYPE_TXT
+                    }
+                    app.start(name,ul.cmd_app.__gen_txt,args)
+                case ul.cmd_app.EX_TYPE_GEN_TXT_NAME:
+                    app.args_cfg={
+                        "py"        : ul.cmd_app.TYPE_TXT,
+                        "src_name"  : ul.cmd_app.TYPE_PATH_NAME,
+                        "temp_name" : ul.cmd_app.TYPE_PATH_NAME,
+                        "dest_name" : ul.cmd_app.TYPE_PATH_NAME
+                    }
+                    app.start(name,ul.cmd_app.__gen_txt_name,args)
+                case ul.cmd_app.EX_TYPE_MD2HTML_PATH:
+                    app.args_cfg={
+                        "py"           : ul.cmd_app.TYPE_TXT,
+                        "src_md_path"  : ul.cmd_app.TYPE_TXT,
+                        "src_cfg_path" : ul.cmd_app.TYPE_TXT,
+                        "src_tmp_path" : ul.cmd_app.TYPE_TXT,
+                        "dest_path"    : ul.cmd_app.TYPE_TXT
+                    }
+                    app.start(name,ul.cmd_app.__md2html,args)
+                case ul.cmd_app.EX_TYPE_MD2HTML_NAME:
+                    app.args_cfg={
+                        "py"           : ul.cmd_app.TYPE_TXT,
+                        "src_md_path"  : ul.cmd_app.TYPE_PATH_NAME,
+                        "src_cfg_path" : ul.cmd_app.TYPE_PATH_NAME,
+                        "src_tmp_path" : ul.cmd_app.TYPE_PATH_NAME,
+                        "dest_path"    : ul.cmd_app.TYPE_PATH_NAME
+                    }
+                    app.start(name,ul.cmd_app.__md2html_name,args)
+                case ul.cmd_app.EX_TYPE_GEN_FILE_LIST_PATH:
+                    app.args_cfg={
+                        "py"            : ul.cmd_app.TYPE_TXT,
+                        "src_ena_masks"  : ul.cmd_app.TYPE_TXT,
+                        "src_dis_masks" : ul.cmd_app.TYPE_TXT,
+                        "dest_path"     : ul.cmd_app.TYPE_TXT
+                    }
+                    app.start(name,ul.cmd_app.__gen_file_list,args)
+
+                case _:
+                    ul.raise_Exception(f"未対応のapp_type({app_type})が指定されました。")
+        @staticmethod
+        def __gen_file_list(py:str, src_ena_masks:str, src_dis_masks:str, dest_path:str, vscode_debug:bool):
+            ul.cmd_app.__debug_on(py,vscode_debug)
+            enable_masks = src_ena_masks.split(os.pathsep)
+            disable_masks = src_dis_masks.split(os.pathsep)
+            paths = ul.get_path_list(enable_masks,disable_masks)
+            ul.save_yaml(dest_path,paths)
+            return
+        
+        @staticmethod
         def __gen_txt(py:str, src_path:str,temp_path:str,dest_path:str, vscode_debug:bool):
             ul.cmd_app.__debug_on(py,vscode_debug)
 
@@ -1188,86 +1269,35 @@ class ul:
         @staticmethod
         def __gen_txt_name(py:str, src_name:str,temp_name:str,dest_name:str, vscode_debug:bool):
             ul.cmd_app.__gen_txt(py,src_name,temp_name,dest_name,vscode_debug)
-
         @staticmethod
         def __md2html(py:str, src_md_path:str,src_cfg_path:str,src_tmp_path:str, dest_path:str, vscode_debug:bool):
             ul.cmd_app.__debug_on(py,vscode_debug)
             src_md_text  = ul.load_text(src_md_path)
+            src_md_dir   = ul.cnv_dir_path(src_md_path)
+            src_yml_name = ul.cnv_file_name_none_ext(src_md_path)+".yml"
+            src_yml_path = f"{src_md_dir}\\{src_yml_name}"
+            src_yaml_data = dict()
+            try:
+                src_yaml_data = ul.load_yaml(src_yml_path)
+            except:
+                src_yaml_data = dict()
             src_cfg_data = ul.load_yaml(src_cfg_path)
             html_text = ul.cnv_markdown_to_html(src_md_text)
             cfg_data = dict()
-            cfg_data["cfg"]=src_cfg_data
-            cfg_data["contents"]=html_text
+            cfg_data["data_0ad5e680ae104f759b7452632d6f6380"]=src_cfg_data
+            cfg_data["data_5748645e84d54977b42c83f3b9527a3b"]=html_text
+            cfg_data["data_e92b12a896bb4e8dbdef1c83ab77e025"]=src_yaml_data
             dst_text = ul.cnv_template_to_text(cfg_data,src_tmp_path)
             ul.save_text(dest_path,dst_text)
+        @staticmethod
         def __md2html_name(py:str, src_md_name:str,src_cfg_name:str,src_tmp_name:str, dest_name:str, vscode_debug:bool):
             ul.cmd_app.__md2html_name(
                 py, src_md_name, src_cfg_name, src_tmp_name, dest_name, vscode_debug
             )
-
+        @staticmethod
         def __debug_on(py:str,vscode_debug:bool):
             if vscode_debug:
                 ul.log_enable(prefix=ul.get_file_name_ext(py))
-
-
-        @staticmethod
-        def start_ex(name:str,app_type:str):
-            """定型化されたコマンドラインアプリケーションを開始する。
-
-            Parameters
-            ----------
-            name : str
-                起動元の__name__をセットしてください。
-            app_type : str
-                アプリケーションのタイプをセットしてください。
-                現在指定できるのは下記となります。
-                gen_txt(path) : パス指定でYAMLデータファイルとテンプレートファイルからテキストを生成する
-                gen_txt(name) : パスリストファイルのパス名でYAMLデータファイルとテンプレートファイルからテキストを生成する
-
-            Raises
-            ------
-            Exception
-                _description_
-            """
-            app = ul.cmd_app()
-            match app_type:
-                case "gen_txt(path)":
-                    app.args_cfg={
-                        "py"        : ul.cmd_app.TYPE_TXT,
-                        "src_path"  : ul.cmd_app.TYPE_TXT,
-                        "temp_path" : ul.cmd_app.TYPE_TXT,
-                        "dest_path" : ul.cmd_app.TYPE_TXT
-                    }
-                    app.start(name,ul.cmd_app.__gen_txt)
-                case "gen_txt(name)":
-                    app.args_cfg={
-                        "py"        : ul.cmd_app.TYPE_TXT,
-                        "src_name"  : ul.cmd_app.TYPE_PATH_NAME,
-                        "temp_name" : ul.cmd_app.TYPE_PATH_NAME,
-                        "dest_name" : ul.cmd_app.TYPE_PATH_NAME
-                    }
-                    app.start(name,ul.cmd_app.__gen_txt_name)
-                case "md2html(path)":
-                    app.args_cfg={
-                        "py"           : ul.cmd_app.TYPE_TXT,
-                        "src_md_path"  : ul.cmd_app.TYPE_TXT,
-                        "src_cfg_path" : ul.cmd_app.TYPE_TXT,
-                        "src_tmp_path" : ul.cmd_app.TYPE_TXT,
-                        "dest_path"    : ul.cmd_app.TYPE_TXT
-                    }
-                    app.start(name,ul.cmd_app.__md2html)
-                case "md2html(name)":
-                    app.args_cfg={
-                        "py"           : ul.cmd_app.TYPE_TXT,
-                        "src_md_path"  : ul.cmd_app.TYPE_PATH_NAME,
-                        "src_cfg_path" : ul.cmd_app.TYPE_PATH_NAME,
-                        "src_tmp_path" : ul.cmd_app.TYPE_PATH_NAME,
-                        "dest_path"    : ul.cmd_app.TYPE_PATH_NAME
-                    }
-                    app.start(name,ul.cmd_app.__md2html_name)
-                case _:
-                    ul.raise_Exception(f"未対応のapp_type({app_type})が指定されました。")
-
     #------------------------------------------------------------------------
     # PATH CONTROL
     #------------------------------------------------------------------------

@@ -1,0 +1,32 @@
+{#- start of defines -#}
+{%- set data_env      = data_4d22a990e03e4ff0b66061daa1674a0d -%}
+{%- set data_cfg      = data_0ad5e680ae104f759b7452632d6f6380 -%}
+{%- set data_contents = data_5748645e84d54977b42c83f3b9527a3b -%}
+{%- set data_src_ex   = data_e92b12a896bb4e8dbdef1c83ab77e025 -%}
+{#- end of defines -#}
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<html lang="ja">
+<head>
+    <title>{{ data_src_ex.title }}</title>
+    <script type="application/json" id="json-data">
+        {{ data_cfg | tojson }}
+    </script>
+    <style>{%- include "mermaid.css" -%}</style>
+    <style>{%- include "markdown.css" -%}</style>
+    <script type="text/javascript">{%- include "mermaid.min.js" -%}</script>
+    <script type="text/javascript">
+        function loadFinished(){
+            var elem = document.getElementById("json-data");
+            var data = JSON.parse(elem.textContent);
+
+            mermaid.initialize({startOnLoad:true});
+        }
+        window.addEventListener('load', loadFinished);
+    </script>
+</head>
+<body>
+    {{data_contents}}
+</body>
+</html>
