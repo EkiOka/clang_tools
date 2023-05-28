@@ -10,20 +10,21 @@ import shutil
 import glob
 import json
 import codecs
-import tkinter
+#import tkinter
 import logging
 import logging.config
 import traceback
 import re
 import string
 import inspect
-import platform
-import xml.etree.ElementTree as ET
+#import platform
+#import xml.etree.ElementTree as ET
 import subprocess
+import time
 
 # import pip install library                                  python -m pip install --upgrade pip
 import jinja2                                               # pip install jinja2
-import openpyxl                                             # pip install openpyxl
+#import openpyxl                                             # pip install openpyxl
 import markdown                                             # pip install markdown
 from markdown_include.include import MarkdownInclude        # pip install markdown-include
 from markdown_checklist.extension import ChecklistExtension # pip install markdown-checklist
@@ -34,7 +35,6 @@ import yaml                                                 # pip install pyyaml
 class ul:
     """use case library
     """
-
     #------------------------------------------------------------------------
     # COMMON
     #------------------------------------------------------------------------
@@ -52,7 +52,6 @@ class ul:
         if "debugpy" in sys.modules:
             res = True
         return res
-
     LOG_COLOR_BLACK      = "\033[30m" # 標準出力の文字色を黒にする文字列
     LOG_COLOR_RED        = "\033[31m" # 標準出力の文字色を赤にする文字列
     LOG_COLOR_GREEN      = "\033[32m" # 標準出力の文字色を緑にする文字列
@@ -61,7 +60,6 @@ class ul:
     LOG_COLOR_MAGENTA    = "\033[35m" # 標準出力の文字色をマゼンタにする文字列
     LOG_COLOR_CYAN       = "\033[36m" # 標準出力の文字色をシアンにする文字列
     LOG_COLOR_WHITE      = "\033[37m" # 標準出力の文字色を白にする文字列
-
     LOG_BG_COLOR_BLACK   = "\033[40m" # 標準出力の文字色を黒にする文字列
     LOG_BG_COLOR_RED     = "\033[41m" # 標準出力の文字色を赤にする文字列
     LOG_BG_COLOR_GREEN   = "\033[42m" # 標準出力の文字色を緑にする文字列
@@ -70,12 +68,10 @@ class ul:
     LOG_BG_COLOR_MAGENTA = "\033[45m" # 標準出力の文字色をマゼンタにする文字列
     LOG_BG_COLOR_CYAN    = "\033[46m" # 標準出力の文字色をシアンにする文字列
     LOG_BG_COLOR_WHITE   = "\033[47m" # 標準出力の文字色を白にする文字列
-
     LOG_END              = "\033[0m"  # 標準出力の文字色・装飾を終了する文字列
     LOG_COLOR_REVERSE    = "\033[7m"  # 標準出力の文字色・背景色を反転させる文字列
     LOG_BOLD             = "\033[1m"  # 標準出力の文字を太字にする文字列
     LOG_UNDER_LINE       = "\033[4m"  # 標準出力の文字に下線を付ける文字列
-
     @staticmethod
     def log_enable(prefix="python",cfg=None):
         if cfg == None:            
@@ -125,6 +121,22 @@ class ul:
             }
 
         logging.config.dictConfig(cfg)
+    @staticmethod
+    def log_perf_start()->float:
+        """パフォーマンスの測定を開始します。精度は大まかなものなので期待しないでください
+        """
+        perf_start = time.process_time()
+        ul.log_info( f"timestamp : start : {perf_start} s")
+        return perf_start
+    @staticmethod
+    def log_perf_end(name:str,perf_start:float):
+        """パフォーマンスの測定を終了し、定型文を出力します。精度は大まかなものなので期待しないでください
+        """
+        perf_end = time.process_time()
+        perf = perf_end-perf_start
+        ul.log_info( f"timestamp : end : {perf_end} s")
+        ul.log_info( f"performance : {name} : {perf} s")
+        return
     @staticmethod
     def log_debug(text:str,name:str=__name__):
         s = ""
@@ -284,6 +296,89 @@ class ul:
     def start_proc(params:list[str])->subprocess.CompletedProcess[bytes]:
         cp = subprocess.run(params)
         return cp
+    #------------------------------------------------------------------------
+    # DATETIME
+    #------------------------------------------------------------------------
+    @staticmethod
+    def get_now():
+        """現在の日時をdict形式で取得します
+        """
+        return ul.cnv_datetime_to_dict(datetime.datetime.now())
+    @staticmethod
+    def cnv_datetime_to_dict(src:datetime):
+        res = dict()
+        res["YYYYMMDDHHMMSS"] = src.strftime("%Y%m%d%H%M%S")
+        res["YYYYMMDD"] = src.strftime("%Y%m%d")
+        res["YYYY"] = src.strftime("%Y")
+        res["MM"] = src.strftime("%m")
+        res["DD"] = src.strftime("%d")
+        res["HHMMSS"] = src.strftime("%H%M%S")
+        res["YYYY/MM/DD"] = ul.cnv_datetime_to_YYYYMMDD(src,"/")
+        res["YYYY-MM-DD"] = ul.cnv_datetime_to_YYYYMMDD(src,"-")
+        res["HH:MM:SS"] = src.strftime("%H:%M:%S")
+        res["YYYY/MM/DD HH:MM:SS"] = ul.cnv_datetime_to_YYYYMMDDHHMMSS(src,date_sep="-")
+        res["YYYY-MM-DD HH:MM:SS"] = ul.cnv_datetime_to_YYYYMMDDHHMMSS(src,date_sep="-")
+        res["YYYY年MM月DD日"] = src.strftime("%Y年%m月%d日")
+        res["YYYY年MM月DD日(曜日)"] = src.strftime("%Y年%m月%d日(%A)")
+        res["YYYY年MM月DD日(曜日short)"] = src.strftime("%Y年%m月%d日(%a)")
+        res["曜日"]=src.strftime("%A")
+        res["曜日short"]=src.strftime("%a")
+        return res
+    @staticmethod
+    def cnv_datetime_to_YYYYMMDD(src:datetime, sep="/"):
+        res = src.strftime(f"%Y{sep}%m{sep}%d")
+        return res
+    @staticmethod
+    def cnv_datetime_to_YYYYMMDDHHMMSS(src:datetime, date_sep:str="/",time_sep:str=":", date_time_sep:str=" "):
+        res = src.strftime(f"%Y{date_sep}%m{date_sep}%d{date_time_sep}%H{time_sep}%M{time_sep}%S")
+        return res
+    @staticmethod
+    def cnv_datetime_to_HHMMSS(src:datetime, sep=":"):
+        res = src.strftime(f"%H{sep}%M{sep}%S")
+        return res
+    @staticmethod
+    def cnv_str_to_datetime(src:str, format:str="%Y/%m/%d %H:%M:%S"):
+        """文字列をdatetimeに変換します
+        """
+        res = datetime.datetime.strptime(src, format)
+        return res
+    @staticmethod
+    def cnv_datetime_to_serial( src ):
+        """datetimeをシリアル値に変換します
+        """
+        zero_day = datetime.datetime(1899,12,31)
+        irregular_next = datetime.datetime(1900,3,1)
+        res = (src - zero_day).days
+        if src >= irregular_next:
+            res = res + 1
+        return res
+    @staticmethod
+    def add_days(src,value):
+        """datetimeに指定の日数を加算または減算します
+        """
+        td = datetime.timedelta(days=value)
+        return (src + td)
+    @staticmethod
+    def update_datetime(src:datetime.datetime, year:int=-1,month:int=-1,day:int=-1, hour:int=-1,minute:int=-1,second:int=-1,microsecond:int=-1):
+        """日時の一部を更新して返します
+        """
+        if year == -1:
+            year = src.year
+        if month == -1:
+            month = src.month
+        if day == -1:
+            day = src.day
+        if hour == -1:
+            hour = src.hour
+        if minute == -1:
+            minute = src.minute
+        if second == -1:
+            second = src.second
+        if microsecond == -1:
+            microsecond = src.microsecond
+        res = datetime.datetime(year=year,month=month,day=day,hour=hour,minute=minute,second=second,microsecond=microsecond)
+        return res
+
     #========================================================================
     #
     # FILE CONTROL
@@ -752,7 +847,7 @@ class ul:
         res = True
         for src_file in src_files:
             ul.copy_update_file(src_file)
-            dest_file_name = ul.cnv_file_name_ext(src_file)
+            dest_file_name = ul.cnv_file_name(src_file)
             dest_file_path = os.path.join(dest_dir,dest_file_name)
             res_copy_update_file = ul.copy_update_file(src_file,dest_file_path)
             if not(res_copy_update_file):
@@ -765,10 +860,11 @@ class ul:
         ファイルパスの指定にはマスクは使えません。
         """
         if not(ul.is_exist(src)):
-            raise FileNotFoundError(f'ファイル"{src}"がありません')
-
+            ul.raise_FileNotFound(src)
+                            
         run = False
         if not(ul.is_exist(dest)):
+            ul.log_debug(f"copy_update_file > copy(not exits `{dest}`)")
             ul.copy_file(src,dest)
             run = True
         else:
@@ -776,17 +872,25 @@ class ul:
             dst_size = ul.get_file_size(dest)
 
             if not(src_size==dst_size):
+                ul.log_debug(f"copy_update_file > copy(file size not equal)")
                 ul.copy_file(src,dest)
                 run = True
             else:
-                src_sha  = ul.get_file_sha256(src)   
-                dst_sha  = ul.get_file_sha256(dest)   
-                if not(src_sha==dst_sha):
-                    ul.copy_file(src,dest)
-                    run = True
+                src_time = ul.get_file_update_time(src)
+                dest_time = ul.get_file_update_time(src)
+                if not(src_time==dest_time):
+                    src_sha  = ul.get_file_sha256(src)   
+                    dst_sha  = ul.get_file_sha256(dest)   
+                    if not(src_sha==dst_sha):
+                        ul.log_debug(f"copy_update_file > not copy(SHA equal)")
+                        ul.copy_file(src,dest)
+                        run = True
+                    else:
+                        ul.log_debug(f"copy_update_file > not copy(SHA equal)")
                 else:
-                    # コピーしない(日付のみ変更は考慮外)
-                    pass
+                    src_dt = datetime.datetime.fromtimestamp(src_time)
+                    src_dt_txt = ul.cnv_datetime_to_YYYYMMDDHHMMSS(src_dt,date_sep="-")
+                    ul.log_debug(f"copy_update_file > not copy(timestamp equal {src_dt_txt})")
         return run
     @staticmethod
     def remove_file(path:str):
@@ -980,81 +1084,9 @@ class ul:
 
         return out_text
     #------------------------------------------------------------------------
-    # DATETIME
-    #------------------------------------------------------------------------
-    @staticmethod
-    def get_now():
-        """現在の日時をdict形式で取得します
-        """
-        return ul.cnv_datetime_to_dict(datetime.datetime.now())
-    @staticmethod
-    def cnv_datetime_to_dict(src:datetime):
-        res = dict()
-        res["YYYYMMDDHHMMSS"] = src.strftime("%Y%m%d%H%M%S")
-        res["YYYYMMDD"] = src.strftime("%Y%m%d")
-        res["YYYY"] = src.strftime("%Y")
-        res["MM"] = src.strftime("%m")
-        res["DD"] = src.strftime("%d")
-        res["HHMMSS"] = src.strftime("%H%M%S")
-        res["YYYY/MM/DD"] = ul.cnv_datetime_to_YYYYMMDD(src,"/")
-        res["YYYY-MM-DD"] = ul.cnv_datetime_to_YYYYMMDD(src,"-")
-        res["HH:MM:SS"] = src.strftime("%H:%M:%S")
-        res["YYYY-MM-DD HH:MM:SS"] = src.strftime("%Y-%m-%d %H:%M:%S")
-        res["YYYY年MM月DD日"] = src.strftime("%Y年%m月%d日")
-        res["YYYY年MM月DD日(曜日)"] = src.strftime("%Y年%m月%d日(%A)")
-        res["YYYY年MM月DD日(曜日short)"] = src.strftime("%Y年%m月%d日(%a)")
-        res["曜日"]=src.strftime("%A")
-        res["曜日short"]=src.strftime("%a")
-        return res
-    @staticmethod
-    def cnv_datetime_to_YYYYMMDD(src:datetime, sep="/"):
-        res = src.strftime(f"%Y{sep}%m{sep}%d")
-        return res
-    @staticmethod
-    def cnv_str_to_datetime(src:str, format:str="%Y/%m/%d %H:%M:%S"):
-        """文字列をdatetimeに変換します
-        """
-        res = datetime.datetime.strptime(src, format)
-        return res
-    @staticmethod
-    def cnv_datetime_to_serial( src ):
-        """datetimeをシリアル値に変換します
-        """
-        zero_day = datetime.datetime(1899,12,31)
-        irregular_next = datetime.datetime(1900,3,1)
-        res = (src - zero_day).days
-        if src >= irregular_next:
-            res = res + 1
-        return res
-    @staticmethod
-    def add_days(src,value):
-        """datetimeに指定の日数を加算または減算します
-        """
-        td = datetime.timedelta(days=value)
-        return (src + td)
-    @staticmethod
-    def update_datetime(src:datetime.datetime, year:int=-1,month:int=-1,day:int=-1, hour:int=-1,minute:int=-1,second:int=-1,microsecond:int=-1):
-        """日時の一部を更新して返します
-        """
-        if year == -1:
-            year = src.year
-        if month == -1:
-            month = src.month
-        if day == -1:
-            day = src.day
-        if hour == -1:
-            hour = src.hour
-        if minute == -1:
-            minute = src.minute
-        if second == -1:
-            second = src.second
-        if microsecond == -1:
-            microsecond = src.microsecond
-        res = datetime.datetime(year=year,month=month,day=day,hour=hour,minute=minute,second=second,microsecond=microsecond)
-        return res
-    #------------------------------------------------------------------------
     # XLS
     #------------------------------------------------------------------------
+    """
     @staticmethod
     def load_xl(path:str)->openpyxl.workbook.workbook.Workbook:
         res = openpyxl.load_workbook(path, keep_vba=False)
@@ -1090,6 +1122,7 @@ class ul:
         else:
             ws.cell(row=row, column=column,value=value)
         return
+    """
     #========================================================================
     #
     # FRAMEWORK
@@ -1103,14 +1136,14 @@ class ul:
         TYPE_TXT:dict = { "type":"text" }
         TYPE_PATH_NAME:dict = { "type":"path_name" }
         TYPE_PATH_LIST:dict = { "type":"path_list" }
-
         EX_TYPE_GEN_TXT_PATH ="gen_txt(path)"
         EX_TYPE_GEN_TXT_NAME ="gen_txt(name)"
         EX_TYPE_MD2HTML_PATH ="md2html(path)"
         EX_TYPE_MD2HTML_NAME ="md2html(path)"
         EX_TYPE_GEN_FILE_LIST_PATH="gen_file_list(path)"
         EX_TYPE_GEN_FILE_LIST_NAME="gen_file_list(name)"
-
+        EX_TYPE_UPDATE_COPY_PATH="update_copy(path)"
+        EX_TYPE_UPDATE_COPY_NAME="update_copy(name)"
         args_cfg:dict = { "py":TYPE_TXT }
         prefix:str=""
         args:list[str]=[""]
@@ -1242,9 +1275,42 @@ class ul:
                         "dest_path"     : ul.cmd_app.TYPE_TXT
                     }
                     app.start(name,ul.cmd_app.__gen_file_list,args)
-
+                case ul.cmd_app.EX_TYPE_UPDATE_COPY_PATH:
+                    app.args_cfg={
+                        "py"         : ul.cmd_app.TYPE_TXT,
+                        "src_path"   : ul.cmd_app.TYPE_TXT,
+                        "dest_path"  : ul.cmd_app.TYPE_TXT
+                    }
+                    app.start(name,ul.cmd_app.__update_copy,args)
+                case ul.cmd_app.EX_TYPE_UPDATE_COPY_NAME:
+                    app.args_cfg={
+                        "py"         : ul.cmd_app.TYPE_TXT,
+                        "src_name"   : ul.cmd_app.TYPE_PATH_NAME,
+                        "dest_name"  : ul.cmd_app.TYPE_PATH_NAME
+                    }
+                    app.start(name,ul.cmd_app.__update_copy_name,args)
                 case _:
                     ul.raise_Exception(f"未対応のapp_type({app_type})が指定されました。")
+
+        @staticmethod
+        def __update_copy(py:str, src_path, dest_path:str, vscode_debug:bool):
+            ul.cmd_app.__debug_on(py,vscode_debug)
+            src = []
+            dest_dir = ""
+            if ul.is_dir(dest_path):
+                dest_dir = dest_path
+            else:
+                dest_dir = ul.cnv_dir_path(dest_path)
+            if isinstance(src_path,list):
+                src.extend(src_path)
+            elif isinstance(src_path,str):
+                src.append(src_path)
+            ul.copy_update_files(src,dest_dir)
+            return
+        @staticmethod
+        def __update_copy_name(py:str, src_name, dest_path:str, vscode_debug:bool):
+            ul.cmd_app.__update_copy(py,src_name,dest_path,vscode_debug)
+            return
         @staticmethod
         def __gen_file_list(py:str, src_ena_masks:str, src_dis_masks:str, dest_path:str, vscode_debug:bool):
             ul.cmd_app.__debug_on(py,vscode_debug)
@@ -1253,7 +1319,6 @@ class ul:
             paths = ul.get_path_list(enable_masks,disable_masks)
             ul.save_yaml(dest_path,paths)
             return
-        
         @staticmethod
         def __gen_txt(py:str, src_path:str,temp_path:str,dest_path:str, vscode_debug:bool):
             ul.cmd_app.__debug_on(py,vscode_debug)

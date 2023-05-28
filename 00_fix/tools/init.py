@@ -1,11 +1,10 @@
 from lib_a48c5c3ad4e94017bcc275492c101193 import ul
 
 def initialize(py:str, vscode_debug:bool):
-
     prefix = f"{ul.get_file_name_ext(py)} > "
-
     ul.log_enable(prefix=prefix)
     ul.log_info(f"stat initialize.")
+    perf_start = ul.log_perf_start()
     id = ul.get_env_id()
     if id == ul.id:
         ul.raise_NotFound(
@@ -27,11 +26,13 @@ def initialize(py:str, vscode_debug:bool):
     dest[ "dir_base_cfg"      ] = f"{ws}\\10_base\\cfg"
     dest[ "dir_base_src"      ] = f"{ws}\\10_base\\src"
     dest[ "dir_base_template" ] = f"{ws}\\10_base\\template"
+    dest[ "dir_base_notes"    ] = f"{ws}\\10_base\\notes"
 
     dest[ "dir_user_tools"    ] = f"{ws}\\20_user\\tools"
     dest[ "dir_user_cfg"      ] = f"{ws}\\20_user\\cfg"
     dest[ "dir_user_src"      ] = f"{ws}\\20_user\\src"
     dest[ "dir_user_template" ] = f"{ws}\\20_user\\template"
+    dest[ "dir_user_notes"    ] = f"{ws}\\10_user\\notes"
 
     dest[ "dir_tmp_filelist"  ] = f"{ws}\\50_out_tmp\\filelist"
     dest[ "dir_tmp_dox_mk"    ] = f"{ws}\\50_out_tmp\\doxygen\\mk"
@@ -40,6 +41,7 @@ def initialize(py:str, vscode_debug:bool):
     dest[ "dir_tmp_dox_yml"   ] = f"{ws}\\50_out_tmp\\doxygen\\yml"
 
     dest[ "dir_out_filelist"  ] = f"{ws}\\60_out\\filelist"
+    dest[ "dir_out_notes"     ] = f"{ws}\\60_out\\notes"
     dest[ "dir_out_dox_mk"    ] = f"{ws}\\60_out\\doxygen\\mk"
     dest[ "dir_out_dox_res"   ] = f"{ws}\\60_out\\doxygen\\result"
     dest[ "dir_out_dox_xml"   ] = f"{ws}\\60_out\\doxygen\\xml"
@@ -56,12 +58,17 @@ def initialize(py:str, vscode_debug:bool):
 
     ul.update_path(path_list,id)
 
+    ul.log_perf_end("initialize / update",perf_start)
+    perf_start = ul.log_perf_start()
+
     key_max_len = ul.get_max_dict_key_len(dest)
 
     for k,v in dest.items():
         if k.find("dir_") == 0:
            ul.log_debug(f"key : {k:<{key_max_len}} / value : {v}")
-           ul.make_dir(v)
+           if not(ul.is_exist(v)):
+               ul.make_dir(v)
+    ul.log_perf_end("initialize / make_dirs",perf_start)
     ul.log_info(f"complete initialize.")
 
 app = ul.cmd_app()
