@@ -980,7 +980,10 @@ class ul:
             "fenced_code",
             MarkdownInclude(configs={'base_path':include_base_path}),
             CustomLinkExtension(),
-            ]
+            ],
+            extension_configs={
+                "toc": { "toc_depth": "2-3" }
+            }
             )
         res = md.convert(src)
         return res
