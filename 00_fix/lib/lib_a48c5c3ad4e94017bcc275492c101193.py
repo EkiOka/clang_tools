@@ -122,20 +122,37 @@ class ul:
 
         logging.config.dictConfig(cfg)
     @staticmethod
-    def log_perf_start()->float:
+    def log_perf_start(unit="s")->float:
         """パフォーマンスの測定を開始します。精度は大まかなものなので期待しないでください
         """
-        perf_start = time.process_time()
-        ul.log_info( f"timestamp : start : {perf_start} s")
+        perf_start = time.process_time_ns()
+        unit_per = 1
+        match unit:
+            case "ns": unit_per = 1
+            case "us": unit_per = 1000
+            case "ms": unit_per = 1000 * 1000
+            case "s":  unit_per = 1000 * 1000 * 1000
+            case _:
+                ul.raise_Exception(f"未対応の単位です({unit})")
+
+        ul.log_info( f"timestamp : start : {float(perf_start)/unit_per} {unit}")
         return perf_start
     @staticmethod
-    def log_perf_end(name:str,perf_start:float):
+    def log_perf_end(name:str,perf_start:float,unit="s"):
         """パフォーマンスの測定を終了し、定型文を出力します。精度は大まかなものなので期待しないでください
         """
-        perf_end = time.process_time()
+        perf_end = time.process_time_ns()
         perf = perf_end-perf_start
-        ul.log_info( f"timestamp : end : {perf_end} s")
-        ul.log_info( f"performance : {name} : {perf} s")
+        unit_per = 1
+        match unit:
+            case "ns": unit_per = 1
+            case "us": unit_per = 1000
+            case "ms": unit_per = 1000 * 1000
+            case "s":  unit_per = 1000 * 1000 * 1000
+            case _:
+                ul.raise_Exception(f"未対応の単位です({unit})")
+        ul.log_info( f"timestamp : end : {float(perf_end)/unit_per} {unit}")
+        ul.log_info( f"performance : {name} : {float(perf)/unit_per} {unit}")
         return
     @staticmethod
     def log_debug(text:str,name:str=__name__):
