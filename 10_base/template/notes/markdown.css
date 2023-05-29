@@ -1,9 +1,12 @@
+:root{
+  --label_text_color:black;
+}
 /* ----------------------------------------
     body
  ---------------------------------------- */
 
  body {
-    color: black;
+    color: var(--label_text_color);
     background: #ffe8eaff;
   }
   
@@ -11,13 +14,14 @@
       heading
    ---------------------------------------- */
   h1 {
-    color: black;
+    color: var(--label_text_color);
     background: rgba(203, 162, 164, .5);
     padding-top: 3em;
     line-height: 2em;
     position: relative;
     padding-left: 18px;
     font-size: 22pt;
+    width:calc(3000px - 10vw);
   }
   
   h2 {
@@ -168,4 +172,20 @@
     border-radius: 20px;
     border: 1px dashed rgba(0, 0, 0, 0.50);
   }
+
+    /* ----------------------------------------
+      TOC
+   ---------------------------------------- */
   
+  .toc {
+    position: fixed;
+    top: 0;
+    left: 80%;
+    width: 20%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.90);
+    color: white;
+    border: 1px solid white;
+    border-radius: 7px 7px 7px 7px;
+    overflow:scroll;
+}
