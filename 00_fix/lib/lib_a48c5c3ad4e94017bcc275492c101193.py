@@ -801,10 +801,10 @@ class ul:
         with open(path, mode="w", encoding=encoding) as f:
             f.write(text)
     @staticmethod
-    def save_text_lines(path:str,lines:list[str],encoding:str=default_encoding):
+    def save_text_lines(path:str,lines:list[str],encoding:str=default_encoding,ret_code:str="\n"):
         ul.make_file_dir(path)
         with open(path, mode="w", encoding=encoding) as f:
-            f.writelines(lines)
+            f.writelines([line + ret_code for line in lines])
     @staticmethod
     def load_json(path: str) -> dict:
         text = ul.load_text(path)
