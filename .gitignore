@@ -3,3 +3,8 @@
 10_base/template/notes/mermaid.min.js
 20_user/
 50_out_tmp/
+00_fix/lib/lib_40d60c18793c4117a0e52c0fdadfd4fc/__pycache__/
+00_fix/lib/lib_40d60c18793c4117a0e52c0fdadfd4fc/apps/__pycache__/
+00_fix/lib/lib_40d60c18793c4117a0e52c0fdadfd4fc/apps/md/__pycache__/
+00_fix/lib/lib_40d60c18793c4117a0e52c0fdadfd4fc/apps/ucpy/__pycache__/
+30_test/
