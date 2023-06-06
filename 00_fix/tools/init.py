@@ -32,7 +32,7 @@ def initialize(py:str, vscode_debug:bool):
     dest[ "dir_user_cfg"      ] = f"{ws}\\20_user\\cfg"
     dest[ "dir_user_src"      ] = f"{ws}\\20_user\\src"
     dest[ "dir_user_template" ] = f"{ws}\\20_user\\template"
-    dest[ "dir_user_notes"    ] = f"{ws}\\10_user\\notes"
+    dest[ "dir_user_notes"    ] = f"{ws}\\20_user\\notes"
 
     dest[ "dir_tmp_filelist"  ] = f"{ws}\\50_out_tmp\\filelist"
     dest[ "dir_tmp_dox_mk"    ] = f"{ws}\\50_out_tmp\\doxygen\\mk"
