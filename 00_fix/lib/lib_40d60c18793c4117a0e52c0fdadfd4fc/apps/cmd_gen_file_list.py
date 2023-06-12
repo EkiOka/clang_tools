@@ -1,9 +1,10 @@
 import os
 import sys
 import glob
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps as lib
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_app_basic as cab
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 
-class cmd_gen_file_list(lib.cmd_app):
+class cmd_gen_file_list(cab.cmd_app):
 
     def __globs(s,mask,recursive=True,sep=os.sep):
         res = list()
@@ -15,7 +16,7 @@ class cmd_gen_file_list(lib.cmd_app):
         else:
             g = glob.glob(mask,recursive=recursive)
             res.extend(g)
-        res = [item.replace("\\",sep).replace("/",sep) for item in set(res)]
+        res = [str(item).replace("\\",sep).replace("/",sep) for item in set(res)]
         return res
     def get_files(s,enable_masks:list[str],disable_masks:list[str]=[],recursive=True)->list:
         enables = s.__globs(enable_masks,recursive)
@@ -49,9 +50,8 @@ class cmd_gen_file_list(lib.cmd_app):
         app.start()
 
 def gen_file_list(s:cmd_gen_file_list, src_ena_masks:list,src_dis_masks:list, dest_path:str):
-    u = s.base_cmd_app.utility
     files = s.get_files(src_ena_masks,src_dis_masks)
-    u.save_json(dest_path,files)
+    a.save_json(dest_path,files)
 
 def gen_file_list_name(s:cmd_gen_file_list, src_ena_masks:str,src_dis_masks:str, dest_name:str):
     gen_file_list(s,src_ena_masks,src_dis_masks,dest_name)
