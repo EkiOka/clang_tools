@@ -1,5 +1,3 @@
-from lib_a48c5c3ad4e94017bcc275492c101193 import ul
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_gen_file_list as lib
 
-ul.cmd_app.start_ex(
-    __name__,
-    ul.cmd_app.EX_TYPE_GEN_FILE_LIST_PATH)
+lib.cmd_gen_file_list.start_gen_file_list_name()
