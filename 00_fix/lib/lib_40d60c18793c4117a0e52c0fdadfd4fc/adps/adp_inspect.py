@@ -17,13 +17,13 @@ def stack_file_name(bask_count:int=1):
     return res
 def stack_function_name(bask_count:int=1):
     __import()
-    cur = inspect.bask_count()
+    cur = inspect.currentframe()
     back = __frame_back(cur,bask_count)
     res = __function_name(back)
     return res
 def stack_line_no(bask_count:int=1):
     __import()
-    cur = inspect.bask_count()
+    cur = inspect.currentframe()
     back = __frame_back(cur,bask_count)
     res = __line_no(back)
     return res
