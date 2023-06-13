@@ -27,11 +27,13 @@ def initialize(s:cmd_init):
     dest[ "dir_base_src"      ] = f"{ws}\\10_base\\src"
     dest[ "dir_base_template" ] = f"{ws}\\10_base\\template"
     dest[ "dir_base_notes"    ] = f"{ws}\\10_base\\notes"
+    dest[ "dir_base_cmd"      ] = f"{ws}\\10_base\\cmd"
 
     dest[ "dir_user_cfg"      ] = f"{ws}\\20_user\\cfg"
     dest[ "dir_user_src"      ] = f"{ws}\\20_user\\src"
     dest[ "dir_user_template" ] = f"{ws}\\20_user\\template"
     dest[ "dir_user_notes"    ] = f"{ws}\\20_user\\notes"
+    dest[ "dir_user_cmd"      ] = f"{ws}\\20_user\\cmd"
 
     dest[ "dir_tmp_filelist"  ] = f"{ws}\\50_out_tmp\\filelist"
     dest[ "dir_tmp_dox_mk"    ] = f"{ws}\\50_out_tmp\\doxygen\\mk"
@@ -62,11 +64,13 @@ def initialize(s:cmd_init):
            if isinstance(v,str):
                 a.log_debug(f"key : {k} / value : {v}")
                 if not(a.is_exist(v)):
+                    a.log_std_out(f"make_dir:{v}")
                     a.make_dir(v)
            elif isinstance(v,list):
                for item in v:
                     a.log_debug(f"key : {k} / value : {item}")
                     if not(a.is_exist(item)):
+                        a.log_std_out(f"make_dir:{item}")
                         a.make_dir(item)
     a.log_info(f"complete initialize.")
 
