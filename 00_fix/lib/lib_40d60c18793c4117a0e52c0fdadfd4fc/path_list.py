@@ -11,11 +11,23 @@ EVAR_ENV_ID = "env_id"
 
 def env_id()->str:
     """環境変数ID取得"""
-    return a.environ_variable(EVAR_ENV_ID,"")
+    res = a.environ_variable(EVAR_ENV_ID,"")
+    if res == "":
+        a.raise_NotFound(
+            target=EVAR_ENV_ID,
+            type_name="environment variable")
+
+    return res
 
 def path_list_path()->str:
     """パスリストファイル(JSON)へのパスを取得"""
-    return a.environ_variable(EVAR_NAME_PATH_LIST,"")
+    res = a.environ_variable(EVAR_NAME_PATH_LIST,"")
+    if res == "":
+        a.raise_NotFound(
+            target=EVAR_NAME_PATH_LIST,
+            type_name="environment variable")
+
+    return res
 
 
 def load_path()->dict:
@@ -54,7 +66,7 @@ def path_list(id:str)->dict:
             res = path_list[id]
         else:
             path_list[id]=res
-            a.save_json()
+            save_path(path_list)
     return res
 
 def update_path(src:dict, id:str=env_id)->dict:

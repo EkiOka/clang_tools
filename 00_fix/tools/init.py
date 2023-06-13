@@ -1,34 +1,33 @@
-from lib_a48c5c3ad4e94017bcc275492c101193 import ul
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_app_basic as cab
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list as pl
 
-def initialize(py:str, vscode_debug:bool):
-    prefix = f"{ul.get_file_name_ext(py)} > "
-    ul.log_enable(prefix=prefix)
-    ul.log_info(f"stat initialize.")
-    perf_start = ul.log_perf_start()
-    id = ul.get_env_id()
-    if id == ul.id:
-        ul.raise_NotFound(
-            target=f"env_id",
-            type_name="environment variable",
-            prefix=prefix)
+class cmd_init(cab.cmd_app):
+    pass
 
-    path_list = ul.load_path()
+def initialize(s:cmd_init):
+    a.log_info(f"stat initialize.")
+    id = pl.env_id()
+    path_list = pl.load_path()
     dest = path_list.get(id,{})
     path_list[id]=dest
 
-    ws = ul.get_cur_dir()
+    ws = a.get_cur_dir()
 
-    dest[ "dir_tools"         ] = f"{ws}\\00_fix\\tools"
+    dest[ "dir_tools"         ] = [
+        f"{ws}\\00_fix\\tools",
+        f"{ws}\\20_user\\tools",
+        f"{ws}\\10_base\\tools",
+    ]
+
     dest[ "dir_lib"           ] = f"{ws}\\00_fix\\lib"
     dest[ "dir_cmd"           ] = f"{ws}\\00_fix\\cmd"
 
-    dest[ "dir_base_tools"    ] = f"{ws}\\10_base\\tools"
     dest[ "dir_base_cfg"      ] = f"{ws}\\10_base\\cfg"
     dest[ "dir_base_src"      ] = f"{ws}\\10_base\\src"
     dest[ "dir_base_template" ] = f"{ws}\\10_base\\template"
     dest[ "dir_base_notes"    ] = f"{ws}\\10_base\\notes"
 
-    dest[ "dir_user_tools"    ] = f"{ws}\\20_user\\tools"
     dest[ "dir_user_cfg"      ] = f"{ws}\\20_user\\cfg"
     dest[ "dir_user_src"      ] = f"{ws}\\20_user\\src"
     dest[ "dir_user_template" ] = f"{ws}\\20_user\\template"
@@ -56,20 +55,21 @@ def initialize(py:str, vscode_debug:bool):
 
     dest[ "file_tmp_dox_marge_yml"  ] = f"{ws}\\50_out_tmp\\doxygen\\result\\marge.yml"
 
-    ul.update_path(path_list,id)
-
-    ul.log_perf_end("initialize / update",perf_start)
-    perf_start = ul.log_perf_start()
-
-    key_max_len = ul.get_max_dict_key_len(dest)
+    pl.update_path(path_list,id)
 
     for k,v in dest.items():
-        if k.find("dir_") == 0:
-           ul.log_debug(f"key : {k:<{key_max_len}} / value : {v}")
-           if not(ul.is_exist(v)):
-               ul.make_dir(v)
-    ul.log_perf_end("initialize / make_dirs",perf_start)
-    ul.log_info(f"complete initialize.")
+        if str(k).find("dir_") == 0:
+           if isinstance(v,str):
+                a.log_debug(f"key : {k} / value : {v}")
+                if not(a.is_exist(v)):
+                    a.make_dir(v)
+           elif isinstance(v,list):
+               for item in v:
+                    a.log_debug(f"key : {k} / value : {item}")
+                    if not(a.is_exist(item)):
+                        a.make_dir(item)
+    a.log_info(f"complete initialize.")
 
-app = ul.cmd_app()
-app.start(__name__,initialize)
+app = cmd_init("7cfa9d28d6604519a4cc0b37a985e8c4")
+app.reg_main(initialize)
+app.start()

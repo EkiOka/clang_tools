@@ -5,32 +5,28 @@
 
 """
 #========================================================================
-#
 # IMPORT
-#
 #========================================================================
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_codecs    as codecs
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_datetime  as datetime
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_getpass   as getpass
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_hashlib   as hashlib
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_inspect   as inspect
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_jinja2    as jinja2
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_json      as json
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_logging   as logging
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_markdown  as markdown
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_os        as os
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_pathlib   as pathlib
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_re        as re
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_shutil    as shutil
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_sys       as sys
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_traceback as traceback
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_uuid      as uuid
-import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_yaml      as yaml
-
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_codecs     as codecs
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_datetime   as datetime
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_getpass    as getpass
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_hashlib    as hashlib
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_inspect    as inspect
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_jinja2     as jinja2
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_json       as json
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_logging    as logging
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_markdown   as markdown
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_os         as os
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_pathlib    as pathlib
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_re         as re
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_shutil     as shutil
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_subprocess as subprocess
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_sys        as sys
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_traceback  as traceback
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_uuid       as uuid
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_yaml       as yaml
 #========================================================================
-#
 # CONST
-#
 #========================================================================
 #
 # 定数の名前が安定しないため命名規則をメモしておく
@@ -44,13 +40,13 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_yaml      as yaml
 ENC_DEF:str="utf-8"
 """エンコード：テキストファイルを扱う時のデフォルト"""
 
-SEP_DIR2FILE:str  = os.sep
+SEP_DIR2FILE:str  = os.sep()
 """区切り文字：ディレクトリとファイル"""
 
-SEP_FILE2EXT:str  = os.extsep
+SEP_FILE2EXT:str  = os.extsep()
 """区切り文字：ディレクトリと拡張子"""
 
-SEP_PATH2PATH:str = os.pathsep
+SEP_PATH2PATH:str = os.pathsep()
 """区切り文字：パスとパス"""
 
 SEP_DATE2DATE:str = "/"
@@ -105,12 +101,10 @@ class dec:
     BOLD         = "\033[1m"  # 標準出力の文字を太字にする文字列
     UNDER_LINE   = "\033[4m"  # 標準出力の文字に下線を付ける文字列
 #========================================================================
-#
 # VARIABLE
-#
 #========================================================================
 
-Any:object=object()
+any:object=object()
 """型が複数ある場合の説明用識別子
 """
 
@@ -122,7 +116,7 @@ StaticFunction:object=object()
 is_supposed_debug:bool=False
 """想定したデバッグ環境(win/vscode)かどうか
 """
-if "debugpy" in sys.modules():
+if "debugpy" in sys.modules().keys():
     if os.name() == "nt":
         is_supposed_debug = True
 
@@ -133,9 +127,7 @@ prefix:str = ""
 __logger = None
 
 #========================================================================
-#
 # FUNCTION
-#
 #========================================================================
 #------------------------------------------------------------------------
 # CURRENT DIRECTORY
@@ -185,6 +177,8 @@ def __cnv_path_sep(path:str, sep:str=SEP_DIR2FILE)->str:
     str
         区切り文字を統一されたパス
     """
+    log_info(f"path: type={type(path)}, value ={path}")
+    log_info(f"sep:  type={type(sep)},  value ={sep}")
     res = path.replace("/",sep)
     res = res.replace("\\",sep)
     return res
@@ -392,7 +386,7 @@ def load_text_lines(path:str,encoding:str=ENC_DEF)->list[str]:
     with open(path, encoding=encoding) as f:
         res = f.readlines()
     return res
-def save_text(path:str,text:Any,encoding:str=ENC_DEF,ret_code:str=RET_CODE_DEF):
+def save_text(path:str,text:any,encoding:str=ENC_DEF,ret_code:str=RET_CODE_DEF):
     """テキストファイル保存
 
     Parameters
@@ -431,7 +425,7 @@ def save_text(path:str,text:Any,encoding:str=ENC_DEF,ret_code:str=RET_CODE_DEF):
             f.writelines([line + ret_code for line in text])
     else:
         raise Exception(f"未対応の型({type(text)})が引数(text)に渡されました")
-def load_json(path: str) -> Any:
+def load_json(path: str) -> any:
     text = load_text(path)
     res = json.loads(text)
     return res
@@ -439,12 +433,12 @@ def save_json(path:str,data,encoding:str=ENC_DEF):
     make_dir(path)
     with codecs.open(path , mode="w", encoding=encoding) as f:
         json.dump(data, f, ensure_ascii=False,indent=INDENT_JSON_DEF, sort_keys=True)
-def load_yaml(path:str, encoding=ENC_DEF)->Any:
+def load_yaml(path:str, encoding=ENC_DEF)->any:
     obj = dict()
     with open(path, encoding=encoding) as f:
         obj = yaml.safe_load(f)
     return obj
-def save_yaml(path:str,data:Any, encoding=ENC_DEF)->None:
+def save_yaml(path:str,data:any, encoding=ENC_DEF)->None:
     with open(path, mode="w", encoding=encoding) as f:
         yaml.dump(data,f)
     return    
@@ -462,7 +456,7 @@ def remove_dir(path:str):
     shutil.rmtree(path=path,ignore_errors=True)
 def make_dir(path:str):
     path = cnv_abs_dir_path(path)
-    os.makedirs(name=path,exist_ok=True)
+    os.makedirs(path,True)
 def copy_dir_tree(src:str, dest:str, not_ptn=None):
     """ディレクトリツリーをコピーします
     """
@@ -489,7 +483,7 @@ def move_file(src:str,dest:str):
 #------------------------------------------------------------------------
 # CLASS
 #------------------------------------------------------------------------
-def add_method(target_instance:Any,method:StaticFunction,name:str="",override:bool=True):
+def add_method(target_instance:any,method:StaticFunction,name:str="",override:bool=True):
         """インスタンスに動的にメソッドを追加する。
 
         すでにメソッドがある場合は上書きになりますので注意してください。
@@ -555,7 +549,7 @@ def loop(data:list,method:StaticFunction,last_method:StaticFunction)->list:
     for d in not_tail(data):
         method(d)
     last_method(tail(data))
-def tail(src:list)->Any:
+def tail(src:list)->any:
     """末尾の要素を取得する
     """
     res = None
@@ -662,6 +656,8 @@ def log_enable_debug(id:str,cfg:dict=None):
         デバッグ出力の出力設定, by default None
     """
     global __logger
+    if prefix == "":
+        set_default_prefix()
     if cfg == None:            
         cfg = {
             "version": 1,
@@ -758,10 +754,10 @@ def log_info(msg:str):
         出力メッセージ
     """
     if __logger != None:
-        s_dec = dec.BC_GREEN
-        e_dec = dec.END
+        s_dec = ""
+        e_dec = ""
         if is_supposed_debug:
-            s_dec = dec.FC_MAGENTA
+            s_dec = dec.FC_GREEN
             e_dec = dec.END
         logging.info(f"{s_dec}{msg}{e_dec}",__logger)
 def log_warning(msg:str):
@@ -887,7 +883,7 @@ def raise_ValueRange(value,min=None,max=None):
 #------------------------------------------------------------------------
 # TEMPLATE FILE
 #------------------------------------------------------------------------
-def cnv_template_to_text(data:Any,template_path:str,template_encoding:str=ENC_DEF)->str:
+def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DEF)->str:
     """テンプレートからテキストに変換する
 
     Parameters
@@ -985,19 +981,21 @@ def caller_function_name()->str:
     return inspect.stack_function_name(3)
 def caller_line_no()->int:
     return inspect.stack_line_no(3)
-def environ_variable(name:str):
+def environ_variable(name:str,default_value:str=None):
     """環境変数取得
-    ない場合はNoneを返す
+    ない場合はdefault_valueを返す
     """
     res = None
     vars = os.environ()
     keys = vars.keys()
-    if name in keys():
+    if name in keys:
         res = vars[name]
     elif name.upper() in keys():
         res = vars[name.upper()]
     elif name.lower() in keys():
         res = vars[name.lower()]
+    else:
+        res = default_value
     return res
 def user_name()->str:
     """ユーザー名取得
@@ -1006,11 +1004,20 @@ def user_name()->str:
 def startup_params():
     """起動引数取得"""
     return sys.argv()
+def startup_py():
+    """起動pyスクリプト名"""
+    params = startup_params()
+    py_path = params[0]
+    py_name = cnv_file_name(py_path)
+    return py_name
+def set_default_prefix():
+    global prefix
+    prefix = f"{ startup_py() } > "
 #------------------------------------------------------------------------
 # TEXT
 #------------------------------------------------------------------------
 def re_compile(pattern:str):
-    return re.compile()
+    return re.compile(pattern)
 def re_match(text:str,pattern:str=None, compiled_re=None):
     res = None
     if compiled_re != None:
@@ -1021,3 +1028,8 @@ def re_match(text:str,pattern:str=None, compiled_re=None):
     return res
 def re_group(match_result,name:str):
     return re.group(match_result,name)
+#------------------------------------------------------------------------
+# PROCESS
+#------------------------------------------------------------------------
+def start_proc(params:list[str])->int:
+    return subprocess.run(params)

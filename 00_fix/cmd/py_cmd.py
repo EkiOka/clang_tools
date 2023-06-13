@@ -1,109 +1,77 @@
-from lib_a48c5c3ad4e94017bcc275492c101193 import ul
+"""pythonコマンドを実行する
 
-params = ul.get_start_params()
-py = params.pop(0)
-prefix = f"{ul.cnv_file_name(py)} > "
-ul.log_enable(prefix=prefix)
-py_perf_start = ul.log_perf_start()
+本スクリプトは可変長引数であるため、cmd_appを使用しない。
 
-env_vars = ul.get_env_vars()
-env_id = ul.get_env_id()
+"""
 
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list as pl
 
-def __init():
-    perf_start = ul.log_perf_start()
+def init():
+    env_path:dict=dict()
+    env_path = pl.env_path_list()
+    
+    dir_tools = env_path.get("dir_tools" ,[])
 
-    path_list = ul.load_path()
-    env_path = path_list.get(env_id,{})
-    dir_tools = env_path.get("dir_tools","")
-    dir_user_tools = env_path.get("dir_user_tools","")
-    dir_base_tools = env_path.get("dir_base_tools","")
+    if len(dir_tools) == 0:
 
-    if dir_tools == "" or dir_user_tools == "" or dir_base_tools == "":
-
-        dir_tools = env_vars.get("CLT_TOOLS_DIR","")
-        ul.log_debug(f"dir_tools : {dir_tools}")
-
+        dir_tools = a.environ_variable("CLT_TOOLS_DIR","")
+        a.log_debug(f"dir_tools : {dir_tools}")
         if dir_tools == "":
-
-            ul.log_debug(f"env_vars : {env_vars}")
-            ul.raise_NotFound(
+            a.raise_NotFound(
                 target="CLT_TOOLS_DIR",
-                type_name="environment variable",
-                prefix=prefix)
+                type_name="environment variable")
         else:
+            returncode = a.start_proc(["py",f"{dir_tools}\\init.py"])
 
-            cp = ul.start_proc(["py",f"{dir_tools}\\init.py"])
+            if returncode != 0:
 
-            if cp.returncode != 0:
+                a.raise_Exception(
+                    f"path list initialize error. ({dir_tools}\\init.py)")
+def start_cmd():
+    env_path:dict=dict()
+    env_path = pl.env_path_list()
 
-                ul.raise_Exception(
-                    f"path list initialize error. ({dir_tools}\\init.py)",
-                    prefix=prefix)
-
-    ul.log_perf_end("__init", perf_start)
-
-def __main():
-    perf_start = ul.log_perf_start()
-    path_list = ul.load_path()
-    env_path = path_list.get(env_id,{})
-    dir_tools = env_path.get("dir_tools","")
-    dir_user_tools = env_path.get("dir_user_tools","")
-    dir_base_tools = env_path.get("dir_base_tools","")
+    dir_tools      = env_path.get("dir_tools",     "")
+    params = a.startup_params()
 
     if len(params) >= 1:
 
-        cp = None
         tool_params = []
+        params.pop(0)
         tool_name = params.pop(0)
-        tool_path = [
-            f"{dir_tools}\\{tool_name}",
-            f"{dir_user_tools}\\{tool_name}",
-            f"{dir_base_tools}\\{tool_name}",
-        ]
+        # .pyなししてい対応
+        if a.cnv_file_ext(tool_name) == "":
+            tool_name = tool_name + ".py"
+        a.log_info(f"tool_name:{tool_name}")
 
+        tool_path = [ f"{dir}\\{tool_name}" for dir in dir_tools ]
+
+        # 起動パラメータ生成
         for path in tool_path:
-
             p = ["py",path]
             p.extend(params)
             tool_params.append(p)
 
+        returncode = None
         for tp in tool_params:
-
-            if ul.is_exist(tp[1]):
-
+            if a.is_exist(tp[1]):
                 try:
-
-                    cp = ul.start_proc(tp)
+                    returncode = a.start_proc(tp)
                     break
-
                 except:
-
-                    ul.raise_Exception(
-                        f"start process error.(params:{tp})",
-                        prefix=prefix)
-
-            else:
-
-                ul.log_debug(f"command not found. ({tp[1]})")
-
-        if cp == None:
-
-            ul.raise_NotFound(
+                    a.raise_Exception(f"start process error.(params:{tp})")
+        if returncode == None:
+            a.log_debug("コマンドを発見できませんでした。探索対象となったパスをダンプします。")
+            for tp in tool_params:
+                a.log_debug(str(tp))
+            a.raise_NotFound(
                 target=f"{tool_name}",
-                type_name="command",
-                prefix=prefix)
-
+                type_name="command")
     else:
-
-        ul.raise_Exception(
-            f"parameter count error. ({params})",
-            prefix=prefix)
-
-    ul.log_perf_end("__main",perf_start)
+        a.raise_Exception(f"parameter count error. ({params})")
     return
 
-__init()
-__main()
 
-ul.log_perf_end(ul.cnv_file_name(py), py_perf_start)
+init()
+start_cmd()

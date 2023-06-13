@@ -72,7 +72,7 @@ class cmd_app_internal:
         a.log_info(f"---------------------------------------------------")
         a.log_info(f"cur_dir  : {a.get_cur_dir()}")
         for i in range(0,len(s.args),1):
-            a.log_info(f"sys.argv : {s.args[i]}")
+            a.log_info(f"sys.argv[{i}] : {s.args[i]}")
         for k,v in s.args_cfg.items():
             a.log_info(f"args_cfg : {k} : {v}")
         s.set_params()
@@ -125,6 +125,7 @@ class cmd_app_internal:
     def start(s):
         s.pre_main()
         if s.NAME_METHOD in s.__dict__.keys():
+            a.log_info(s.params)            
             s.main(s, **s.params)
         else:
             a.raise_Exception(f"起動対象の関数{s.NAME_METHOD}が設定されていません。{s.reg_main.__name__}メソッドで登録してください。")
