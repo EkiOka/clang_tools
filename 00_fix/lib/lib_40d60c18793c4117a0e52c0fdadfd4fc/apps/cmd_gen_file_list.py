@@ -45,7 +45,7 @@ class cmd_gen_file_list(cab.cmd_app):
             app = cmd_gen_file_list("56dea2e76f224d1098e8630766ce3d2b",sys.argv)
         app.add_param_cfg_path_name("src_ena_masks")
         app.add_param_cfg_path_name("src_dis_masks")
-        app.add_param_cfg_path_name("dest_path")
+        app.add_param_cfg_path_name("dest_name")
         app.reg_main(gen_file_list_name)
         app.start()
 
