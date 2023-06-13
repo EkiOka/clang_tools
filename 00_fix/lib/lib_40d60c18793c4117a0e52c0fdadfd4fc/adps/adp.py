@@ -219,12 +219,17 @@ def cnv_abs_dir_path(path:str,sep:str=SEP_DIR2FILE)->str:
     str
         絶対パス形式のディレクトリパス
     """
+    log_info(cur_function_name())
     abs_path = cnv_abs_path(path,sep)
+    log_info(f"abs_path:{abs_path}")
     res = ""
     if is_dir(abs_path):
+        log_info(f"abs_path is dir.")
         res = abs_path
     else:
+        log_info(f"abs_path is not dir")
         res = os.dirname(abs_path)
+    log_info(f"res:{res}")
     return res
 def cnv_abs_file_path_none_ext(path:str,sep:str=SEP_DIR2FILE)->str:
     """ . と拡張子は除いた絶対パスに変換
@@ -401,7 +406,7 @@ def save_text(path:str,text:any,encoding:str=ENC_DEF,ret_code:str=RET_CODE_DEF):
     ret_code : str, optional
         保存に使用する改行コード, by default RET_CODE_DEF
     """
-    make_dir(path)
+    make_dir_from_file_path(path)
     if isinstance(text,str):
         with open(path, mode="w", encoding=encoding) as f:
             match ret_code:
@@ -430,7 +435,7 @@ def load_json(path: str) -> any:
     res = json.loads(text)
     return res
 def save_json(path:str,data,encoding:str=ENC_DEF):
-    make_dir(path)
+    make_dir_from_file_path(path)
     with codecs.open(path , mode="w", encoding=encoding) as f:
         json.dump(data, f, ensure_ascii=False,indent=INDENT_JSON_DEF, sort_keys=True)
 def load_yaml(path:str, encoding=ENC_DEF)->any:
@@ -439,6 +444,7 @@ def load_yaml(path:str, encoding=ENC_DEF)->any:
         obj = yaml.safe_load(f)
     return obj
 def save_yaml(path:str,data:any, encoding=ENC_DEF)->None:
+    make_dir_from_file_path(path)
     with open(path, mode="w", encoding=encoding) as f:
         yaml.dump(data,f)
     return    
@@ -455,6 +461,8 @@ def remove_dir(path:str):
     path = cnv_abs_dir_path(path)
     shutil.rmtree(path=path,ignore_errors=True)
 def make_dir(path:str):
+    os.makedirs(path,True)
+def make_dir_from_file_path(path:str):
     path = cnv_abs_dir_path(path)
     os.makedirs(path,True)
 def copy_dir_tree(src:str, dest:str, not_ptn=None):
