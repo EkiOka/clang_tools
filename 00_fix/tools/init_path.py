@@ -23,12 +23,14 @@ def initialize(s:cmd_init_path):
     dest[ "dir_lib"           ] = f"{ws}\\00_fix\\lib"
     dest[ "dir_cmd"           ] = f"{ws}\\00_fix\\cmd"
 
+    dest[ "dir_base"          ] = f"{ws}\\10_base"
     dest[ "dir_base_cfg"      ] = f"{ws}\\10_base\\cfg"
     dest[ "dir_base_src"      ] = f"{ws}\\10_base\\src"
     dest[ "dir_base_template" ] = f"{ws}\\10_base\\template"
     dest[ "dir_base_notes"    ] = f"{ws}\\10_base\\notes"
     dest[ "dir_base_cmd"      ] = f"{ws}\\10_base\\cmd"
 
+    dest[ "dir_user"          ] = f"{ws}\\20_user"
     dest[ "dir_user_cfg"      ] = f"{ws}\\20_user\\cfg"
     dest[ "dir_user_src"      ] = f"{ws}\\20_user\\src"
     dest[ "dir_user_template" ] = f"{ws}\\20_user\\template"
