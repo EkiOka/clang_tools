@@ -22,12 +22,12 @@ def init():
                 target="CLT_TOOLS_DIR",
                 type_name="environment variable")
         else:
-            returncode = a.start_proc(["py",f"{dir_tools}\\init.py"])
+            returncode = a.start_proc(["py",f"{dir_tools}\\init_path.py"])
 
             if returncode != 0:
 
                 a.raise_Exception(
-                    f"path list initialize error. ({dir_tools}\\init.py)")
+                    f"path list initialize error. ({dir_tools}\\init_path.py)")
 def start_cmd():
     env_path:dict=dict()
     env_path = pl.env_path_list()

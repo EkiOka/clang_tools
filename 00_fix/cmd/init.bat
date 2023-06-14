@@ -1,1 +1,1 @@
-call py_cmd.bat "init.py"
+call py_cmd.bat "init_path"

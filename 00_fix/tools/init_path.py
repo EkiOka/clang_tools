@@ -2,10 +2,10 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_app_basic as cab
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list as pl
 
-class cmd_init(cab.cmd_app):
+class cmd_init_path(cab.cmd_app):
     pass
 
-def initialize(s:cmd_init):
+def initialize(s:cmd_init_path):
     a.log_info(f"stat initialize.")
     id = pl.env_id()
     path_list = pl.load_path()
@@ -64,16 +64,16 @@ def initialize(s:cmd_init):
            if isinstance(v,str):
                 a.log_debug(f"key : {k} / value : {v}")
                 if not(a.is_exist(v)):
-                    a.log_std_out(f"make_dir:{v}")
+                    a.log_info(f"make_dir:{v}")
                     a.make_dir(v)
            elif isinstance(v,list):
                for item in v:
                     a.log_debug(f"key : {k} / value : {item}")
                     if not(a.is_exist(item)):
-                        a.log_std_out(f"make_dir:{item}")
+                        a.log_info(f"make_dir:{item}")
                         a.make_dir(item)
     a.log_info(f"complete initialize.")
 
-app = cmd_init("7cfa9d28d6604519a4cc0b37a985e8c4")
+app = cmd_init_path("7cfa9d28d6604519a4cc0b37a985e8c4")
 app.reg_main(initialize)
 app.start()
