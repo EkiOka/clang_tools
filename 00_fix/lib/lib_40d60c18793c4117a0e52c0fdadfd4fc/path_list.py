@@ -81,6 +81,18 @@ def update_path(src:dict, id:str=env_id)->dict:
     dest[id]=dest_id
     save_path(dest)
 
+def update_evn_path(src:dict)->dict:
+    """環境パスリスト更新
+    """
+    id = env_id()
+    update_path(src,id)
+
+def update_user_path(src:dict)->dict:
+    """ユーザーパスリスト更新
+    """
+    id = a.user_name()
+    update_path(src,id)
+
 def env_path_list()->dict:
     """環境固有パスリスト取得"""
     id = env_id()

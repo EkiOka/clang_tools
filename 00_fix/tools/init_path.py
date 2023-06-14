@@ -37,12 +37,14 @@ def initialize(s:cmd_init_path):
     dest[ "dir_user_notes"    ] = f"{ws}\\20_user\\notes"
     dest[ "dir_user_cmd"      ] = f"{ws}\\20_user\\cmd"
 
+    dest[ "dir_tmp"           ] = f"{ws}\\50_out_tmp"
     dest[ "dir_tmp_filelist"  ] = f"{ws}\\50_out_tmp\\filelist"
     dest[ "dir_tmp_dox_mk"    ] = f"{ws}\\50_out_tmp\\doxygen\\mk"
     dest[ "dir_tmp_dox_res"   ] = f"{ws}\\50_out_tmp\\doxygen\\result"
     dest[ "dir_tmp_dox_xml"   ] = f"{ws}\\50_out_tmp\\doxygen\\xml"
     dest[ "dir_tmp_dox_yml"   ] = f"{ws}\\50_out_tmp\\doxygen\\yml"
 
+    dest[ "dir_out"           ] = f"{ws}\\60_out"
     dest[ "dir_out_filelist"  ] = f"{ws}\\60_out\\filelist"
     dest[ "dir_out_notes"     ] = f"{ws}\\60_out\\notes"
     dest[ "dir_out_dox_mk"    ] = f"{ws}\\60_out\\doxygen\\mk"
