@@ -29,7 +29,6 @@ def match(text:str,pattern):
 
 def group(match_result,name:str):
     if isinstance(match_result,re_Match):
-        match_result.group(name)
+        return match_result.group(name)
     else:
         raise Exception(f"引数(match_result)が不正です。value=({match_result}) , type={type(match_result)}")
-    return 
