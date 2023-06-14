@@ -488,7 +488,7 @@ def copy_file(src:str,dest:str):
     dest : str
         コピー先のファイルパス
     """
-    make_dir(dest)
+    make_dir_from_file_path(dest)
     shutil.copy2(src,dest)
 def move_file(src:str,dest:str):
     """ファイルを移動する

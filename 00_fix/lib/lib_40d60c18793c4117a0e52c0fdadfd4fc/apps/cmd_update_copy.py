@@ -1,8 +1,16 @@
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_app_basic as cab
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list as pl
+import glob
 
 class cmd_update_copy(cab.cmd_app):
+    def copy_update_files(s,src_dir:str,dest_dir:str):
+        src_files = glob.glob(f"{src_dir}\\**\*")
+        for src_path in src_files:
+            rel = a.cnv_rel_path(src_path,src_dir)
+            dest_path = a.cnv_rel_path(rel,dest_dir)
+            s.copy_update_file(src_path,dest_path)
+
     def copy_update_file(s,src:str,dest:str)->bool:
         """ファイルの内容に変化がある場合は更新のため上書きコピーします
         日付の変更のみの場合はコピーしません。
@@ -39,23 +47,46 @@ class cmd_update_copy(cab.cmd_app):
                     a.log_debug(f"copy_update_file > not copy(timestamp equal)")
         return run
     @staticmethod
-    def gen_path_app():
+    def start_path_app():
         app = cmd_update_copy("caff57f74cfb44dc88661a3ca7875206")
         app.add_param_cfg_text("src_path")
         app.add_param_cfg_text("dest_path")
         app.reg_main(main_path)
-        return app
+        app.start()
     @staticmethod
-    def gen_name_app():
+    def start_name_app():
         app = cmd_update_copy("40f6e4e9120f4663a73a6eaec65f05cc")
         app.add_param_cfg_path_name("src_name")
         app.add_param_cfg_path_name("dest_name")
         app.reg_main(main_name)
-        return app
+        app.start()
+
+    @staticmethod
+    def start_dir_path_app():
+        app = cmd_update_copy("caff57f74cfb44dc88661a3ca7875206")
+        app.add_param_cfg_text("src_path")
+        app.add_param_cfg_text("dest_path")
+        app.reg_main(main_dir_path)
+        app.start()
+    @staticmethod
+    def start_dir_name_app():
+        app = cmd_update_copy("40f6e4e9120f4663a73a6eaec65f05cc")
+        app.add_param_cfg_path_name("src_name")
+        app.add_param_cfg_path_name("dest_name")
+        app.reg_main(main_dir_path)
+        app.start()
+
 
 def main_path(s:cmd_update_copy,src_path:str,dest_path:str):
     s.copy_update_file(src_path,dest_path)
 
 def main_name(s:cmd_update_copy,src_name:str,dest_name:str):
     main_path(s,src_name,dest_name)
+
+
+def main_dir_path(s:cmd_update_copy,src_path:str,dest_path:str):
+    s.copy_update_files(src_path,dest_path)
+
+def main_dir_name(s:cmd_update_copy,src_name:str,dest_name:str):
+    main_dir_path(s,src_name,dest_name)
 
