@@ -15,7 +15,6 @@ def environ()->dict:
         res[str(k).upper()]=v
         res[str(k).lower()]=v
     return res
-
 def name()->str:
     __import()
     return os.name
@@ -62,7 +61,6 @@ def isabs(path)->bool:
     """絶対パス判定
     """
     return os.path.isabs(path)
-
 def getsize(path:str)->int:
     """ファイルサイズ取得
     """
@@ -73,7 +71,6 @@ def getmtime(path:str)->float:
     """
     __import()
     return os.path.getmtime(path)
-
 def abspath(path:str)->str:
     """絶対パス取得
     """
@@ -84,19 +81,16 @@ def dirname(path:str)->str:
     """
     __import()
     return os.path.dirname(path)
-
 def splitext(path:str)->list[str]:
     """拡張子とファイル名を分割
     """
     __import()
     return [ str(item) for item in os.path.splitext(path) ]
-
 def basename(path:str)->str:
     """ファイル名取得
     """
     __import()
     return os.path.basename(path)
-
 def remove(path:str):
     """ファイル・ディレクトリ削除
     """
@@ -110,3 +104,6 @@ def makedirs(path:str,exist_ok:bool=True):
 def replace(src:str, dst:str):
     __import()
     os.replace(src=src,dst=dst)
+def relpath(path:str,start:str):
+    __import()
+    os.path.relpath(path,start)

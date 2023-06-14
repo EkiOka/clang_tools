@@ -306,6 +306,12 @@ def cnv_file_ext(path:str)->str:
         name_parts.pop(0)
         res = ".".join(name_parts)
     return res
+def cnv_rel_path(path:str,start:str="."):
+    """相対パスを取得"""
+    res = ""
+    if start == ".":
+        start = get_cur_dir()
+    return os.relpath(path,start)
 #------------------------------------------------------------------------
 # FILE INFORMATION
 #------------------------------------------------------------------------
