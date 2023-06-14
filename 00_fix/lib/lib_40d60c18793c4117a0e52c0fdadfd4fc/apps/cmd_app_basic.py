@@ -115,11 +115,14 @@ class cmd_app_internal:
                     s.params[cfg_key] = list(str(prm_val).split(a.SEP_PATH2PATH))
                     pass
                 case "path_name":
-                    evn_pl =pl.env_path_list()
-                    if prm_val in evn_pl.keys():
-                        s.params[cfg_key] = evn_pl[prm_val]
-                    else:
-                        a.raise_Exception(f"起動引数({cfg_key})で指定されたパス名({prm_val})は存在しません。")
+                    path = pl.get_path(prm_val)
+                    s.params[cfg_key] = path
+                case "env_path_name":
+                    lst = pl.env_path_list()
+                    s.params[cfg_key] = lst.get(prm_val,"")
+                case "usr_path_name":
+                    lst = pl.user_path_list()
+                    s.params[cfg_key] = lst.get(prm_val,"")
                 case _:
                     a.raise_Exception(f"未対応の型が指定されました。cfg_type='{cfg_type}'")
     def start(s):
@@ -142,6 +145,14 @@ class cmd_app_internal:
         """起動引数設定にパス名形式追加"""
         if a.re_match(name,compiled_re=s.__re_pattern_param):
             s.args_cfg[name] = {"type":"path_name"}
+    def add_param_cfg_usr_path_name(s,name:str):
+        """起動引数設定にパス名形式追加"""
+        if a.re_match(name,compiled_re=s.__re_pattern_param):
+            s.args_cfg[name] = {"type":"usr_path_name"}
+    def add_param_cfg_env_path_name(s,name:str):
+        """起動引数設定にパス名形式追加"""
+        if a.re_match(name,compiled_re=s.__re_pattern_param):
+            s.args_cfg[name] = {"type":"env_path_name"}
 
 class cmd_app:
     """コマンドアプリ基底クラス
@@ -204,3 +215,23 @@ class cmd_app:
             起動引数名
         """
         s.__cmd_app.add_param_cfg_path_name(name)
+
+    def add_param_cfg_usr_path_name(s,name:str):
+        """起動引数設定に環境パス名形式追加
+
+        Parameters
+        ----------
+        name : str
+            起動引数名
+        """
+        s.__cmd_app.add_param_cfg_usr_path_name(name)
+
+    def add_param_cfg_env_path_name(s,name:str):
+        """起動引数設定にユーザーパス名形式追加
+
+        Parameters
+        ----------
+        name : str
+            起動引数名
+        """
+        s.__cmd_app.add_param_cfg_env_path_name(name)

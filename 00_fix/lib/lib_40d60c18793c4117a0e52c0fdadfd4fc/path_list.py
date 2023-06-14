@@ -9,6 +9,8 @@ EVAR_ENV_ID = "env_id"
 環境IDは本スクリプトなどを含めたvscode環境の固有IDです。
 """
 
+SEP_ID2NAME="/"
+
 def env_id()->str:
     """環境変数ID取得"""
     res = a.environ_variable(EVAR_ENV_ID,"")
@@ -88,3 +90,22 @@ def user_path_list(s)->dict:
     """ユーザー固有パスリスト取得"""
     id = a.user_name()
     return path_list(id)
+
+def get_path(name:str):
+    res = ""
+    split_name = name.split(SEP_ID2NAME)
+    match(len(split_name)):
+        case 1:
+            name = split_name[0]
+            lst = env_path_list()
+            res = lst.get(name,"")
+            pass
+        case 2:
+            id = split_name[0]
+            name = split_name[2]
+            lst = path_list(id)
+            res = lst.get(name,"")
+            pass
+        case _:
+            a.raise_Exception(f"nameの値{name}が異常です。")
+    return res
