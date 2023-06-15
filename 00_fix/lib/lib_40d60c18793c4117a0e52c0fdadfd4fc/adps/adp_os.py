@@ -2,7 +2,7 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.pkgs as pkgs
 
 os = None
 # リリース時にはコメントアウトしてください
-import os
+#import os
 
 def __import():
     global os
@@ -104,6 +104,11 @@ def makedirs(path:str,exist_ok:bool=True):
 def replace(src:str, dst:str):
     __import()
     os.replace(src=src,dst=dst)
-def relpath(path:str,start:str):
+def relpath(path:str,start:str=None):
     __import()
-    os.path.relpath(path,start)
+    res = ""
+    if start == None:
+        res = os.path.relpath(path)
+    else:
+        res = os.path.relpath(path,start)
+    return res

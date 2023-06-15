@@ -306,11 +306,8 @@ def cnv_file_ext(path:str)->str:
         name_parts.pop(0)
         res = ".".join(name_parts)
     return res
-def cnv_rel_path(path:str,start:str="."):
+def cnv_rel_path(path:str,start:str=None):
     """相対パスを取得"""
-    res = ""
-    if start == ".":
-        start = get_cur_dir()
     return os.relpath(path,start)
 #------------------------------------------------------------------------
 # FILE INFORMATION
@@ -1004,9 +1001,9 @@ def environ_variable(name:str,default_value:str=None):
     keys = vars.keys()
     if name in keys:
         res = vars[name]
-    elif name.upper() in keys():
+    elif name.upper() in keys:
         res = vars[name.upper()]
-    elif name.lower() in keys():
+    elif name.lower() in keys:
         res = vars[name.lower()]
     else:
         res = default_value
