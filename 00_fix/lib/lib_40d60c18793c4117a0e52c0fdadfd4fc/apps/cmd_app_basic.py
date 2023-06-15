@@ -128,7 +128,7 @@ class cmd_app_internal:
     def start(s):
         s.pre_main()
         if s.NAME_METHOD in s.__dict__.keys():
-            a.log_info(s.params)            
+            a.log_info(s.params)
             s.main(s, **s.params)
         else:
             a.raise_Exception(f"起動対象の関数{s.NAME_METHOD}が設定されていません。{s.reg_main.__name__}メソッドで登録してください。")

@@ -7,10 +7,7 @@ class cmd_init_path(cab.cmd_app):
 
 def initialize(s:cmd_init_path):
     a.log_info(f"stat initialize.")
-    id = pl.env_id()
-    path_list = pl.load_path()
-    dest = path_list.get(id,{})
-    path_list[id]=dest
+    dest = pl.env_path_list()
 
     ws = a.get_cur_dir()
 
@@ -61,7 +58,7 @@ def initialize(s:cmd_init_path):
 
     dest[ "file_tmp_dox_marge_yml"  ] = f"{ws}\\50_out_tmp\\doxygen\\result\\marge.yml"
 
-    pl.update_path(path_list,id)
+    pl.update_evn_path(dest)
 
     for k,v in dest.items():
         if str(k).find("dir_") == 0:
