@@ -41,13 +41,15 @@ class cmd_app_internal:
     __re_pattern_param=None
     """起動引数の正規表現パターン(compile結果)
     """
+    __external=None
+    """外部アクセス用クラスのインスタンス"""
     #========================================================================
     # METHOD
     #========================================================================
     #------------------------------------------------------------------------
     # METHOD / INITIALIZE
     #------------------------------------------------------------------------
-    def __init__(s,id:str,args:list[str]=None) -> None:
+    def __init__(s,ext,id:str,args:list[str]=None) -> None:
         """コマンドアプリを生成します。
 
         Parameters
@@ -63,6 +65,7 @@ class cmd_app_internal:
             args = a.startup_params()
         s.args = args
         s.__re_pattern_param = a.re_compile(s.RE_PATTERN_PARAM)
+        s.__external=ext
     #------------------------------------------------------------------------
     # METHOD / MAIN PROCESS
     #------------------------------------------------------------------------
@@ -129,7 +132,7 @@ class cmd_app_internal:
         s.pre_main()
         if s.NAME_METHOD in s.__dict__.keys():
             a.log_info(s.params)
-            s.main(s, **s.params)
+            s.main(s.__external, **s.params)
         else:
             a.raise_Exception(f"起動対象の関数{s.NAME_METHOD}が設定されていません。{s.reg_main.__name__}メソッドで登録してください。")
         s.post_main()
@@ -177,7 +180,7 @@ class cmd_app:
             起動引数を渡します。
             Noneの場合はsys.argvから取得するため、デバッグ時に任意の引数を渡したいときのみ使用してください。
         """
-        s.__cmd_app = cmd_app_internal(id,args)
+        s.__cmd_app = cmd_app_internal(s,id,args)
     def start(s):
         s.__cmd_app.start()
     def reg_main(s,func:a.TYPE_METHOD):
