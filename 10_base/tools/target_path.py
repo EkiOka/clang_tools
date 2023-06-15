@@ -39,12 +39,14 @@ def __main(s:cmd):
     upl["file_tmp_file_list_target_c"   ] = f"{dir_tmp_filelist}\\target_c.json"
     upl["file_tmp_file_list_target_h"   ] = f"{dir_tmp_filelist}\\target_h.json"
     upl["file_tmp_file_list_target_cpp" ] = f"{dir_tmp_filelist}\\target_cpp.json"
+    upl["file_tmp_file_list_target_inc" ] = f"{dir_tmp_filelist}\\target_inc.json"
 
     # 更新チェック可能なファイルリストの生成先設定
     upl["file_out_file_list_target_src" ] = f"{dir_out_filelist}\\target_src.json"
     upl["file_out_file_list_target_c"   ] = f"{dir_out_filelist}\\target_c.json"
     upl["file_out_file_list_target_h"   ] = f"{dir_out_filelist}\\target_h.json"
     upl["file_out_file_list_target_cpp" ] = f"{dir_out_filelist}\\target_cpp.json"
+    upl["file_out_file_list_target_inc" ] = f"{dir_out_filelist}\\target_inc.json"
 
     # リストの更新
     pl.update_user_path(upl)

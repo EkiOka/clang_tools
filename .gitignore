@@ -6,5 +6,6 @@
 10_base/template/notes/mermaid.min.js
 20_user/
 50_out_tmp/
+60_out
 path_list.json
 clean.bat
