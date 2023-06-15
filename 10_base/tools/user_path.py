@@ -21,28 +21,6 @@ def __main(s:cmd):
     dir_tmp_filelist = epl["dir_tmp_filelist"]
     dir_out_filelist = epl["dir_out_filelist"]
 
-    # ファイルリスト生成用のマスク設定
-    c_masks   = f"{dir_user}\\src\\**\\*.c"
-    h_masks   = f"{dir_user}\\src\\**\\*.h"
-    cpp_masks = f"{dir_user}\\src\\**\\*.cpp"
-
-    upl["masks_target_src" ] = [c_masks,h_masks,cpp_masks]
-    upl["masks_target_c"   ] = c_masks
-    upl["masks_target_h"   ] = h_masks
-    upl["masks_target_cpp" ] = cpp_masks
-
-    # ファイルリストの生成先設定
-    upl["file_tmp_file_list_target_src" ] = f"{dir_tmp_filelist}\\target_src.json"
-    upl["file_tmp_file_list_target_c"   ] = f"{dir_tmp_filelist}\\target_c.json"
-    upl["file_tmp_file_list_target_h"   ] = f"{dir_tmp_filelist}\\target_h.json"
-    upl["file_tmp_file_list_target_cpp" ] = f"{dir_tmp_filelist}\\target_cpp.json"
-
-    # 更新チェック可能なファイルリストの生成先設定
-    upl["file_out_file_list_target_src" ] = f"{dir_out_filelist}\\target_src.json"
-    upl["file_out_file_list_target_c"   ] = f"{dir_out_filelist}\\target_c.json"
-    upl["file_out_file_list_target_h"   ] = f"{dir_out_filelist}\\target_h.json"
-    upl["file_out_file_list_target_cpp" ] = f"{dir_out_filelist}\\target_cpp.json"
-
     # アプリケーションパス設定(初期値はデフォルトインストールパス)
     doxygen_exe = r"C:\Program Files\doxygen\bin\doxygen.exe"
     if a.is_exist(doxygen_exe):
