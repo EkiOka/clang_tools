@@ -96,6 +96,7 @@ def user_path_list()->dict:
     return path_list(id)
 
 def get_path(name:str):
+    func = a.cur_function_name()
     res = ""
     split_name = name.split(SEP_ID2NAME)
     match(len(split_name)):
@@ -103,12 +104,19 @@ def get_path(name:str):
             name = split_name[0]
             lst = env_path_list()
             res = lst.get(name,"")
+            a.log_info(f"{func} > name : {name}")
+            a.log_info(f"{func} > lst : {lst}")
+            a.log_info(f"{func} > res : {res}")
             pass
         case 2:
             id = split_name[0]
-            name = split_name[2]
+            name = split_name[1]
             lst = path_list(id)
             res = lst.get(name,"")
+            a.log_info(f"{func} > id : {id}")
+            a.log_info(f"{func} > name : {name}")
+            a.log_info(f"{func} > lst : {lst}")
+            a.log_info(f"{func} > res : {res}")
             pass
         case _:
             a.raise_Exception(f"nameの値{name}が異常です。")

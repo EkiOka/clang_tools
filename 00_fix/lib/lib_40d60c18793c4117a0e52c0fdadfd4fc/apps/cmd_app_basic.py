@@ -103,9 +103,10 @@ class cmd_app_internal:
     def set_args_value(s):
         """paramsの内容をargs_cfgに従って展開します。
         """
+        func = a.cur_function_name()
         for (cfg_key,cfg_val) in s.args_cfg.items():
-            a.log_info(f"cfg_key:{cfg_key}")
-            a.log_info(f"cfg_val:{cfg_val}")
+            a.log_info(f"{func} > cfg_key:{cfg_key}")
+            a.log_info(f"{func} > cfg_val:{cfg_val}")
             cfg_type = cfg_val.get("type","")
             if not cfg_key in s.params.keys():
                 a.raise_Exception(f"起動時に指定された引数に{cfg_key}がありません。\nparams=({s.params})')")
@@ -115,23 +116,29 @@ class cmd_app_internal:
                     # 既にセットされているので処理不要
                     pass
                 case "path_list":
-                    s.params[cfg_key] = list(str(prm_val).split(a.SEP_PATH2PATH))
+                    lst = list(str(prm_val).split(a.SEP_PATH2PATH))
+                    a.log_info(f"{func} > path_list > lst :{lst}")
+                    s.params[cfg_key] = lst
                     pass
                 case "path_name":
                     path = pl.get_path(prm_val)
+                    a.log_info(f"{func} > path_name > path :{path}")
                     s.params[cfg_key] = path
                 case "env_path_name":
                     lst = pl.env_path_list()
+                    a.log_info(f"{func} > env_path_name > lst :{lst}")
                     s.params[cfg_key] = lst.get(prm_val,"")
                 case "usr_path_name":
                     lst = pl.user_path_list()
+                    a.log_info(f"{func} > usr_path_name > lst :{lst}")
                     s.params[cfg_key] = lst.get(prm_val,"")
                 case _:
                     a.raise_Exception(f"未対応の型が指定されました。cfg_type='{cfg_type}'")
     def start(s):
         s.pre_main()
         if s.NAME_METHOD in s.__dict__.keys():
-            a.log_info(s.params)
+            func = a.cur_function_name()
+            a.log_info(f"{func} > params:{s.params}")
             s.main(s.__external, **s.params)
         else:
             a.raise_Exception(f"起動対象の関数{s.NAME_METHOD}が設定されていません。{s.reg_main.__name__}メソッドで登録してください。")

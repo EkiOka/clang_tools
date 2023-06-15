@@ -50,14 +50,16 @@ class cmd_gen_file_list(cab.cmd_app):
         app.start()
 
 def gen_file_list(s:cmd_gen_file_list, src_ena_masks:list,src_dis_masks:list, dest_path:str):
-    a.log_info(f"src_ena_masks:{src_ena_masks}")
-    a.log_info(f"src_dis_masks:{src_dis_masks}")
-    a.log_info(f"dest_path:{dest_path}")
+    func = a.cur_function_name()
+    a.log_info(f"{func} > src_ena_masks:{src_ena_masks}")
+    a.log_info(f"{func} > src_dis_masks:{src_dis_masks}")
+    a.log_info(f"{func} > dest_path:{dest_path}")
     files = s.get_files(src_ena_masks,src_dis_masks)
     a.save_json(dest_path,files)
 
 def gen_file_list_name(s:cmd_gen_file_list, src_ena_masks:str,src_dis_masks:str, dest_name:str):
-    a.log_info(f"src_ena_masks:{src_ena_masks}")
-    a.log_info(f"src_dis_masks:{src_dis_masks}")
-    a.log_info(f"dest_name:{dest_name}")
+    func = a.cur_function_name()
+    a.log_info(f"{func} > src_ena_masks:{src_ena_masks}")
+    a.log_info(f"{func} > src_dis_masks:{src_dis_masks}")
+    a.log_info(f"{func} > dest_name:{dest_name}")
     gen_file_list(s,src_ena_masks,src_dis_masks,dest_name)
