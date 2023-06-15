@@ -43,6 +43,29 @@ def __main(s:cmd):
     upl["file_out_file_list_target_h"   ] = f"{dir_out_filelist}\\target_h.json"
     upl["file_out_file_list_target_cpp" ] = f"{dir_out_filelist}\\target_cpp.json"
 
+    # アプリケーションパス設定(初期値はデフォルトインストールパス)
+    doxygen_exe = r"C:\Program Files\doxygen\bin\doxygen.exe"
+    if a.is_exist(doxygen_exe):
+        upl["doxygen_exe"] = doxygen_exe
+    git_exe = r"C:\Program Files\Git\bin\git.exe"
+    if a.is_exist(git_exe):
+        upl["git_exe"] = git_exe
+    dot_exe = r"C:\Program Files\Graphviz\bin\dot.exe"
+    if a.is_exist(dot_exe):
+        upl["dot_exe"] = dot_exe
+    java_exe_for_jre_18 = r"C:\Program Files (x86)\Java\jre-1.8\bin\java.exe"
+    if a.is_exist(java_exe_for_jre_18):
+        upl["java_exe"] = java_exe_for_jre_18
+    sakura_exe = r"C:\Program Files (x86)\sakura\sakura.exe"
+    if a.is_exist(sakura_exe):
+        upl["sakura_exe"] = sakura_exe
+    ea_exe = r"C:\Program Files (x86)\SparxSystems Japan\EA\EA.exe"
+    if a.is_exist(ea_exe):
+        upl["ea_exe"] = ea_exe
+    make_exe = r"C:\Program Files (x86)\GnuWin32\bin\make.exe"
+    if a.is_exist(make_exe):
+        upl["make_exe"] = make_exe
+
     # リストの更新
     pl.update_user_path(upl)
     return
