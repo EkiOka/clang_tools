@@ -3,6 +3,8 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list as pl
 import glob
 
+# a.log_enable_debug("aeebe5f7edbb4020b67221db7b79f644")
+
 class cmd_update_copy(cab.cmd_app):
     @staticmethod
     def start_path_app():
@@ -50,7 +52,6 @@ def main_dir_name(s:cmd_update_copy,src_name:str,dest_name:str):
 
 def copy_update_files(src_dir:str,dest_dir:str):
 
-    a.log_enable_debug("aeebe5f7edbb4020b67221db7b79f644")
     a.log_info(f"src_dir:{src_dir}")
     a.log_info(f"dest_dir:{dest_dir}")
 
