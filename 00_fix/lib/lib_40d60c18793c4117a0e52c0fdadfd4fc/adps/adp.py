@@ -25,6 +25,9 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_sys        as sys
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_traceback  as traceback
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_uuid       as uuid
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_yaml       as yaml
+
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list           as pl
+
 #========================================================================
 # CONST
 #========================================================================
@@ -943,6 +946,8 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     environment.add_filter("warning",log_warning)
     environment.add_filter("error",log_error)
     environment.add_filter("critical",log_critical)
+    environment.add_filter("user_path",pl.get_user_path)
+    environment.add_filter("env_path",pl.get_env_path)
 
     # テンプレートに渡すデータ
     temp_data = dict()
