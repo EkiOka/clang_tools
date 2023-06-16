@@ -938,11 +938,11 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     environment    = jinja2.environment(loader=loader)
 
     # フィルタの設定
-    jinja2.add_filter("info",log_info,environment)
-    jinja2.add_filter("debug",log_debug,environment)
-    jinja2.add_filter("warning",log_warning,environment)
-    jinja2.add_filter("error",log_error,environment)
-    jinja2.add_filter("critical",log_critical,environment)
+    environment.add_filter("info",log_info)
+    environment.add_filter("debug",log_debug)
+    environment.add_filter("warning",log_warning)
+    environment.add_filter("error",log_error)
+    environment.add_filter("critical",log_critical)
 
     # テンプレートに渡すデータ
     temp_data = dict()
