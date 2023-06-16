@@ -914,18 +914,31 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     str
         変換されたテキスト
     """
+    func = cur_function_name()
+    log_info(f"{func} > data : {str(data)[:30]}(...)")
+    log_info(f"{func} > template_path : {template_path}")
+    log_info(f"{func} > template_encoding : {template_encoding}")
+
+    env_path = pl.env_path_list()
+    usr_path = pl.user_path_list()
 
     # 現在のカレントディレクトリを取得
     cur = get_cur_dir()
+    log_info(f"{func} > cur : {cur}")
 
     # テンプレートに関係するパスを取得
     tmp_abs_path = cnv_abs_path(template_path)
     tmp_dir = cnv_abs_dir_path(tmp_abs_path)
     tmp_file_name = cnv_file_name(template_path)
+    log_info(f"{func} > tmp_abs_path : {tmp_abs_path}")
+    log_info(f"{func} > tmp_dir : {tmp_dir}")
+    log_info(f"{func} > tmp_file_name : {tmp_file_name}")
 
     # パスは/で揃える
     tmp_dir = tmp_dir.replace("\\","/")
     tmp_abs_path = tmp_abs_path.replace("\\","/")
+    log_info(f"{func} > tmp_dir : {tmp_dir}")
+    log_info(f"{func} > tmp_abs_path : {tmp_abs_path}")
 
     # テンプレート情報としてパスを格納
     template_info = dict()
@@ -939,6 +952,8 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     # テンプレート生成関連クラスのインスタンス生成
     loader         = jinja2.file_system_loader( searchpath=tmp_dir, encoding=template_encoding)
     environment    = jinja2.environment(loader=loader)
+    log_info(f"{func} > loader : {loader}")
+    log_info(f"{func} > environment : {environment}")
 
     # フィルタの設定
     environment.add_filter("info",log_info)
@@ -946,11 +961,11 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     environment.add_filter("warning",log_warning)
     environment.add_filter("error",log_error)
     environment.add_filter("critical",log_critical)
-    environment.add_filter("user_path",pl.get_user_path)
-    environment.add_filter("env_path",pl.get_env_path)
 
     # テンプレートに渡すデータ
     temp_data = dict()
+    temp_data["data_e39fc4e85e8040d29e215197b26d300a"]=env_path
+    temp_data["data_fb6f549ef7e44a5693e319ea6bea81e9"]=usr_path
     temp_data["data_4d22a990e03e4ff0b66061daa1674a0d"]=os.environ()
     temp_data["data_095064f18e894dcfaa3f8d12b1d0b9ca"]=template_info
     temp_data["data_d74c99efdbb745129d4e98d2194bc941"]=data
@@ -958,6 +973,9 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     try:
         template  = environment.get_template(name=tmp_file_name)
         out_text  = template.render(temp_data)
+        log_info(f"{func} > template : {template}")
+        log_info(f"{func} > out_text : {out_text[:30]}(...)")
+
     except Exception as e:
         log_std_err(e)
         log_std_err(traceback.format_exc())
