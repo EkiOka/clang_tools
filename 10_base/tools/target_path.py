@@ -16,6 +16,8 @@ def __main(s:cmd):
     dir_user = epl["dir_user"]
     dir_tmp  = epl["dir_tmp"]
     dir_out  = epl["dir_out"]
+    dir_user_template = epl["dir_user_template"]
+    dir_tmp_mk = epl["dir_tmp_mk"]
 
     # ファイルリストの出力先
     dir_tmp_filelist = epl["dir_tmp_filelist"]
@@ -47,6 +49,10 @@ def __main(s:cmd):
     upl["file_out_file_list_target_h"   ] = f"{dir_out_filelist}\\target_h.json"
     upl["file_out_file_list_target_cpp" ] = f"{dir_out_filelist}\\target_cpp.json"
     upl["file_out_file_list_target_inc" ] = f"{dir_out_filelist}\\target_inc.json"
+
+    # ファイルリストのmakefile
+    upl["file_tmpl_target_mk" ] = f"{dir_user_template}\\mk\\target.mk"
+    upl["file_tmp_target_mk"  ] = f"{dir_tmp_mk}\\target.mk"
 
     # リストの更新
     pl.update_user_path(upl)
