@@ -121,3 +121,23 @@ def get_path(name:str):
         case _:
             a.raise_Exception(f"nameの値{name}が異常です。")
     return res
+
+def get_user_path(name:str):
+    func = a.cur_function_name()
+    res = ""
+    lst = user_path_list()
+    res = lst.get(name,"")
+    a.log_info(f"{func} > name : {name}")
+    a.log_info(f"{func} > lst : {lst}")
+    a.log_info(f"{func} > res : {res}")
+    return res
+
+def get_env_path(name:str):
+    func = a.cur_function_name()
+    res = ""
+    lst = env_path_list()
+    res = lst.get(name,"")
+    a.log_info(f"{func} > name : {name}")
+    a.log_info(f"{func} > lst : {lst}")
+    a.log_info(f"{func} > res : {res}")
+    return res
