@@ -10,6 +10,7 @@
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_codecs     as codecs
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_datetime   as datetime
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_getpass    as getpass
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_glob       as glob
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_hashlib    as hashlib
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_inspect    as inspect
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_jinja2     as jinja2
@@ -494,6 +495,46 @@ def move_file(src:str,dest:str):
     """ファイルを移動する
     """
     os.replace(src,dest)
+def get_file_list(mask,recursive=True):
+    res = list()
+    if isinstance(mask,list[str]):
+        for m in mask:
+            g = glob.glb(m,recursive=recursive)
+            res.extend(g)
+    elif isinstance(mask,str):
+        g = glob.glb(mask,recursive=recursive)
+        res.extend(g)
+    else:
+        raise_Exception(f"未対応の型が指定されました。type={type(mask)}, value={mask}")
+
+    return res
+def get_file_lists(enable_masks:list[str],disable_masks:list[str]=[],recursive=True)->list:
+    enb = []
+    dis = []
+    if isinstance(enable_masks,str):
+        if SEP_PATH2PATH in enable_masks:
+            enb.extend( enable_masks.split(SEP_PATH2PATH) )
+        else:
+            enb.append(enable_masks)
+    elif isinstance(enable_masks,list[str]):
+        enb.extend(enable_masks)
+    else:
+        raise_Exception(f"未対応の型が指定されました。type={type(enable_masks)}, value={enable_masks}")
+
+    if isinstance(disable_masks,str):
+        if SEP_PATH2PATH in disable_masks:
+            dis.extend( disable_masks.split(SEP_PATH2PATH) )
+        else:
+            dis.append(disable_masks)
+    elif isinstance(disable_masks,list[str]):
+        dis.extend(disable_masks)
+    else:
+        raise_Exception(f"未対応の型が指定されました。type={type(disable_masks)}, value={disable_masks}")
+
+    enables = get_file_list(enb,recursive)
+    disables = get_file_list(dis,recursive)
+    res = list(set(enables) - set(disables))
+    return res
 #------------------------------------------------------------------------
 # CLASS
 #------------------------------------------------------------------------
@@ -964,6 +1005,7 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     environment.add_filter("load_json",load_json)
     environment.add_filter("load_yaml",load_yaml)
     environment.add_filter("load_text",load_text)
+    environment.add_filter("file_list",get_file_list)
 
     # テンプレートに渡すデータ
     temp_data = dict()
