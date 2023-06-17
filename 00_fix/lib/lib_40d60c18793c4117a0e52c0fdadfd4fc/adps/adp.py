@@ -961,6 +961,9 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     environment.add_filter("warning",log_warning)
     environment.add_filter("error",log_error)
     environment.add_filter("critical",log_critical)
+    environment.add_filter("load_json",load_json)
+    environment.add_filter("load_yaml",load_yaml)
+    environment.add_filter("load_text",load_text)
 
     # テンプレートに渡すデータ
     temp_data = dict()
