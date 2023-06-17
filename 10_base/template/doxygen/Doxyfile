@@ -1,5 +1,11 @@
-OUTPUT_DIRECTORY       = {{"clt_tmp_dox_xml" | env_var }}
-INPUT                  = {{"clt_src_dir"     | env_var }}
+{%- set env_path  = data_e39fc4e85e8040d29e215197b26d300a -%}
+{%- set user_path = data_fb6f549ef7e44a5693e319ea6bea81e9 -%}
+{%- set env_vars  = data_4d22a990e03e4ff0b66061daa1674a0d -%}
+{%- set tmpl_inf  = data_095064f18e894dcfaa3f8d12b1d0b9ca -%}
+{%- set data_root = data_d74c99efdbb745129d4e98d2194bc941 -%}
+
+OUTPUT_DIRECTORY       = {{env_path.dir_tmp_dox}}
+INPUT                  = {{user_path.dir_user_path}}
 RECURSIVE              = YES
 
 DOXYFILE_ENCODING      = UTF-8

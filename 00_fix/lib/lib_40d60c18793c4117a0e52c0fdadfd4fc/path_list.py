@@ -72,7 +72,7 @@ def path_list(id:str)->dict:
         else:
             path_list[id]=res
             save_path(path_list)
-    a.log_info(f"{func} > res : {res}")
+    a.log_info(f"{func} > res : {str(res)[0:30]}(...)")
     return res
 
 def update_path(id_src:dict, id:str)->dict:

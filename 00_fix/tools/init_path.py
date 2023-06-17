@@ -36,6 +36,7 @@ def initialize(s:cmd_init_path):
 
     dest[ "dir_tmp"             ] = f"{ws}\\50_out_tmp"
     dest[ "dir_tmp_filelist"    ] = f"{ws}\\50_out_tmp\\filelist"
+    dest[ "dir_tmp_dox"         ] = f"{ws}\\50_out_tmp\\doxygen"
     dest[ "dir_tmp_dox_mk"      ] = f"{ws}\\50_out_tmp\\doxygen\\mk"
     dest[ "dir_tmp_dox_res"     ] = f"{ws}\\50_out_tmp\\doxygen\\result"
     dest[ "dir_tmp_dox_xml"     ] = f"{ws}\\50_out_tmp\\doxygen\\xml"
@@ -45,15 +46,17 @@ def initialize(s:cmd_init_path):
     dest[ "dir_out"             ] = f"{ws}\\60_out"
     dest[ "dir_out_filelist"    ] = f"{ws}\\60_out\\filelist"
     dest[ "dir_out_notes"       ] = f"{ws}\\60_out\\notes"
+    dest[ "dir_out_dox"         ] = f"{ws}\\60_out\\doxygen"
     dest[ "dir_out_dox_mk"      ] = f"{ws}\\60_out\\doxygen\\mk"
     dest[ "dir_out_dox_res"     ] = f"{ws}\\60_out\\doxygen\\result"
     dest[ "dir_out_dox_xml"     ] = f"{ws}\\60_out\\doxygen\\xml"
     dest[ "dir_out_dox_yml"     ] = f"{ws}\\60_out\\doxygen\\yml"
 
     dest[ "mask_dox_xml_files"     ] = f"{ws}\\50_out_tmp\\doxygen\\xml\\**\\*_8c.xml"
-    dest[ "file_doxyfile_template" ] = f"{ws}\\20_user\\template\\Doxyfile"
+    dest[ "file_doxyfile_template" ] = f"{ws}\\20_user\\template\\doxygen\\Doxyfile"
 
     dest[ "file_dox_mk_template" ] = f"{ws}\\20_user\\template\\doxygen.mk"
+    dest[ "file_tmp_doxyfile"    ] = f"{ws}\\50_out_tmp\\doxygen\\Doxyfile"
     dest[ "file_tmp_dox_mk"    ] = f"{ws}\\50_out_tmp\\doxygen\\mk\\doxygen.mk"
     dest[ "file_out_dox_mk"    ] = f"{ws}\\60_out\\doxygen\\mk\\doxygen.mk"
 

@@ -2,7 +2,7 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.pkgs as pkgs
 
 jinja2 = None
 # リリース時にはコメントアウトしてください
-#import jinja2
+# import jinja2
 
 class jinja2_environment:
     loader = None
@@ -14,8 +14,9 @@ class jinja2_environment:
     def add_filter(s,name,function):
         s.env.filters[name]=function
 
-    def get_template(s,name:str):
-        s.tmp = jinja2_template(s.env.get_template(name))
+    def get_template(s,name:str,parent:str="."):
+        tmp = s.env.get_template(name, parent=parent)
+        s.tmp = jinja2_template(tmp)
         return s.tmp
 
 class jinja2_template:

@@ -971,7 +971,7 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     temp_data["data_d74c99efdbb745129d4e98d2194bc941"]=data
 
     try:
-        template  = environment.get_template(name=tmp_file_name)
+        template  = environment.get_template(name=tmp_file_name,parent=tmp_dir)
         out_text  = template.render(temp_data)
         log_info(f"{func} > template : {template}")
         log_info(f"{func} > out_text : {out_text[:30]}(...)")
@@ -983,7 +983,7 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
         log_std_err( f"tmp_dir       : {tmp_dir}")
         log_std_err( f"tmp_file_name : {tmp_file_name}")
         log_std_err( f"cur           : {cur} -> {os.getcwd()}")
-        log_std_err( f"temp_data     : {temp_data}")
+        log_std_err( f"temp_data     : {str(temp_data)[:30]}")
         # カレントディレクトリを元に戻す
         os.chdir(cur)
         # プロセスを異常終了する
