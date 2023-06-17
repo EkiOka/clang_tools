@@ -31,6 +31,8 @@ def __main(s:cmd):
     h_masks   = f"{target}\\**\\*.h"
     cpp_masks = f"{target}\\**\\*.cpp"
 
+    upl["dir_target"] = target 
+
     upl["masks_target_src" ] = [c_masks,h_masks,cpp_masks]
     upl["masks_target_c"   ] = c_masks
     upl["masks_target_h"   ] = h_masks
