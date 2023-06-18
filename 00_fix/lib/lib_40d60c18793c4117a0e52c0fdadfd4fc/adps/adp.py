@@ -313,6 +313,12 @@ def cnv_file_ext(path:str)->str:
 def cnv_rel_path(path:str,start:str=None):
     """相対パスを取得"""
     return os.relpath(path,start)
+def cnv_rel_names(path:str,start:str=None):
+    """相対パスを含めたファイル名に変換"""
+    res = os.relpath(path,start)
+    res = res.replace("\\","_D_")
+    res = res.replace("/","_D_")
+    return res
 #------------------------------------------------------------------------
 # FILE INFORMATION
 #------------------------------------------------------------------------
@@ -1006,6 +1012,7 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     environment.add_filter("load_yaml",load_yaml)
     environment.add_filter("load_text",load_text)
     environment.add_filter("file_list",get_file_list)
+    environment.add_filter("rel_names",cnv_rel_names)
 
     # テンプレートに渡すデータ
     temp_data = dict()
@@ -1044,7 +1051,10 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
 def cnv_markdown_to_html(src:str,include_base_path:str="."):
     """マークダウンテキストをHTMLに変換
     """
-    markdown.convert(src,include_base_path=include_base_path)
+    if include_base_path == ".":
+        include_base_path = get_cur_dir().replace("\\","/")
+    return markdown.convert(src,include_base_path=include_base_path)
+
 #------------------------------------------------------------------------
 # ENVIRONMENT
 #------------------------------------------------------------------------

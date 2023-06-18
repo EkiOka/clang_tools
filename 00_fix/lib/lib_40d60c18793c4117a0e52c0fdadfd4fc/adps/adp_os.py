@@ -104,11 +104,11 @@ def makedirs(path:str,exist_ok:bool=True):
 def replace(src:str, dst:str):
     __import()
     os.replace(src=src,dst=dst)
-def relpath(path:str,start:str=None):
+def relpath(path:str,start:str=None)->str:
     __import()
     res = ""
     if start == None:
         res = os.path.relpath(path)
     else:
         res = os.path.relpath(path,start)
-    return res
+    return str(res)

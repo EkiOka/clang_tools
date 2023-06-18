@@ -23,8 +23,8 @@ def convert(
         extension_configs:dict=None,
         include_base_path:str="."):
     __import()
-    if extention == None:
-        extention = [
+    if extensions == None:
+        extensions = [
             "admonition",
             "tables",
             "toc",
@@ -42,5 +42,6 @@ def convert(
         extensions=extensions,
         extension_configs=extension_configs
     )
-    md.convert(md_text)
+    res = md.convert(md_text)
+    return res
 
