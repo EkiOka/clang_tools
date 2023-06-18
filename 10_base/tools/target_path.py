@@ -6,9 +6,16 @@ class cmd(cab.cmd_app):
     pass
 
 def __main(s:cmd):
-    # リストの読み出し
+
+    #---------------------------------------------------------------------
+    # リスト読出
+    #---------------------------------------------------------------------
     upl = pl.user_path_list()
     epl = pl.env_path_list()
+
+    #---------------------------------------------------------------------
+    # 環境パス取得
+    #---------------------------------------------------------------------
 
     # ワークスペース内の基本となるディレクトリ
     # ユーザー固有の入出力を設定する場合に使用してください。
@@ -23,20 +30,31 @@ def __main(s:cmd):
     dir_tmp_filelist = epl["dir_tmp_filelist"]
     dir_out_filelist = epl["dir_out_filelist"]
 
+    #---------------------------------------------------------------------
+    # ターゲットルートパス
+    #---------------------------------------------------------------------
+
     # 解析対象のターゲットソフトのパス設定
     target = f"{dir_user}\\src"
+    upl["dir_target"] = target 
+
+    #---------------------------------------------------------------------
+    # マスク
+    #---------------------------------------------------------------------
 
     # ファイルリスト生成用のマスク設定
     c_masks   = f"{target}\\**\\*.c"
     h_masks   = f"{target}\\**\\*.h"
     cpp_masks = f"{target}\\**\\*.cpp"
 
-    upl["dir_target"] = target 
-
     upl["masks_target_src" ] = [c_masks,h_masks,cpp_masks]
     upl["masks_target_c"   ] = c_masks
     upl["masks_target_h"   ] = h_masks
     upl["masks_target_cpp" ] = cpp_masks
+
+    #---------------------------------------------------------------------
+    # ファイルリスト
+    #---------------------------------------------------------------------
 
     # ファイルリストの生成先設定
     upl["file_tmp_file_list_target_src" ] = f"{dir_tmp_filelist}\\target_src.json"
@@ -52,11 +70,25 @@ def __main(s:cmd):
     upl["file_out_file_list_target_cpp" ] = f"{dir_out_filelist}\\target_cpp.json"
     upl["file_out_file_list_target_inc" ] = f"{dir_out_filelist}\\target_inc.json"
 
+    #---------------------------------------------------------------------
+    # makefile
+    #---------------------------------------------------------------------
+
     # ファイルリストのmakefile
     upl["file_tmpl_target_mk" ] = f"{dir_user_template}\\mk\\target.mk"
     upl["file_tmp_target_mk"  ] = f"{dir_tmp_mk}\\target.mk"
 
-    # リストの更新
+    # doxygenのmakefile
+    upl["file_tmpl_doxygen_mk" ] = f"{dir_user_template}\\mk\\doxygen.mk"
+    upl["file_tmp_doxygen_mk"  ] = f"{dir_tmp_mk}\\doxygen.mk"
+    upl["file_tmpl_doxygen_p1_mk" ] = f"{dir_user_template}\\mk\\doxygen_phase1.mk"
+    upl["file_tmp_doxygen_p1_mk"  ] = f"{dir_tmp_mk}\\doxygen_phase1.mk"
+    upl["file_tmpl_doxygen_p2_mk" ] = f"{dir_user_template}\\mk\\doxygen_phase2.mk"
+    upl["file_tmp_doxygen_p2_mk"  ] = f"{dir_tmp_mk}\\doxygen_phase2.mk"
+
+    #---------------------------------------------------------------------
+    # リスト更新
+    #---------------------------------------------------------------------
     pl.update_user_path(upl)
     return
 
