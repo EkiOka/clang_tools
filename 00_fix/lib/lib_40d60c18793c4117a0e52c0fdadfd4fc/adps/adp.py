@@ -24,9 +24,9 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_shutil     as shutil
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_subprocess as subprocess
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_sys        as sys
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_traceback  as traceback
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_urllib     as urllib
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_uuid       as uuid
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_yaml       as yaml
-
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list           as pl
 
 #========================================================================
@@ -1119,6 +1119,32 @@ def re_group(match_result,name:str):
     return re.group(match_result,name)
 def cnv_text_to_sha256(value:str)->str:
     return hashlib.sha256(value.encode(ENC_DEF))
+def replace_url(
+        src_url:str,
+        dest_scheme=lambda scheme: scheme,
+        dest_netloc=lambda netloc: netloc,
+        dest_path=lambda path: path,
+        dest_query=lambda query: query,
+        dest_fragment=lambda fragment: fragment,
+        )->str:
+    """URLの一部を置き換えます
+    
+    dest_xxxは置換用のラムダ式を設定してください。デフォルトは置き換え無しです。
+    """
+    purl = urllib.urlparse(src_url)
+    res = ""
+    if purl.scheme != "":
+        res = res + dest_scheme(purl.scheme) +":"
+    if purl.netloc != "":
+        res = res + "//" + dest_netloc(purl.netloc)
+    if purl.path != "":
+        res = res + dest_path(purl.path)
+    if purl.query != "":
+        res = res + "?" + dest_query(purl.query)
+    if purl.fragment != "":
+        res = res + "#" + dest_fragment(purl.fragment)
+    
+    return res
 #------------------------------------------------------------------------
 # PROCESS
 #------------------------------------------------------------------------
