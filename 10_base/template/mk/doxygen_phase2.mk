@@ -3,6 +3,7 @@
 {%- set env_vars  = data_4d22a990e03e4ff0b66061daa1674a0d -%}
 {%- set tmpl_inf  = data_095064f18e894dcfaa3f8d12b1d0b9ca -%}
 {%- set data_root = data_d74c99efdbb745129d4e98d2194bc941 -%}
+{%- set xml_files = env_path.mask_out_dox_xml_files | file_list(True)  -%}
 
 ##########################################################################
 # VARIABLES
@@ -13,29 +14,33 @@
 MF_NAME=$(notdir $(MAKEFILE_LIST))
 MF_DIR=$(dir $(MAKEFILE_LIST))
 
-DXY_LOG={{env_path.dir_out_dox}}\doxygen.log
-
-
 ##########################################################################
 # ALL
 ##########################################################################
 
 .PHONY : all
 
-all: {{env_path.dir_out_dox}}\doxygen.log
-	@echo $(MF_NAME) ^> target : $@
-	@echo $(MF_NAME) ^> depend : $<
-	@echo $(MF_NAME) ^> new    : $?
-	@py_cmd user_make "-src_name:file_tmpl_doxygen_p2_mk" "-dest_name:file_tmp_doxygen_p2_mk" "-target:all"
-
-
-##########################################################################
-# PHASE1
-##########################################################################
-
-{{env_path.dir_out_dox}}\doxygen.log:
-	@echo $(MF_NAME) ^> target : $@
-	@echo $(MF_NAME) ^> depend : $<
-	@echo $(MF_NAME) ^> new    : $?
+all: {% for xml_file in xml_files %}{{ xml_file | replace(".xml",".yml") | replace("\\xml\\","\\yml\\")  }} {% endfor %}
+	@echo $(MF_NAME) ^> target                 : $@
+	@echo $(MF_NAME) ^> depend                 : $<
+	@echo $(MF_NAME) ^> new                    : $?
+	@echo $(MF_NAME) ^> mask_out_dox_xml_files : {{env_path.mask_out_dox_xml_files}}
+	@echo $(MF_NAME) ^> xml_files              : {% for xml_file in xml_files %}{{ xml_file }} {% endfor %}
 	@tmp2out.bat
-	@py_cmd user_make "-src_name:file_tmpl_doxygen_p1_mk" "-dest_name:file_tmp_doxygen_p1_mk" "-target:all"
+
+##########################################################################
+# DOXYGEN RUN
+##########################################################################
+{% for xml_file in xml_files %}
+{{ xml_file | replace(".xml",".yml") | replace("\\xml\\","\\yml\\") }}: {{ xml_file }}
+	@echo $(MF_NAME) ^> target : $@
+	@echo $(MF_NAME) ^> depend : $<
+	@echo $(MF_NAME) ^> new    : $?
+	@py_cmd gen_doxygen_yml "-src_path:$<" "-dest_path:$@"
+{% endfor %}
+##########################################################################
+# USER EDIT FILES
+##########################################################################
+{% for xml_file in xml_files %}
+{{ xml_file }}:
+{% endfor %}

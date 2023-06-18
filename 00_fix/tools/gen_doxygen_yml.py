@@ -4,18 +4,15 @@
 #####################################################################
 # import
 #####################################################################
-
-import sys
-from lib_a48c5c3ad4e94017bcc275492c101193 import ul
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_app_basic as cab
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 import doxygen_compound as doxygen
 from xsdata.formats.dataclass.parsers import XmlParser
-
-
 #####################################################################
 # 内部関数定義
 #####################################################################
 
-def __main(src_path:str, dest_path:str):
+def __main(s, src_path:str, dest_path:str):
     """シェル起動基点
 
     Parameters
@@ -23,11 +20,11 @@ def __main(src_path:str, dest_path:str):
     params : dict
         起動引数
     """
-    src_txt = ul.load_text(src_path)
+    src_txt = a.load_text(src_path)
     parser = XmlParser()
     xml_data = parser.from_string(src_txt, doxygen.DoxygenType)
     dest = __cnv(xml_data)
-    ul.save_yaml(dest_path,dest)
+    a.save_yaml(dest_path,dest)
 
 #--------------------------------------------------------------------
 # 各要素の変換関数
@@ -347,7 +344,7 @@ def __id(src:str):
     """
     res = ""
     if src != None:
-        res = ul.cnv_text_to_sha256(src)
+        res = a.cnv_text_to_sha256(src)
     return res
 
 def __type(src)->str:
@@ -372,10 +369,8 @@ def __type(src)->str:
 # シェル起動
 #####################################################################
 
-app = ul.cmd_app()
-app.args_cfg={
-    "py":{"type":"text"},
-    "src_path":{"type":"text"},
-    "dest_path":{"type":"text"}
-}
-app.start(__name__,__main)
+app = cab.cmd_app("1f46f8135a9046d881b7849a66ecc91c")
+app.add_param_cfg_text("src_path")
+app.add_param_cfg_text("dest_path")
+app.reg_main(__main)
+app.start()

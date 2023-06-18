@@ -11,5 +11,5 @@ def __import():
     
 def glb(masks:str,recursive=True)->str:
     __import()
-    res = glob.glob(masks)
-    return 
+    res = glob.glob(masks,recursive = recursive)
+    return res

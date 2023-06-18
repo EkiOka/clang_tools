@@ -497,7 +497,7 @@ def move_file(src:str,dest:str):
     os.replace(src,dest)
 def get_file_list(mask,recursive=True):
     res = list()
-    if isinstance(mask,list[str]):
+    if isinstance(mask,list):
         for m in mask:
             g = glob.glb(m,recursive=recursive)
             res.extend(g)
@@ -1107,6 +1107,8 @@ def re_match(text:str,pattern:str=None, compiled_re=None):
     return res
 def re_group(match_result,name:str):
     return re.group(match_result,name)
+def cnv_text_to_sha256(value:str)->str:
+    return hashlib.sha256(value.encode(ENC_DEF))
 #------------------------------------------------------------------------
 # PROCESS
 #------------------------------------------------------------------------

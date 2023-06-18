@@ -52,7 +52,8 @@ def initialize(s:cmd_init_path):
     dest[ "dir_out_dox_xml"     ] = f"{ws}\\60_out\\doxygen\\xml"
     dest[ "dir_out_dox_yml"     ] = f"{ws}\\60_out\\doxygen\\yml"
 
-    dest[ "mask_dox_xml_files"     ] = f"{ws}\\50_out_tmp\\doxygen\\xml\\**\\*_8c.xml"
+    dest[ "mask_tmp_dox_xml_files" ] = f"{ws}\\50_out_tmp\\doxygen\\xml\\**\\*_8c.xml"
+    dest[ "mask_out_dox_xml_files" ] = f"{ws}\\60_out\\doxygen\\xml\\**\\*_8c.xml"
     dest[ "file_doxyfile_template" ] = f"{ws}\\20_user\\template\\doxygen\\Doxyfile"
 
     dest[ "file_dox_mk_template" ] = f"{ws}\\20_user\\template\\doxygen.mk"
