@@ -21,7 +21,9 @@
         {{ data_cfg | tojson }}
     </script>
     <style>{%- include "markdown.css" -%}</style>
-    <script type="text/javascript" src="mermaid.min.js"></script>
+    <script type="text/javascript">
+        {%- include "mermaid.min.js" | safe -%}
+    </script>
     <script type="text/javascript">
         function toc_toggle(){
             var toc = document.getElementsByClassName("toc")[0];
