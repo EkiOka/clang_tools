@@ -17,6 +17,7 @@ def __main(s,src_md_path:str,src_cfg_name:str,src_tmpl_name:str,dest_html_path:s
     src_tmpl_path = src_tmpl_name
 
     src_md_text   = a.load_text(src_md_path)
+    src_md_dir    = a.cnv_abs_dir_path(src_md_path)
     src_yaml_path = a.cnv_abs_file_path_none_ext(src_md_path)+".yml"
     src_yaml_data = dict()
     try:
@@ -24,7 +25,7 @@ def __main(s,src_md_path:str,src_cfg_name:str,src_tmpl_name:str,dest_html_path:s
     except:
         src_yaml_data = dict()
     src_cfg_data = a.load_yaml(src_cfg_path)
-    html_text = a.cnv_markdown_to_html(src_md_text)
+    html_text = a.cnv_markdown_to_html(src_md_text,src_md_dir)
     a.log_info(f"{func} > src_md_text : {src_md_text}")
     a.log_info(f"{func} > html_text   : {html_text}")
 
