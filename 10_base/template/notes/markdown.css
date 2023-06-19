@@ -24,7 +24,7 @@ body {
   /* pos / size */
   top:0px;
   left:0px;
-  width:99%;
+  width:95%;
   margin: 0;
   padding: 0 1% 0 1%;
 
@@ -141,11 +141,17 @@ p {
   margin-bottom: 0.2em;
   margin-left: auto;
   margin-right: auto;
-  width: 99%;
+  width: 100%;
   padding-bottom: 1px;
 
   /* color */
   background: var(--light_lv_1);
+}
+blockquote {
+  /* pos / size */
+
+  /* color */
+  border-left: var(--base_border);
 }
 
 /* ----------------------------------------
@@ -174,7 +180,7 @@ table {
   /* pos / size */
   border-collapse: separate;
   border-spacing: 5px;
-  width: 99%;
+  width: 100%;
 
   /* color */
 }
@@ -206,7 +212,7 @@ table td {
 
 img {
   /* pos / size */
-  max-width: 99%;
+  max-width: 100%;
   max-height: 300px;
 
   /* color */
@@ -219,7 +225,7 @@ img {
 pre,
 code {
   /* pos / size */
-  width: 99%;
+  width: 100%;
   border-radius: 20px;
 
   /* color */
@@ -227,7 +233,7 @@ code {
 
 code div {
   /* pos / size */
-  width: 99%;
+  width: 100%;
 
   background: initial;
   border: initial;
@@ -266,11 +272,11 @@ p code {
 
   /* color */
   background-color: var(--dark_lv_1);
-  color: var(--base_bg_color);
-  border: 3px solid var(--base_bd_color);
-  border-radius: 7px 7px 7px 7px;
-  overflow:scroll;
-  visibility:hidden;
+  color           : var(--base_bg_color);
+  border          : 3px solid var(--base_bd_color);
+  border-radius   : 7px 7px 7px 7px;
+  overflow        : scroll;
+  visibility      : visible;
 }
 
 .mermaid {
