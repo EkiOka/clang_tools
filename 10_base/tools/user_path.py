@@ -49,7 +49,7 @@ def __main(s:cmd):
     #---------------------------------------------------------------------
 
     upl["mask_user_notes"]=f"{dir_user_notes}\\**\\*.md"
-    upl["file_user_note_css"]=f"{dir_user_notes}\\markdown.css"
+    upl["file_user_note_css"]=f"{dir_user_tmpl_note}\\markdown.css"
     upl["file_user_note_cfg"]=f"{dir_user_cfg}\\note_common.yml"
     upl["file_user_note_tmpl"]=f"{dir_user_tmpl_note}\\note.html"
 

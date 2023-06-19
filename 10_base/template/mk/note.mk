@@ -60,7 +60,7 @@ all: $(DEST_FILES)
 ##########################################################################
 
 {% for md_file in md_files %}
-{{tmp_dir}}\{{md_file | rel_names(base) | replace(".md",".html")}}: {{md_file}}
+{{tmp_dir}}\{{md_file | rel_names(base) | replace(".md",".html")}}: {{md_file}} {{css_file}} {{tmpl_file}} {{cfg_file}}
 	@echo $(MF_NAME) ^> 
 	@echo $(MF_NAME) ^> target : $@
 	@echo $(MF_NAME) ^> depend : $<
