@@ -23,16 +23,35 @@
     <style>{%- include "markdown.css" -%}</style>
     <script type="text/javascript" src="mermaid.min.js"></script>
     <script type="text/javascript">
+        function toc_toggle(){
+            var toc = document.getElementsByClassName("toc")[0];
+            if ( toc.style.visibility == "hidden" ){
+                toc.style.visibility = "visible";
+            } else {
+                toc.style.visibility = "hidden";
+            }
+        }
         function loadFinished(){
             var elem = document.getElementById("json-data");
             var data = JSON.parse(elem.textContent);
+            console.log(data)
 
+            var toc_icon = document.getElementById("toc_icon");
+            toc_icon.onclick = event => toc_toggle();
             mermaid.initialize({startOnLoad:true});
         }
-        window.addEventListener('load', loadFinished);
+        window.addEventListener("load", loadFinished);
     </script>
 </head>
 <body>
     {{data_contents}}
+    <svg id="toc_icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="-0.5 -0.5 123 73">
+        <defs/>
+        <g>
+            <rect x="1" y="1" width="120" height="10" rx="1.5" ry="1.5" fill="black" stroke="rgb(0, 0, 0)" stroke-width="1" pointer-events="all"/>
+            <rect x="1" y="31" width="120" height="10" rx="1.5" ry="1.5" fill="black" stroke="rgb(0, 0, 0)" stroke-width="1" pointer-events="all"/>
+            <rect x="1" y="61" width="120" height="10" rx="1.5" ry="1.5" fill="black" stroke="rgb(0, 0, 0)" stroke-width="1" pointer-events="all"/>
+        </g>
+    </svg>
 </body>
 </html>
