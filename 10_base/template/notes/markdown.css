@@ -299,6 +299,34 @@ p code {
 
 }
 
+.codehilite .k {
+  color:lightblue;
+}
+.codehilite .nf {
+  color:lightgreen;
+}
+.codehilite .s1 {
+  color:lightcoral;
+}
+.codehilite .s {
+  color:lightcoral;
+}
+.codehilite .mi {
+  color:lightcoral;
+}
+.codehilite .p {
+  color:lightyellow;
+}
+.codehilite .nn {
+  color:greenyellow;
+}
+.codehilite .kn {
+  color:lightseagreen;
+}
+.codehilite .kt {
+  color:lightskyblue;
+}
+
 /* ----------------------------------------
   id
 ---------------------------------------- */

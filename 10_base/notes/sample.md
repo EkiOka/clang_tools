@@ -42,10 +42,9 @@ sequenceDiagram
 ***code***
 
 ```c
-
-int main(void){
-    print("Ken->>Aki: Hi!")
-    print("Aki->>Ken: Persistent!")
+int main(void)
+{
+    print("hello");
     return 0;
 }
 
