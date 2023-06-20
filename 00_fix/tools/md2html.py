@@ -1,17 +1,15 @@
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_app_basic as cab
 
-# a.log_enable_debug("c49abc2516d340b799c0d69cf7b04eb0")
-
 class cmd(cab.cmd_app):
     pass
 
 def __main(s,src_md_path:str,src_cfg_name:str,src_tmpl_name:str,dest_html_path:str):
     func = a.cur_function_name()
-    a.log_info(f"{func} > src_md_path    : {src_md_path}")
-    a.log_info(f"{func} > src_cfg_name   : {src_cfg_name}")
-    a.log_info(f"{func} > src_tmpl_name  : {src_tmpl_name}")
-    a.log_info(f"{func} > dest_html_path : {dest_html_path}")
+    a.log_debug(f"{func} > src_md_path    : {src_md_path}")
+    a.log_debug(f"{func} > src_cfg_name   : {src_cfg_name}")
+    a.log_debug(f"{func} > src_tmpl_name  : {src_tmpl_name}")
+    a.log_debug(f"{func} > dest_html_path : {dest_html_path}")
 
     src_cfg_path = src_cfg_name
     src_tmpl_path = src_tmpl_name
@@ -26,8 +24,8 @@ def __main(s,src_md_path:str,src_cfg_name:str,src_tmpl_name:str,dest_html_path:s
         src_yaml_data = dict()
     src_cfg_data = a.load_yaml(src_cfg_path)
     html_text = a.cnv_markdown_to_html(src_md_text,src_md_dir)
-    a.log_info(f"{func} > src_md_text : {src_md_text}")
-    a.log_info(f"{func} > html_text   : {html_text}")
+    a.log_debug(f"{func} > src_md_text : {src_md_text}")
+    a.log_debug(f"{func} > html_text   : {html_text}")
 
     cfg_data = dict()
     cfg_data["data_0ad5e680ae104f759b7452632d6f6380"]=src_cfg_data

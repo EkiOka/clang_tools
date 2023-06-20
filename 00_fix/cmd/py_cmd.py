@@ -7,8 +7,6 @@
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list as pl
 
-# a.log_enable_debug("3d724e8215af4a53af1d70ac9203ce72")
-
 def init():
     a.cur_logger_id = "8451209a5f2642459f3a6ff66b56e409"
     env_path:dict=dict()

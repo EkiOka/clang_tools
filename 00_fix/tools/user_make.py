@@ -2,8 +2,6 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list          as pl
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_app_basic as cab
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp           as a
 
-# a.log_enable_debug("063a8fce21a24e73a25c72c6c9321083")
-
 def __main(s:cab.cmd_app, src_name:str, dest_name:str, target:str):
     make_exe_path = pl.get_user_path("make_exe")
     dest = a.cnv_template_to_text({},src_name)

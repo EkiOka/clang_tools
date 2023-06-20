@@ -3,8 +3,6 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list as pl
 import glob
 
-# a.log_enable_debug("aeebe5f7edbb4020b67221db7b79f644")
-
 class cmd_update_copy(cab.cmd_app):
     @staticmethod
     def start_path_app():
@@ -52,22 +50,22 @@ def main_dir_name(s:cmd_update_copy,src_name:str,dest_name:str):
 
 def copy_update_files(src_dir:str,dest_dir:str):
 
-    a.log_info(f"src_dir:{src_dir}")
-    a.log_info(f"dest_dir:{dest_dir}")
+    a.log_debug(f"src_dir:{src_dir}")
+    a.log_debug(f"dest_dir:{dest_dir}")
 
     src_files = glob.glob(f"{src_dir}\\**\*",recursive=True)
 
     for src_path in src_files:
         if a.is_file(src_path):
-            a.log_info(f"{src_path} is file.")
+            a.log_debug(f"{src_path} is file.")
             rel = a.cnv_rel_path(src_path,src_dir)
             dest_path = a.cnv_abs_path(f"{dest_dir}\\{rel}")
             if copy_update_file(src_path,dest_path):
-                a.log_info(f"copy {src_path} => {dest_path}")
+                a.log_debug(f"copy {src_path} => {dest_path}")
             else:
-                a.log_info(f"did not copy {src_path}.")
+                a.log_debug(f"did not copy {src_path}.")
         else:
-            a.log_info(f"{src_path} is directory.")
+            a.log_debug(f"{src_path} is directory.")
 
 def copy_update_file(src:str,dest:str)->bool:
     """ファイルの内容に変化がある場合は更新のため上書きコピーします

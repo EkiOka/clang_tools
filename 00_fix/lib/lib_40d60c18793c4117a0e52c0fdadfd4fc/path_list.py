@@ -24,22 +24,22 @@ def path_list_path()->str:
     """パスリストファイル(JSON)へのパスを取得"""
     func = a.cur_function_name()
     res = a.environ_variable(EVAR_NAME_PATH_LIST,"")
-    a.log_info(f"{func} > res : {res}")
+    a.log_debug(f"{func} > res : {res}")
     if res == "":
         res = f"{a.get_cur_dir()}\\path_list.json"
-    a.log_info(f"{func} > res : {res}")
+    a.log_debug(f"{func} > res : {res}")
     return res
 def load_path()->dict:
     """パスリスト読み出し"""
     func = a.cur_function_name()
     path = path_list_path()
-    a.log_info(f"{func} > path : {path}")
+    a.log_debug(f"{func} > path : {path}")
     res = None
     try:
         res = a.load_json(path)
     except:
         res = dict()
-    a.log_info(f"{func} > res : {str(res)[:30]}")
+    a.log_debug(f"{func} > res : {str(res)[:30]}")
     return res
 
 def save_path(path_list:dict):
@@ -60,19 +60,19 @@ def path_list(id:str)->dict:
         パスリスト
     """
     func = a.cur_function_name()
-    a.log_info(f"{func} > id : {id}")
+    a.log_debug(f"{func} > id : {id}")
     res = {}
     if id == None or id == "":
         a.raise_NotFound(id,"path list ID")
     else:
         path_list = load_path()
-        a.log_info(f"{func} > path_list : {str(path_list)[:30]}(...)")
+        a.log_debug(f"{func} > path_list : {str(path_list)[:30]}(...)")
         if id in path_list.keys():
             res = path_list[id]
         else:
             path_list[id]=res
             save_path(path_list)
-    a.log_info(f"{func} > res : {str(res)[0:30]}(...)")
+    a.log_debug(f"{func} > res : {str(res)[0:30]}(...)")
     return res
 
 def update_path(id_src:dict, id:str)->dict:
@@ -100,7 +100,7 @@ def env_path_list()->dict:
     """環境固有パスリスト取得"""
     func = a.cur_function_name()
     id = env_id()
-    a.log_info(f"{func} > id : {id}")
+    a.log_debug(f"{func} > id : {id}")
 
     return path_list(id)
 
@@ -108,7 +108,7 @@ def user_path_list()->dict:
     """ユーザー固有パスリスト取得"""
     func = a.cur_function_name()
     id = a.user_name()
-    a.log_info(f"{func} > id : {id}")
+    a.log_debug(f"{func} > id : {id}")
     return path_list(id)
 
 def get_path(name:str):
@@ -120,19 +120,19 @@ def get_path(name:str):
             name = split_name[0]
             lst = env_path_list()
             res = lst.get(name,"")
-            a.log_info(f"{func} > name : {name}")
-            a.log_info(f"{func} > lst : {lst}")
-            a.log_info(f"{func} > res : {res}")
+            a.log_debug(f"{func} > name : {name}")
+            a.log_debug(f"{func} > lst : {lst}")
+            a.log_debug(f"{func} > res : {res}")
             pass
         case 2:
             id = split_name[0]
             name = split_name[1]
             lst = path_list(id)
             res = lst.get(name,"")
-            a.log_info(f"{func} > id : {id}")
-            a.log_info(f"{func} > name : {name}")
-            a.log_info(f"{func} > lst : {lst}")
-            a.log_info(f"{func} > res : {res}")
+            a.log_debug(f"{func} > id : {id}")
+            a.log_debug(f"{func} > name : {name}")
+            a.log_debug(f"{func} > lst : {lst}")
+            a.log_debug(f"{func} > res : {res}")
             pass
         case _:
             a.raise_Exception(f"nameの値{name}が異常です。")
@@ -143,9 +143,9 @@ def get_user_path(name:str):
     res = ""
     lst = user_path_list()
     res = lst.get(name,"")
-    a.log_info(f"{func} > name : {name}")
-    a.log_info(f"{func} > lst  : {lst}")
-    a.log_info(f"{func} > res  : {res}")
+    a.log_debug(f"{func} > name : {name}")
+    a.log_debug(f"{func} > lst  : {lst}")
+    a.log_debug(f"{func} > res  : {res}")
     return res
 
 def get_env_path(name:str):
@@ -153,7 +153,7 @@ def get_env_path(name:str):
     res = ""
     lst = env_path_list()
     res = lst.get(name,"")
-    a.log_info(f"{func} > name : {name}")
-    a.log_info(f"{func} > lst  : {lst}")
-    a.log_info(f"{func} > res  : {res}")
+    a.log_debug(f"{func} > name : {name}")
+    a.log_debug(f"{func} > lst  : {lst}")
+    a.log_debug(f"{func} > res  : {res}")
     return res

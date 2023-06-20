@@ -70,21 +70,21 @@ class cmd_app_internal:
     # METHOD / MAIN PROCESS
     #------------------------------------------------------------------------
     def pre_main(s):
-        a.log_info(f"---------------------------------------------------")
-        a.log_info(f"{s.args[0]}")
-        a.log_info(f"---------------------------------------------------")
-        a.log_info(f"cur_dir  : {a.get_cur_dir()}")
+        a.log_debug(f"---------------------------------------------------")
+        a.log_debug(f"{s.args[0]}")
+        a.log_debug(f"---------------------------------------------------")
+        a.log_debug(f"cur_dir  : {a.get_cur_dir()}")
         for i in range(0,len(s.args),1):
-            a.log_info(f"sys.argv[{i}] : {s.args[i]}")
+            a.log_debug(f"sys.argv[{i}] : {s.args[i]}")
         for k,v in s.args_cfg.items():
-            a.log_info(f"args_cfg : {k} : {v}")
+            a.log_debug(f"args_cfg : {k} : {v}")
         s.set_params()
         for k,v in s.params.items():
-            a.log_info(f"params : {k} : {v}")
+            a.log_debug(f"params : {k} : {v}")
         s.set_args_value()
         return
     def post_main(s):
-        a.log_info(f"---------------------------------------------------")
+        a.log_debug(f"---------------------------------------------------")
         return
     def set_params(s):
         """起動引数を辞書型としてparamsに設定します。
@@ -105,8 +105,8 @@ class cmd_app_internal:
         """
         func = a.cur_function_name()
         for (cfg_key,cfg_val) in s.args_cfg.items():
-            a.log_info(f"{func} > cfg_key:{cfg_key}")
-            a.log_info(f"{func} > cfg_val:{cfg_val}")
+            a.log_debug(f"{func} > cfg_key:{cfg_key}")
+            a.log_debug(f"{func} > cfg_val:{cfg_val}")
             cfg_type = cfg_val.get("type","")
             if not cfg_key in s.params.keys():
                 a.raise_Exception(f"起動時に指定された引数に{cfg_key}がありません。\nparams=({s.params})')")
@@ -117,20 +117,20 @@ class cmd_app_internal:
                     pass
                 case "path_list":
                     lst = list(str(prm_val).split(a.SEP_PATH2PATH))
-                    a.log_info(f"{func} > path_list > lst :{lst}")
+                    a.log_debug(f"{func} > path_list > lst :{lst}")
                     s.params[cfg_key] = lst
                     pass
                 case "path_name":
                     path = pl.get_path(prm_val)
-                    a.log_info(f"{func} > path_name > path :{path}")
+                    a.log_debug(f"{func} > path_name > path :{path}")
                     s.params[cfg_key] = path
                 case "env_path_name":
                     lst = pl.env_path_list()
-                    a.log_info(f"{func} > env_path_name > lst :{lst}")
+                    a.log_debug(f"{func} > env_path_name > lst :{lst}")
                     s.params[cfg_key] = lst.get(prm_val,"")
                 case "usr_path_name":
                     lst = pl.user_path_list()
-                    a.log_info(f"{func} > usr_path_name > lst :{lst}")
+                    a.log_debug(f"{func} > usr_path_name > lst :{lst}")
                     s.params[cfg_key] = lst.get(prm_val,"")
                 case _:
                     a.raise_Exception(f"未対応の型が指定されました。cfg_type='{cfg_type}'")
@@ -138,7 +138,7 @@ class cmd_app_internal:
         s.pre_main()
         if s.NAME_METHOD in s.__dict__.keys():
             func = a.cur_function_name()
-            a.log_info(f"{func} > params:{s.params}")
+            a.log_debug(f"{func} > params:{s.params}")
             s.main(s.__external, **s.params)
         else:
             a.raise_Exception(f"起動対象の関数{s.NAME_METHOD}が設定されていません。{s.reg_main.__name__}メソッドで登録してください。")

@@ -6,7 +6,7 @@ class cmd_init_path(cab.cmd_app):
     pass
 
 def initialize(s:cmd_init_path):
-    a.log_info(f"stat initialize.")
+    a.log_debug(f"stat initialize.")
     dest = pl.env_path_list()
 
     ws = a.get_cur_dir()
@@ -74,15 +74,15 @@ def initialize(s:cmd_init_path):
            if isinstance(v,str):
                 a.log_debug(f"key : {k} / value : {v}")
                 if not(a.is_exist(v)):
-                    a.log_info(f"make_dir:{v}")
+                    a.log_debug(f"make_dir:{v}")
                     a.make_dir(v)
            elif isinstance(v,list):
                for item in v:
                     a.log_debug(f"key : {k} / value : {item}")
                     if not(a.is_exist(item)):
-                        a.log_info(f"make_dir:{item}")
+                        a.log_debug(f"make_dir:{item}")
                         a.make_dir(item)
-    a.log_info(f"complete initialize.")
+    a.log_debug(f"complete initialize.")
 
 app = cmd_init_path("7cfa9d28d6604519a4cc0b37a985e8c4")
 app.reg_main(initialize)
