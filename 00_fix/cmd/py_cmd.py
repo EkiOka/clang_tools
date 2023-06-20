@@ -10,6 +10,7 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list as pl
 # a.log_enable_debug("3d724e8215af4a53af1d70ac9203ce72")
 
 def init():
+    a.cur_logger_id = "8451209a5f2642459f3a6ff66b56e409"
     env_path:dict=dict()
     env_path = pl.env_path_list()
     
@@ -30,13 +31,17 @@ def init():
 
                 a.raise_Exception(
                     f"path list initialize error. ({dir_tools}\\init_path.py)")
+    a.cur_logger_id = ""
+
 def start_cmd():
+    a.cur_logger_id = "ad4496626a664c46a84b203e5c9832c6"
+    
     env_path:dict=dict()
     env_path = pl.env_path_list()
 
     dir_tools      = env_path.get("dir_tools",     "")
     params = a.startup_params()
-    a.log_info(f"params:{params}")
+    a.log_debug(f"params:{params}")
 
     if len(params) >= 1:
 
@@ -46,7 +51,7 @@ def start_cmd():
         # .pyなししてい対応
         if a.cnv_file_ext(tool_name) == "":
             tool_name = tool_name + ".py"
-        a.log_info(f"tool_name:{tool_name}")
+        a.log_debug(f"tool_name:{tool_name}")
 
         tool_path = [ f"{dir}\\{tool_name}" for dir in dir_tools ]
 
@@ -65,14 +70,15 @@ def start_cmd():
                 except:
                     a.raise_Exception(f"start process error.(params:{tp})")
         if returncode == None:
-            a.log_debug("コマンドを発見できませんでした。探索対象となったパスをダンプします。")
+            a.log_info("コマンドを発見できませんでした。探索対象となったパスをダンプします。")
             for tp in tool_params:
-                a.log_debug(str(tp))
+                a.log_info(str(tp))
             a.raise_NotFound(
                 target=f"{tool_name}",
                 type_name="command")
     else:
         a.raise_Exception(f"parameter count error. ({params})")
+    a.cur_logger_id = ""
     return
 
 

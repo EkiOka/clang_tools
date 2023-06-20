@@ -20,11 +20,11 @@ def __import():
 
 
 def dictConfig(cfg:dict):
-    global logger
     __import()
     logging_config.dictConfig(cfg)
 
 def getLogger(id:str):
+    __import()
     return logging.getLogger(id)
 
 def std_err(msg:str):

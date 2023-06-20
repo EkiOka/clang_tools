@@ -128,7 +128,10 @@ prefix:str = ""
 """コマンドラインの先頭に表示する固定の文字列
 """
 
-__logger = None
+cur_logger_id:str = ""
+"""ログ出力を行う際の対象となるロガーのIDを設定する。
+
+標準のものを使用する場合は空文字を設定すること。"""
 
 #========================================================================
 # FUNCTION
@@ -706,20 +709,12 @@ def update_datetime(src:datetime.datetime,
 #------------------------------------------------------------------------
 # LOGGING
 #------------------------------------------------------------------------
-def log_enable_debug(id:str,cfg:dict=None):
-    """デバッグによるログ出力を有効にします
-
-    Parameters
-    ----------
-    id : str
-        固有IDを設定してください
-    cfg : dict, optional
-        デバッグ出力の出力設定, by default None
-    """
-    global __logger
+def __log_setting(id_cfg:dict):
+    """デバッグの標準設定を行う。本ライブラリのimport初回のみ"""
     if prefix == "":
         set_default_prefix()
-    if cfg == None:            
+
+        # そのうち、外部ファイルにすること
         cfg = {
             "version": 1,
             "disable_existing_loggers": False,
@@ -729,11 +724,8 @@ def log_enable_debug(id:str,cfg:dict=None):
                 "standard": {
                     "format": f"{prefix}(%(levelname)s) %(message)s"
                 },
-                "add_position": {
-                    "format": f"{prefix}(%(levelname)s) %(funcName)s %(lineno)s %(message)s"
-                }
             },
-
+            # ハンドラ設定
             "handlers": {
                 "console": {
                     "class": "logging.StreamHandler",
@@ -741,33 +733,39 @@ def log_enable_debug(id:str,cfg:dict=None):
                     "formatter": "standard",
                     "stream": "ext://sys.stdout"
                 },
-                # "file": {
-                #     "class": "logging.FileHandler",
-                #     "level": "INFO",
-                #     "formatter": "standard",
-                #     "filename": f"{__name__}.log"
-                # },
+                "file": {
+                    "class": "logging.FileHandler",
+                    "level": "INFO",
+                    "formatter": "standard",
+                    "filename": f"logger.log"
+                },
                 "null": {
                     "class": "logging.NullHandler"
                 }
             },
-
-            "loggers": {
-                f"{id}": {
-                    "level": "DEBUG",
-                    "handlers": ["console"],
-                    "propagate": False
-                }
-            },
-
+            # ロガー設定
+            "loggers": id_cfg,
+            # ルートロガー設定
             "root": {
-                "level": "INFO"
+                "level": "INFO",
+                "handlers": ["console","file"],
             }
         }
-    
+        logging.dictConfig(cfg)
+def log_setup(id:str,level:str="DEBUG",handlers=["console"]):
+    """指定IDのlogger設定"""
+    cfg = {
+        id : {
+            "level": level,
+            "handlers": handlers,
+            "propagate": False
+        }
+    }
+    __log_setting(cfg)
+def log_setups(logger_cfg:dict):
+    """複数のlogger設定"""
+    __log_setting(logger_cfg)
 
-    logging.dictConfig(cfg)
-    __logger = logging.getLogger(id)
 def log_std_err(msg:str):
     """ログを標準エラー出力します。
 
@@ -800,12 +798,12 @@ def log_debug(msg:str):
     msg : str
         出力メッセージ
     """
-    if __logger != None:
-        if is_supposed_debug:
-            s_dec = dec.BC_BLUE
-            e_dec = dec.END
-            msg = f"{s_dec}{msg}{e_dec}"
-        logging.debug(msg,__logger)
+    logger = logging.getLogger(cur_logger_id)
+    if is_supposed_debug:
+        s_dec = dec.BC_BLUE
+        e_dec = dec.END
+        msg = f"{s_dec}{msg}{e_dec}"
+    logging.debug(msg,logger)
 def log_info(msg:str):
     """プログラムの状況や変数の内容、処理するデータ数など、後から挙動を把握しやすくするために残す情報を出力します。
 
@@ -814,13 +812,13 @@ def log_info(msg:str):
     msg : str
         出力メッセージ
     """
-    if __logger != None:
-        s_dec = ""
-        e_dec = ""
-        if is_supposed_debug:
-            s_dec = dec.FC_GREEN
-            e_dec = dec.END
-        logging.info(f"{s_dec}{msg}{e_dec}",__logger)
+    logger = logging.getLogger(cur_logger_id)
+    s_dec = ""
+    e_dec = ""
+    if is_supposed_debug:
+        s_dec = dec.FC_GREEN
+        e_dec = dec.END
+    logging.info(f"{s_dec}{msg}{e_dec}",logger)
 def log_warning(msg:str):
     """プログラムの処理は続いているが、何かしら良くないデータや通知すべきことについての情報を出力します。
 
@@ -829,13 +827,13 @@ def log_warning(msg:str):
     msg : str
         出力メッセージ
     """
-    if __logger != None:
-        s_dec = dec.FC_YELLOW
+    logger = logging.getLogger(cur_logger_id)
+    s_dec = ""
+    e_dec = ""
+    if is_supposed_debug:
+        s_dec = dec.FC_BLUE
         e_dec = dec.END
-        if is_supposed_debug:
-            s_dec = dec.FC_BLUE
-            e_dec = dec.END
-        logging.warning(f"{s_dec}{msg}{e_dec}",__logger)
+    logging.warning(f"{s_dec}{msg}{e_dec}",logger)
 def log_error(msg:str):
     """プログラム上の処理が中断したり、停止した場合の情報を出力します。
 
@@ -844,13 +842,13 @@ def log_error(msg:str):
     msg : str
         出力メッセージ
     """
-    if __logger != None:
+    logger = logging.getLogger(cur_logger_id)
+    s_dec = ""
+    e_dec = ""
+    if is_supposed_debug:
         s_dec = dec.FC_RED
         e_dec = dec.END
-        if is_supposed_debug:
-            s_dec = dec.FC_RED
-            e_dec = dec.END
-        logging.critical(f"{s_dec}{msg}{e_dec}",__logger)
+    logging.critical(f"{s_dec}{msg}{e_dec}",logger)
 def log_critical(msg:str):
     """システム全体や連携システムに影響する重大な問題が発生した場合の情報を出力します。
 
@@ -859,13 +857,13 @@ def log_critical(msg:str):
     msg : str
         出力メッセージ
     """
-    if __logger != None:
-        s_dec = dec.BC_RED
+    logger = logging.getLogger(cur_logger_id)
+    s_dec = ""
+    e_dec = ""
+    if is_supposed_debug:
+        s_dec = dec.FC_RED + dec.FB_REVERSE
         e_dec = dec.END
-        if is_supposed_debug:
-            s_dec = dec.FC_RED + dec.FB_REVERSE
-            e_dec = dec.END
-        logging.critical(f"{s_dec}{msg}{e_dec}",__logger)
+    logging.critical(f"{s_dec}{msg}{e_dec}",logger)
 def raise_Exception(msg:str):
     """汎用の例外を発生させます。
 
@@ -1150,3 +1148,7 @@ def replace_url(
 #------------------------------------------------------------------------
 def start_proc(params:list[str])->int:
     return subprocess.run(params)
+
+
+
+
