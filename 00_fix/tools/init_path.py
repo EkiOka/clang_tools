@@ -6,6 +6,7 @@ class cmd_init_path(cab.cmd_app):
     pass
 
 def initialize(s:cmd_init_path):
+    a.set_log_id("7b4bd489e3774252b3811288cfe321b4")
     a.log_debug(f"stat initialize.")
     dest = pl.env_path_list()
 
@@ -83,6 +84,7 @@ def initialize(s:cmd_init_path):
                         a.log_debug(f"make_dir:{item}")
                         a.make_dir(item)
     a.log_debug(f"complete initialize.")
+    a.set_log_id()
 
 app = cmd_init_path("7cfa9d28d6604519a4cc0b37a985e8c4")
 app.reg_main(initialize)

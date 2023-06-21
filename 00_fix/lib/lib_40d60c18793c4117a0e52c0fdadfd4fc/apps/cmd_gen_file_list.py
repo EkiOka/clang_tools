@@ -50,16 +50,20 @@ class cmd_gen_file_list(cab.cmd_app):
         app.start()
 
 def gen_file_list(s:cmd_gen_file_list, src_ena_masks:list,src_dis_masks:list, dest_path:str):
+    a.set_log_id("33e19b09cdb3479d8f3958484d1f8b27")
     func = a.cur_function_name()
     a.log_debug(f"{func} > src_ena_masks:{src_ena_masks}")
     a.log_debug(f"{func} > src_dis_masks:{src_dis_masks}")
     a.log_debug(f"{func} > dest_path:{dest_path}")
     files = s.get_files(src_ena_masks,src_dis_masks)
     a.save_json(dest_path,files)
+    a.set_log_id()
 
 def gen_file_list_name(s:cmd_gen_file_list, src_ena_masks:str,src_dis_masks:str, dest_name:str):
+    a.set_log_id("dce32b96162341a59f2096ad8c1d6d94")
     func = a.cur_function_name()
     a.log_debug(f"{func} > src_ena_masks:{src_ena_masks}")
     a.log_debug(f"{func} > src_dis_masks:{src_dis_masks}")
     a.log_debug(f"{func} > dest_name:{dest_name}")
     gen_file_list(s,src_ena_masks,src_dis_masks,dest_name)
+    a.set_log_id()

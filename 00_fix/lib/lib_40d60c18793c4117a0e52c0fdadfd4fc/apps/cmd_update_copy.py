@@ -49,6 +49,7 @@ def main_dir_name(s:cmd_update_copy,src_name:str,dest_name:str):
     main_dir_path(s,src_name,dest_name)
 
 def copy_update_files(src_dir:str,dest_dir:str):
+    a.set_log_id("984d5d5225974447867a2ee61de16454")
 
     a.log_debug(f"src_dir:{src_dir}")
     a.log_debug(f"dest_dir:{dest_dir}")
@@ -66,12 +67,14 @@ def copy_update_files(src_dir:str,dest_dir:str):
                 a.log_debug(f"did not copy {src_path}.")
         else:
             a.log_debug(f"{src_path} is directory.")
+    a.set_log_id()
 
 def copy_update_file(src:str,dest:str)->bool:
     """ファイルの内容に変化がある場合は更新のため上書きコピーします
     日付の変更のみの場合はコピーしません。
     ファイルパスの指定にはマスクは使えません。
     """
+    a.set_log_id("a1be2ca22d2e419d9fdc26f2bf1af3be")
     if not(a.is_exist(src)):
         a.raise_FileNotFound(src)
     run = False
@@ -101,4 +104,5 @@ def copy_update_file(src:str,dest:str)->bool:
                     a.log_debug(f"copy_update_file > not copy(SHA equal)")
             else:
                 a.log_debug(f"copy_update_file > not copy(timestamp equal)")
+    a.set_log_id()
     return run

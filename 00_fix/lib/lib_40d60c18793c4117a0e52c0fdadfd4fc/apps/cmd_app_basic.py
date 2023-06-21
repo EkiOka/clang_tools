@@ -70,6 +70,7 @@ class cmd_app_internal:
     # METHOD / MAIN PROCESS
     #------------------------------------------------------------------------
     def pre_main(s):
+        a.set_log_id("b222422508b84451a4a5ef990cfb3a67")
         a.log_debug(f"---------------------------------------------------")
         a.log_debug(f"{s.args[0]}")
         a.log_debug(f"---------------------------------------------------")
@@ -82,9 +83,12 @@ class cmd_app_internal:
         for k,v in s.params.items():
             a.log_debug(f"params : {k} : {v}")
         s.set_args_value()
+        a.set_log_id()
         return
     def post_main(s):
+        a.set_log_id("b222422508b84451a4a5ef990cfb3a67")
         a.log_debug(f"---------------------------------------------------")
+        a.set_log_id()
         return
     def set_params(s):
         """起動引数を辞書型としてparamsに設定します。
@@ -103,6 +107,7 @@ class cmd_app_internal:
     def set_args_value(s):
         """paramsの内容をargs_cfgに従って展開します。
         """
+        a.set_log_id("94a6b9f58ebc449ca633a66ad40bc877")
         func = a.cur_function_name()
         for (cfg_key,cfg_val) in s.args_cfg.items():
             a.log_debug(f"{func} > cfg_key:{cfg_key}")
@@ -134,7 +139,9 @@ class cmd_app_internal:
                     s.params[cfg_key] = lst.get(prm_val,"")
                 case _:
                     a.raise_Exception(f"未対応の型が指定されました。cfg_type='{cfg_type}'")
+        a.set_log_id()
     def start(s):
+        a.set_log_id("0bba70e1d4d94ee8bbb4d39f18d557ef")
         s.pre_main()
         if s.NAME_METHOD in s.__dict__.keys():
             func = a.cur_function_name()
@@ -143,6 +150,7 @@ class cmd_app_internal:
         else:
             a.raise_Exception(f"起動対象の関数{s.NAME_METHOD}が設定されていません。{s.reg_main.__name__}メソッドで登録してください。")
         s.post_main()
+        a.set_log_id()
     def add_param_cfg_text(s,name:str):
         """起動引数設定にテキスト形式追加"""
         if a.re_match(name,compiled_re=s.__re_pattern_param):

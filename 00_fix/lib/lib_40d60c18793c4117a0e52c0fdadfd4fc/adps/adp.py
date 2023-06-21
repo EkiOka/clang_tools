@@ -128,10 +128,13 @@ prefix:str = ""
 """コマンドラインの先頭に表示する固定の文字列
 """
 
-cur_logger_id:str = ""
+__cur_logger_id:str = ""
 """ログ出力を行う際の対象となるロガーのIDを設定する。
 
 標準のものを使用する場合は空文字を設定すること。"""
+
+__logger_ids:list=[]
+"""ロガーIDをpush/popできるようにするためのリスト構造"""
 
 #========================================================================
 # FUNCTION
@@ -184,10 +187,12 @@ def __cnv_path_sep(path:str, sep:str=SEP_DIR2FILE)->str:
     str
         区切り文字を統一されたパス
     """
-    log_info(f"path: type={type(path)}, value ={path}")
-    log_info(f"sep:  type={type(sep)},  value ={sep}")
+    set_log_id("9a4b283c8aca443fbaf3377a7a612f4f")
+    log_debug(f"path: type={type(path)}, value ={path}")
+    log_debug(f"sep:  type={type(sep)},  value ={sep}")
     res = path.replace("/",sep)
     res = res.replace("\\",sep)
+    set_log_id()
     return res
 def cnv_abs_path(path:str,sep:str=SEP_DIR2FILE)->str:
     """絶対パス変換
@@ -226,6 +231,7 @@ def cnv_abs_dir_path(path:str,sep:str=SEP_DIR2FILE)->str:
     str
         絶対パス形式のディレクトリパス
     """
+    set_log_id("8ef66fab7c794930964f2a6daa194649")
     log_info(cur_function_name())
     abs_path = cnv_abs_path(path,sep)
     log_info(f"abs_path:{abs_path}")
@@ -237,6 +243,7 @@ def cnv_abs_dir_path(path:str,sep:str=SEP_DIR2FILE)->str:
         log_info(f"abs_path is not dir")
         res = os.dirname(abs_path)
     log_info(f"res:{res}")
+    set_log_id()
     return res
 def cnv_abs_file_path_none_ext(path:str,sep:str=SEP_DIR2FILE)->str:
     """ . と拡張子は除いた絶対パスに変換
@@ -260,7 +267,7 @@ def cnv_abs_file_path_none_ext(path:str,sep:str=SEP_DIR2FILE)->str:
     abs_path = cnv_abs_path(path,sep)
     res = ""
     if is_dir(abs_path):
-        raise Exception(f"ファイルパスの引数(path)にディレクトリパスが指定されました。\n(path:{path})")
+        raise_Exception(f"ファイルパスの引数(path)にディレクトリパスが指定されました。\n(path:{path})")
     else:
         res = abs_path
     res = os.splitext(res)[0]
@@ -709,6 +716,20 @@ def update_datetime(src:datetime.datetime,
 #------------------------------------------------------------------------
 # LOGGING
 #------------------------------------------------------------------------
+
+def set_log_id(id:str=""):
+    global __cur_logger_id
+    global __logger_ids
+    if id=="":
+        if len(__logger_ids)>0:
+            __cur_logger_id = __logger_ids.pop()
+        else:
+            __cur_logger_id = ""
+            log_warning("set_log_idの呼び出し回数が合いません。rootロガーを使用します。")
+    else:
+        __logger_ids.append(__cur_logger_id)
+        __cur_logger_id = id
+
 def __log_setting(id_cfg:dict):
     """デバッグの標準設定を行う。本ライブラリのimport初回のみ"""
     if prefix == "":
@@ -765,31 +786,6 @@ def log_setup(id:str,level:str="DEBUG",handlers=["console"]):
 def log_setups(logger_cfg:dict):
     """複数のlogger設定"""
     __log_setting(logger_cfg)
-
-def log_std_err(msg:str):
-    """ログを標準エラー出力します。
-
-    Parameters
-    ----------
-    msg : str
-        出力メッセージ
-    """
-    if is_supposed_debug:
-        logging.std_err(f"{prefix} > {dec.FC_RED}{msg}{dec.END}")
-    else:
-        logging.std_err(f"{prefix} > {msg}")
-def log_std_out(msg:str):
-    """ログを標準出力します。
-
-    Parameters
-    ----------
-    msg : str
-        出力メッセージ
-    """
-    if is_supposed_debug:
-        logging.std_out(f"{prefix} > {msg}")
-    else:
-        logging.std_out(f"{prefix} > {msg}")
 def log_debug(msg:str):
     """ローカル環境で開発するときだけ使う情報を出力します。
 
@@ -798,9 +794,9 @@ def log_debug(msg:str):
     msg : str
         出力メッセージ
     """
-    logger = logging.getLogger(cur_logger_id)
+    logger = logging.getLogger(__cur_logger_id)
     if is_supposed_debug:
-        s_dec = dec.BC_BLUE
+        s_dec = dec.FC_BLUE
         e_dec = dec.END
         msg = f"{s_dec}{msg}{e_dec}"
     logging.debug(msg,logger)
@@ -812,7 +808,7 @@ def log_info(msg:str):
     msg : str
         出力メッセージ
     """
-    logger = logging.getLogger(cur_logger_id)
+    logger = logging.getLogger(__cur_logger_id)
     s_dec = ""
     e_dec = ""
     if is_supposed_debug:
@@ -827,11 +823,11 @@ def log_warning(msg:str):
     msg : str
         出力メッセージ
     """
-    logger = logging.getLogger(cur_logger_id)
+    logger = logging.getLogger(__cur_logger_id)
     s_dec = ""
     e_dec = ""
     if is_supposed_debug:
-        s_dec = dec.FC_BLUE
+        s_dec = dec.FC_YELLOW
         e_dec = dec.END
     logging.warning(f"{s_dec}{msg}{e_dec}",logger)
 def log_error(msg:str):
@@ -842,13 +838,13 @@ def log_error(msg:str):
     msg : str
         出力メッセージ
     """
-    logger = logging.getLogger(cur_logger_id)
+    logger = logging.getLogger(__cur_logger_id)
     s_dec = ""
     e_dec = ""
     if is_supposed_debug:
         s_dec = dec.FC_RED
         e_dec = dec.END
-    logging.critical(f"{s_dec}{msg}{e_dec}",logger)
+    logging.error(f"{s_dec}{msg}{e_dec}",logger)
 def log_critical(msg:str):
     """システム全体や連携システムに影響する重大な問題が発生した場合の情報を出力します。
 
@@ -857,7 +853,7 @@ def log_critical(msg:str):
     msg : str
         出力メッセージ
     """
-    logger = logging.getLogger(cur_logger_id)
+    logger = logging.getLogger(__cur_logger_id)
     s_dec = ""
     e_dec = ""
     if is_supposed_debug:
@@ -959,31 +955,32 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     str
         変換されたテキスト
     """
+    set_log_id("e5429d0509e846f788fef9b0d50936da")
     func = cur_function_name()
-    log_info(f"{func} > data : {str(data)[:30]}(...)")
-    log_info(f"{func} > template_path : {template_path}")
-    log_info(f"{func} > template_encoding : {template_encoding}")
+    log_debug(f"{func} > data : {str(data)[:30]}(...)")
+    log_debug(f"{func} > template_path : {template_path}")
+    log_debug(f"{func} > template_encoding : {template_encoding}")
 
     env_path = pl.env_path_list()
     usr_path = pl.user_path_list()
 
     # 現在のカレントディレクトリを取得
     cur = get_cur_dir()
-    log_info(f"{func} > cur : {cur}")
+    log_debug(f"{func} > cur : {cur}")
 
     # テンプレートに関係するパスを取得
     tmp_abs_path = cnv_abs_path(template_path)
     tmp_dir = cnv_abs_dir_path(tmp_abs_path)
     tmp_file_name = cnv_file_name(template_path)
-    log_info(f"{func} > tmp_abs_path : {tmp_abs_path}")
-    log_info(f"{func} > tmp_dir : {tmp_dir}")
-    log_info(f"{func} > tmp_file_name : {tmp_file_name}")
+    log_debug(f"{func} > tmp_abs_path : {tmp_abs_path}")
+    log_debug(f"{func} > tmp_dir : {tmp_dir}")
+    log_debug(f"{func} > tmp_file_name : {tmp_file_name}")
 
     # パスは/で揃える
     tmp_dir = tmp_dir.replace("\\","/")
     tmp_abs_path = tmp_abs_path.replace("\\","/")
-    log_info(f"{func} > tmp_dir : {tmp_dir}")
-    log_info(f"{func} > tmp_abs_path : {tmp_abs_path}")
+    log_debug(f"{func} > tmp_dir : {tmp_dir}")
+    log_debug(f"{func} > tmp_abs_path : {tmp_abs_path}")
 
     # テンプレート情報としてパスを格納
     template_info = dict()
@@ -997,8 +994,8 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     # テンプレート生成関連クラスのインスタンス生成
     loader         = jinja2.file_system_loader( searchpath=tmp_dir, encoding=template_encoding)
     environment    = jinja2.environment(loader=loader)
-    log_info(f"{func} > loader : {loader}")
-    log_info(f"{func} > environment : {environment}")
+    log_debug(f"{func} > loader : {loader}")
+    log_debug(f"{func} > environment : {environment}")
 
     # フィルタの設定
     environment.add_filter("info",log_info)
@@ -1023,17 +1020,17 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     try:
         template  = environment.get_template(name=tmp_file_name,parent=tmp_dir)
         out_text  = template.render(temp_data)
-        log_info(f"{func} > template : {template}")
-        log_info(f"{func} > out_text : {out_text[:30]}(...)")
+        log_debug(f"{func} > template : {template}")
+        log_debug(f"{func} > out_text : {out_text[:30]}(...)")
 
     except Exception as e:
-        log_std_err(e)
-        log_std_err(traceback.format_exc())
-        log_std_err( f"template_path : {template_path}")
-        log_std_err( f"tmp_dir       : {tmp_dir}")
-        log_std_err( f"tmp_file_name : {tmp_file_name}")
-        log_std_err( f"cur           : {cur} -> {os.getcwd()}")
-        log_std_err( f"temp_data     : {str(temp_data)[:30]}")
+        log_error(e)
+        log_error(traceback.format_exc())
+        log_error( f"template_path : {template_path}")
+        log_error( f"tmp_dir       : {tmp_dir}")
+        log_error( f"tmp_file_name : {tmp_file_name}")
+        log_error( f"cur           : {cur} -> {os.getcwd()}")
+        log_error( f"temp_data     : {str(temp_data)[:30]}")
         # カレントディレクトリを元に戻す
         os.chdir(cur)
         # プロセスを異常終了する
@@ -1042,6 +1039,7 @@ def cnv_template_to_text(data:any,template_path:str,template_encoding:str=ENC_DE
     # カレントディレクトリを元に戻す
     os.chdir(cur)
 
+    set_log_id()
     return out_text
 #------------------------------------------------------------------------
 # MARKDOWN

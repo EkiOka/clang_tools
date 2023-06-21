@@ -26,27 +26,6 @@ def dictConfig(cfg:dict):
 def getLogger(id:str):
     __import()
     return logging.getLogger(id)
-
-def std_err(msg:str):
-    """ログを標準エラー出力します。
-
-    Parameters
-    ----------
-    msg : str
-        出力メッセージ
-    """
-    __import()
-    print(msg,file=sys.stderr)
-def std_out(msg:str):
-    """ログを標準出力します。
-
-    Parameters
-    ----------
-    msg : str
-        出力メッセージ
-    """
-    __import()
-    print(msg,file=sys.stdout)
 def debug(msg:str,logger):
     """ローカル環境で開発するときだけ使う情報を出力します。
 
@@ -73,7 +52,7 @@ def warning(msg:str,logger):
     msg : str
         出力メッセージ
     """
-    logger.warning({msg})
+    logger.warning(msg)
 def error(msg:str,logger):
     """プログラム上の処理が中断したり、停止した場合の情報を出力します。
 

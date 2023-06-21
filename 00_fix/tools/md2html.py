@@ -5,6 +5,7 @@ class cmd(cab.cmd_app):
     pass
 
 def __main(s,src_md_path:str,src_cfg_name:str,src_tmpl_name:str,dest_html_path:str):
+    a.set_log_id("d8602c736fc4419cba6a27baf3ce0992")
     func = a.cur_function_name()
     a.log_debug(f"{func} > src_md_path    : {src_md_path}")
     a.log_debug(f"{func} > src_cfg_name   : {src_cfg_name}")
@@ -33,6 +34,7 @@ def __main(s,src_md_path:str,src_cfg_name:str,src_tmpl_name:str,dest_html_path:s
     cfg_data["data_e92b12a896bb4e8dbdef1c83ab77e025"]=src_yaml_data
     dst_text = a.cnv_template_to_text(cfg_data,src_tmpl_path)
     a.save_text(dest_html_path,dst_text)
+    a.set_log_id()
 
 app = cmd("18b32644f6fa4bc3b4603b71d574f99d")
 app.reg_main(__main)

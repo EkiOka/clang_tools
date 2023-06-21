@@ -3,6 +3,7 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_app_basic as cab
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp           as a
 
 def __main(s:cab.cmd_app, doxyfile_name:str):
+    a.set_log_id("fbb03656fb5942b084faf81e37219c42")
 
     file = a.cur_file_name()
     func = a.cur_function_name()
@@ -23,6 +24,7 @@ def __main(s:cab.cmd_app, doxyfile_name:str):
 
     a.log_debug(f"{file} > {func} > res           : {res}")
 
+    a.set_log_id()
     a.sys.exit(res)
 
 app = cab.cmd_app("e32273a247e14ba5a8839b3b35d7e42b")

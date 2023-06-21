@@ -218,7 +218,7 @@ def __member_relation(references:list[doxygen.ReferenceType],referencedby:list[d
 def __contents(src:list[object],dest_params:list=[]):
     """descript関係のcontentsを変換します。
     """
-    a.cur_logger_id = "323b761b93b9400c9a1525e70420af11"
+    a.set_log_id("323b761b93b9400c9a1525e70420af11")
 
     res = list()
 
@@ -250,7 +250,7 @@ def __contents(src:list[object],dest_params:list=[]):
         else:
             a.log_warning(f"未対応の型を検出しました(type={type(src_item)},value={src_item})")
 
-    a.cur_logger_id = ""
+    a.set_log_id()
 
     return res
 

@@ -8,14 +8,13 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list as pl
 
 def init():
-    a.cur_logger_id = "8451209a5f2642459f3a6ff66b56e409"
+    a.set_log_id("8451209a5f2642459f3a6ff66b56e409")
     env_path:dict=dict()
     env_path = pl.env_path_list()
     
     dir_tools = env_path.get("dir_tools" ,[])
 
     if len(dir_tools) == 0:
-
         dir_tools = a.environ_variable("CLT_TOOLS_DIR","")
         a.log_debug(f"dir_tools : {dir_tools}")
         if dir_tools == "":
@@ -29,10 +28,10 @@ def init():
 
                 a.raise_Exception(
                     f"path list initialize error. ({dir_tools}\\init_path.py)")
-    a.cur_logger_id = ""
+    a.set_log_id()
 
 def start_cmd():
-    a.cur_logger_id = "ad4496626a664c46a84b203e5c9832c6"
+    a.set_log_id("ad4496626a664c46a84b203e5c9832c6")
     
     env_path:dict=dict()
     env_path = pl.env_path_list()
@@ -76,7 +75,7 @@ def start_cmd():
                 type_name="command")
     else:
         a.raise_Exception(f"parameter count error. ({params})")
-    a.cur_logger_id = ""
+    a.set_log_id()
     return
 
 
