@@ -67,7 +67,7 @@ class md_preprocessor(markdown.preprocessors.Preprocessor):
 
 
 class md_inline_processor(ilp.LinkInlineProcessor):
-    
+
     def getLink(self, *args, **kwargs):
         
         href, title, index, handled = super().getLink(*args, **kwargs)
@@ -79,6 +79,7 @@ class md_inline_processor(ilp.LinkInlineProcessor):
             dest_path = self.replace_ext(url.path,".md",".html")
             url.path = dest_path
             dest_href = url.to_str()
+            dest_href = dest_href.replace("/","_D_") # TODO 強制的に変換するためコンフィグ化すること
         else:
             dest_href = href
 
