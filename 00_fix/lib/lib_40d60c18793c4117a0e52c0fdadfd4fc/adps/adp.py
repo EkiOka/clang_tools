@@ -1,9 +1,4 @@
-"""お手軽簡単にご利用可能なAPI群
-
-専門店(python standard library)には敵わないし。
-そもそも、仲介業者(adaptors)を介して専門店から仕入れてる。
-
-"""
+"""お手軽簡単にご利用可能なAPI群"""
 #========================================================================
 # IMPORT
 #========================================================================
@@ -28,7 +23,6 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_urllib     as urllib
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_uuid       as uuid
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp_yaml       as yaml
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.path_list           as pl
-
 #========================================================================
 # CONST
 #========================================================================
@@ -716,7 +710,6 @@ def update_datetime(src:datetime.datetime,
 #------------------------------------------------------------------------
 # LOGGING
 #------------------------------------------------------------------------
-
 def set_log_id(id:str=""):
     global __cur_logger_id
     global __logger_ids
@@ -729,7 +722,6 @@ def set_log_id(id:str=""):
     else:
         __logger_ids.append(__cur_logger_id)
         __cur_logger_id = id
-
 def __log_setting(id_cfg:dict):
     """デバッグの標準設定を行う。本ライブラリのimport初回のみ"""
     if prefix == "":
@@ -1050,7 +1042,6 @@ def cnv_markdown_to_html(src:str,include_base_path:str="."):
     if include_base_path == ".":
         include_base_path = get_cur_dir().replace("\\","/")
     return markdown.convert(src,include_base_path=include_base_path)
-
 #------------------------------------------------------------------------
 # ENVIRONMENT
 #------------------------------------------------------------------------
@@ -1115,32 +1106,42 @@ def re_group(match_result,name:str):
     return re.group(match_result,name)
 def cnv_text_to_sha256(value:str)->str:
     return hashlib.sha256(value.encode(ENC_DEF))
-def replace_url(
-        src_url:str,
-        dest_scheme=lambda scheme: scheme,
-        dest_netloc=lambda netloc: netloc,
-        dest_path=lambda path: path,
-        dest_query=lambda query: query,
-        dest_fragment=lambda fragment: fragment,
-        )->str:
-    """URLの一部を置き換えます
+
+class url_values:
+
+    scheme:str=""
+    netloc:str=""
+    path:str=""
+    query:str=""
+    fragment:str=""
+
+    def __init__(s,url:str) -> None:
+        url_res    = urllib.urlparse(url)
+        s.scheme   = url_res.scheme
+        s.netloc   = url_res.netloc
+        s.path     = url_res.path
+        s.query    = url_res.query
+        s.fragment = url_res.fragment
+    def to_str(s):
+        res = ""
+        if s.scheme != "":    res = res        + s.scheme + ":"
+        if s.netloc != "":    res = res + "//" + s.netloc
+        if s.path   != "":    res = res        + s.path
+        if s.query  != "":    res = res + "?"  + s.query
+        if s.fragment != "":  res = res + "#" + s.fragment
+        return res
     
-    dest_xxxは置換用のラムダ式を設定してください。デフォルトは置き換え無しです。
-    """
-    purl = urllib.urlparse(src_url)
-    res = ""
-    if purl.scheme != "":
-        res = res + dest_scheme(purl.scheme) +":"
-    if purl.netloc != "":
-        res = res + "//" + dest_netloc(purl.netloc)
-    if purl.path != "":
-        res = res + dest_path(purl.path)
-    if purl.query != "":
-        res = res + "?" + dest_query(purl.query)
-    if purl.fragment != "":
-        res = res + "#" + dest_fragment(purl.fragment)
-    
-    return res
+    @property
+    def is_rel(s)->bool:
+        """is_relative"""
+        res = False
+        if s.scheme == "":
+            if s.netloc == "":
+                res = True
+        return res
+
+
+
 #------------------------------------------------------------------------
 # PROCESS
 #------------------------------------------------------------------------

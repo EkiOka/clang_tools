@@ -3,6 +3,7 @@ import re
 import string
 import markdown
 import markdown.inlinepatterns as ilp
+import lib_40d60c18793c4117a0e52c0fdadfd4fc.adps.adp as a
 
 class md_preprocessor(markdown.preprocessors.Preprocessor):
 
@@ -71,19 +72,24 @@ class md_inline_processor(ilp.LinkInlineProcessor):
         
         href, title, index, handled = super().getLink(*args, **kwargs)
 
-        href_split = str(href).split(os.extsep)
+        dest_href = ""
 
-        replaced_href = ""
-        if len(href_split) < 2:
-            replaced_href = href
+        url = a.url_values(href)
+        if url.is_rel:
+            dest_path = self.replace_ext(url.path,".md",".html")
+            url.path = dest_path
+            dest_href = url.to_str()
         else:
-            ext     = href_split[-1]
-            not_ext = ".".join(href_split[:-1])
-            if ext == "md":
-                ext = "html"
-            replaced_href = f"{not_ext}.{ext}"
+            dest_href = href
 
-        return (replaced_href, title, index, handled)
+        return (dest_href, title, index, handled)
+    def replace_ext(s,path:str,src_dot_ext:str=".md", dest_dot_ext=".html"):
+        dest_path = path
+        if path[-len(src_dot_ext):]==src_dot_ext:
+            dest_path = path[0:len(path)-len(src_dot_ext)]
+            dest_path = dest_path + dest_dot_ext
+        return dest_path
+
     
   
 

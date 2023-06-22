@@ -1,15 +1,14 @@
 import lib_40d60c18793c4117a0e52c0fdadfd4fc.pkgs as pkgs
 
-urllib = None
-parse_result = object
+urllib_parse = None
 # リリース時にはコメントアウトしてください
-import urllib
+#import urllib.parse as urllib_parse
 
 def __import():
-    global urllib
-    global parse_result
-    if urllib == None:
-        urllib = pkgs.imp("urllib")
+    global urllib_parse
+    if urllib_parse == None:
+        urllib_parse = pkgs.imp("urllib.parse")
 
-def urlparse(url:str)->parse_result:
-    return urllib.urlparse(url)
+def urlparse(url:str):
+    __import()
+    return urllib_parse.urlparse(url)
