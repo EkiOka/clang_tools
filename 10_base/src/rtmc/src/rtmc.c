@@ -21,9 +21,3 @@ const rtmc_if rtmc = {
     &rtmc_initialize, /* event_reset */
     &rtmc_initialize, /* event_restart */
 };
-
-
-void a(void)
-{
-    rtmc.event_reset();
-}

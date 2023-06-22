@@ -26,6 +26,7 @@
     define
 */
 /* ------------------------------------------- */
+#define RTMC_RT_COUNT_TYPE RTMC_CUINT32
 
 /* ------------------------------------------- */
 /*
@@ -42,5 +43,6 @@
 /* variables */
 
 /* functions */
+RTMC_RT_COUNT_TYPE get_time(void);
 
 #endif /*__ADP_REG_H__*/
