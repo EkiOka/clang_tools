@@ -1,27 +1,40 @@
 /**
  * @file adp_reg.c
  * @brief rtmc レジスタアクセス中継用処理
- * 
+ *
  * @copyright copyright (c) 2023 EkiOka
- * 
+ *
  */
 #define COMPONENT_ID 0x75FEF39E
-
+#include "internal.h"
 
 /* ------------------------------------------- */
 /*
     include
 */
 /* ------------------------------------------- */
-#if defined (__STDC__)
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)  /* C11 */
+/* C言語 標準型のinclude */
+
+/* 開発基盤 標準型のinclude */
+
+/* C言語標準ライブラリのinclude */
+#ifdef SUPPORTED_C11
+/*
+ 以下を使用するためinclude
+    ・static_assert
+*/
 #include <assert.h>
-#else
-#define static_assert(condition, msg)
 #endif
-#else
-#define static_assert(condition, msg)
-#endif
+
+/* OS / 基盤ソフトのinclude */
+
+/* システム共通ライブラリのinclude */
+
+/* 他コンポーネントのinclude */
+
+/* 自コンポーネントのinclude */
+
+/* 自ファイルのinclude */
 #include "adp_reg.h"
 
 /* ------------------------------------------- */
@@ -30,9 +43,21 @@
 */
 /* ------------------------------------------- */
 
-#define STUB_GET_COUNT()    1   /**< 起動開始からのカウンター取得用APIを割り当ててください。(初期設定はダミーです。) */
-#define STUB_GET_COUNT_RES_TYPE RTMC_CUINT32
+#define STUB_GET_COUNT()        1            /** 起動開始からのカウンター取得用APIを割り当ててください。(初期設定はダミーです。) */
+#define STUB_GET_COUNT_RES_TYPE RTMC_CUINT32 /** 起動開始からのカウンターの型  */
+
+/*
+    以下にて、外部依存の型がコンポーネントで想定している型と一致するかを判定する。
+    型自体を#defineして連動させることも可能だが、仕事としてコーディングする場合、
+    変更箇所は把握した上で、意図して変更を取り込むことが望ましいため、この形とする。
+
+    また、型を#defineで連動させると、このコンポーネントを利用するコンポーネントからさらに参照され、
+    結果として意図しない依存関係ができあがるため、
+    あくまでもこのコンポーネントの型を参照しているということにする方がよいと判断する。
+*/
+#ifdef SUPPORTED_C11
 static_assert(sizeof(STUB_GET_COUNT_RES_TYPE) == sizeof(RTMC_CUINT32), "un match size.");
+#endif
 
 /* ------------------------------------------- */
 /*
@@ -70,16 +95,7 @@ static_assert(sizeof(STUB_GET_COUNT_RES_TYPE) == sizeof(RTMC_CUINT32), "un match
 */
 /* ------------------------------------------- */
 
-
 RTMC_RT_COUNT_TYPE get_time(void)
 {
-    return ( STUB_GET_COUNT() );
+    return (STUB_GET_COUNT());
 }
-
-
-
-/* ------------------------------------------- */
-/*
-    end of file
-*/
-/* ------------------------------------------- */
