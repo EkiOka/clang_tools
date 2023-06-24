@@ -11,26 +11,25 @@ def __main(s:cmd):
     # リスト読出
     #---------------------------------------------------------------------
     upl = pl.user_path_list()
-    epl = pl.env_path_list()
 
     #---------------------------------------------------------------------
     # 環境パス取得
     #---------------------------------------------------------------------
-    dir_base = epl["dir_base"]
-    dir_user = epl["dir_user"]
-    dir_tmp  = epl["dir_tmp"]
-    dir_out  = epl["dir_out"]
+    dir_base = upl["dir_base"]
+    dir_user = upl["dir_user"]
+    dir_tmp  = upl["dir_tmp"]
+    dir_out  = upl["dir_out"]
 
-    dir_tmp_mk = epl["dir_tmp_mk"]
+    dir_tmp_mk = upl["dir_tmp_mk"]
 
-    dir_tmp_filelist = epl["dir_tmp_filelist"]
-    dir_out_filelist = epl["dir_out_filelist"]
+    dir_tmp_filelist = upl["dir_tmp_filelist"]
+    dir_out_filelist = upl["dir_out_filelist"]
 
-    dir_user_notes     = epl["dir_user_notes"]
-    dir_user_cfg       = epl["dir_user_cfg"]
-    dir_user_tmpl_note = epl["dir_user_tmpl_note"]
+    dir_user_notes     = upl["dir_user_notes"]
+    dir_user_cfg       = upl["dir_user_cfg"]
+    dir_user_tmpl_note = upl["dir_user_tmpl_note"]
 
-    dir_user_template = epl["dir_user_template"]
+    dir_user_template = upl["dir_user_template"]
 
     #---------------------------------------------------------------------
     # アプリケーションパス設定
