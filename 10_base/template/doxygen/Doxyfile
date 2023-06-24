@@ -110,16 +110,16 @@ CASE_SENSE_NAMES       = SYSTEM
 #------------------------------------------------
 
 # プロジェクト名
-PROJECT_NAME           = sample
+PROJECT_NAME           = {{data_root.project.name}}
 
 # プロジェクト番号・リビジョン番号
-PROJECT_NUMBER         =
+PROJECT_NUMBER         = {{data_root.project.number}}
 
 # プロジェクト概要
-PROJECT_BRIEF          =
+PROJECT_BRIEF          = {{data_root.project.brief}}
 
 # プロジェクトロゴ画像パス
-PROJECT_LOGO           =
+PROJECT_LOGO           = {{data_root.project.logo}}
 
 #------------------------------------------------
 # 出力ファイル全般

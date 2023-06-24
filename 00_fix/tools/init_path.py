@@ -63,6 +63,7 @@ def initialize(s: cmd_init_path):
     dest_env["mask_out_dox_xml_files"] = f"{ws}\\60_out\\doxygen\\xml\\**\\*_8c.xml"
     dest_env["file_doxyfile_template"] = f"{ws}\\20_user\\template\\doxygen\\Doxyfile"
 
+    dest_env["file_cfg_doxygen"] = f"{ws}\\20_user\\cfg\\doxygen.yml"
     dest_env["file_dox_mk_template"] = f"{ws}\\20_user\\template\\doxygen.mk"
     dest_env["file_tmp_doxyfile"] = f"{ws}\\50_out_tmp\\doxygen\\Doxyfile"
     dest_env["file_tmp_dox_mk"] = f"{ws}\\50_out_tmp\\doxygen\\mk\\doxygen.mk"
