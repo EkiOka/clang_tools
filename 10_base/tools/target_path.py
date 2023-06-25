@@ -24,6 +24,7 @@ def __main(s:cmd):
     dir_out  = upl["dir_out"]
     dir_user_template = upl["dir_user_template"]
     dir_tmp_mk = upl["dir_tmp_mk"]
+    dir_user_cfg = upl["dir_user_cfg"]
 
     # ファイルリストの出力先
     dir_tmp_filelist = upl["dir_tmp_filelist"]
@@ -84,6 +85,11 @@ def __main(s:cmd):
     upl["file_tmp_doxygen_p1_mk"  ] = f"{dir_tmp_mk}\\doxygen_phase1.mk"
     upl["file_tmpl_doxygen_p2_mk" ] = f"{dir_user_template}\\mk\\doxygen_phase2.mk"
     upl["file_tmp_doxygen_p2_mk"  ] = f"{dir_tmp_mk}\\doxygen_phase2.mk"
+
+    #---------------------------------------------------------------------
+    # report
+    #---------------------------------------------------------------------
+    upl["file_report" ] = f"{dir_user_cfg}\\report.yml"
 
     #---------------------------------------------------------------------
     # リスト更新
