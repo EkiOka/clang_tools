@@ -1,9 +1,10 @@
 /**
  * @file internal.h
  * @brief rtmc内部ヘッダ
- *
+ * @details
+ * コンポーネント内部のヘッダのすべてからincludeされるヘッダです。
+ * include前にCOMPONENT_IDとしてrtmcのIDをincludeしていない場合はエラーとなります。
  * @copyright copyright (c) 2023 EkiOka
- *
  */
 #ifndef __75FEF39E_INTERNAL_H__
 
@@ -37,11 +38,6 @@
     define
 */
 /* ------------------------------------------- */
-#ifdef _DEBUG
-#define STATIC        /** 通常時は外部参照可能なようにstaticなし */
-#else
-#define STATIC static /** 通常時はstatic扱い */
-#endif
 
 /* ------------------------------------------- */
 /*

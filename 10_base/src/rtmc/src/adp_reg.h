@@ -35,24 +35,28 @@
 
 */
 
-#define RTMC_RT_COUNT_TYPE RTMC_CUINT32
-
-/*
-    コンポーネント内部関数の別名定義
-    内部関数は外部関数と名前が重なりやすいため
-    別名を定義して重複しないようにします。
-
-    基本的にコンポーネントID + 識別子で定義してください。
-*/
-
-/* aliases */
-#define get_time __75FEF39E__get_time__
+#define RTMC_RT_COUNT_TYPE RTMC_CUINT_MAX
 
 /* ------------------------------------------- */
 /*
     typedef
 */
 /* ------------------------------------------- */
+
+/**
+ * @struct adp_reg_if
+ * @brief adp_regの外部公開インターフェース型
+ */
+typedef struct tag_adp_reg_if {
+    /**
+     * @brief 起動からの経過時間取得
+     *
+     * @return RTMC_RT_COUNT_TYPE
+     * 起動からの経過時間(単位は参照レジスタに依存。マニュアルを参照してください。)
+     */
+    RTMC_RT_COUNT_TYPE(*get_time)
+    (void);
+} adp_reg_if;
 
 /* ------------------------------------------- */
 /*
@@ -65,11 +69,8 @@
 /* functions */
 
 /**
- * @brief 起動からの経過時間取得
- *
- * @return RTMC_RT_COUNT_TYPE
- * 起動からの経過時間(単位は参照レジスタに依存。マニュアルを参照してください。)
+ * @brief adp_regの外部公開インターフェース
  */
-RTMC_RT_COUNT_TYPE get_time(void);
+const adp_reg_if adp_reg;
 
 #endif /*__ADP_REG_H__*/
