@@ -226,17 +226,17 @@ def cnv_abs_dir_path(path:str,sep:str=SEP_DIR2FILE)->str:
         絶対パス形式のディレクトリパス
     """
     set_log_id("8ef66fab7c794930964f2a6daa194649")
-    log_info(cur_function_name())
+    log_debug(cur_function_name())
     abs_path = cnv_abs_path(path,sep)
-    log_info(f"abs_path:{abs_path}")
+    log_debug(f"abs_path:{abs_path}")
     res = ""
     if is_dir(abs_path):
-        log_info(f"abs_path is dir.")
+        log_debug(f"abs_path is dir.")
         res = abs_path
     else:
-        log_info(f"abs_path is not dir")
+        log_debug(f"abs_path is not dir")
         res = os.dirname(abs_path)
-    log_info(f"res:{res}")
+    log_debug(f"res:{res}")
     set_log_id()
     return res
 def cnv_abs_file_path_none_ext(path:str,sep:str=SEP_DIR2FILE)->str:
