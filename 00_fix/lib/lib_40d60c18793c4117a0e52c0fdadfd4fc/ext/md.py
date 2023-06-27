@@ -76,10 +76,13 @@ class md_inline_processor(ilp.LinkInlineProcessor):
 
         url = a.url_values(href)
         if url.is_rel:
-            dest_path = self.replace_ext(url.path,".md",".html")
-            url.path = dest_path
-            dest_href = url.to_str()
-            dest_href = dest_href.replace("/","_D_") # TODO 強制的に変換するためコンフィグ化すること
+            if url.path[-len(".md"):]==".md":
+                dest_path = self.replace_ext(url.path,".md",".html")
+                url.path = dest_path
+                dest_href = url.to_str()
+                dest_href = dest_href.replace("/","_D_") # TODO 強制的に変換するためコンフィグ化すること
+            else:
+                dest_href = href
         else:
             dest_href = href
 
