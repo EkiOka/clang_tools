@@ -19,6 +19,7 @@ class md_preprocessor(markdown.preprocessors.Preprocessor):
         result_lines = []
         code_area_sign = ""
         code_area_name = ""
+        mermaid_div_no = 0
         for line in lines:
             code_changed = False
             src_line = line
@@ -31,7 +32,8 @@ class md_preprocessor(markdown.preprocessors.Preprocessor):
                         code_area_sign = mat.group("code_area_sign")
                         code_area_name = mat.group("code_area_name")
                         if code_area_name == "mermaid":
-                            result_lines.append('<div class="mermaid">')
+                            result_lines.append(f'<div class="mermaid" id="mermaid_div_{mermaid_div_no}">')
+                            mermaid_div_no = mermaid_div_no + 1
                             self.has_mermaid = True
                             code_changed = True
                         else:
