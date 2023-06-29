@@ -128,7 +128,7 @@ def get_path(name:str):
     match(len(split_name)):
         case 1:
             name = split_name[0]
-            lst = env_path_list()
+            lst = user_path_list()
             res = lst.get(name,"")
             a.log_debug(f"{func} > name : {name}")
             a.log_debug(f"{func} > lst : {lst}")

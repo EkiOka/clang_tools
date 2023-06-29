@@ -3,7 +3,16 @@
 {%- set env_vars  = data_4d22a990e03e4ff0b66061daa1674a0d -%}
 {%- set tmpl_inf  = data_095064f18e894dcfaa3f8d12b1d0b9ca -%}
 {%- set data_root = data_d74c99efdbb745129d4e98d2194bc941 -%}
-{%- set inc_dirs = user_path.file_out_file_list_target_inc | load_json -%}
+
+{%- set inc_dirs  = user_path.file_out_file_list_target_inc | load_json -%}
+
+{%- set dir_target     = user_path.dir_target     -%}
+{%- set dir_tmp_dox    = user_path.dir_tmp_dox    -%}
+
+{%- set project_name   = data_root.project.name   -%}
+{%- set project_number = data_root.project.number -%}
+{%- set project_brief  = data_root.project.brief  -%}
+{%- set project_logo   = data_root.project.logo   -%}
 
 #################################################
 # 本ファイルの設定
@@ -17,7 +26,7 @@ DOXYFILE_ENCODING      = UTF-8
 #################################################
 
 # 解析対象のルートディレクトリ
-INPUT                  = {{user_path.dir_target}}
+INPUT                  = {{dir_target}}
 
 # 解析対象のルートディレクトリから再帰的にファイルを検索するかどうかの設定
 RECURSIVE              = YES
@@ -87,7 +96,7 @@ INPUT_FILE_ENCODING    =
 #################################################
 
 # 主力先の基底ディレクトリパス
-OUTPUT_DIRECTORY       = {{env_path.dir_tmp_dox}}
+OUTPUT_DIRECTORY       = {{dir_tmp_dox}}
 
 # サブディレクトリ生成(LEVELは最大深度)
 CREATE_SUBDIRS         = NO
@@ -110,16 +119,16 @@ CASE_SENSE_NAMES       = SYSTEM
 #------------------------------------------------
 
 # プロジェクト名
-PROJECT_NAME           = {{data_root.project.name}}
+PROJECT_NAME           = {{project_name}}
 
 # プロジェクト番号・リビジョン番号
-PROJECT_NUMBER         = {{data_root.project.number}}
+PROJECT_NUMBER         = {{project_number}}
 
 # プロジェクト概要
-PROJECT_BRIEF          = {{data_root.project.brief}}
+PROJECT_BRIEF          = {{project_brief}}
 
 # プロジェクトロゴ画像パス
-PROJECT_LOGO           = {{data_root.project.logo}}
+PROJECT_LOGO           = {{project_logo}}
 
 #------------------------------------------------
 # 出力ファイル全般

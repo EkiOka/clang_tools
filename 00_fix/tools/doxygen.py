@@ -8,9 +8,10 @@ def __main(s: cab.cmd_app, doxyfile_name: str):
 
     file = a.cur_file_name()
     func = a.cur_function_name()
+
     a.log_debug(f"{file} > {func} > doxyfile_name : {doxyfile_name}")
 
-    exe = pl.get_user_path("doxygen_exe")
+    exe = pl.get_user_path("exe_doxygen")
     dest_path = pl.get_user_path("file_tmp_doxyfile")
     file_cfg_doxygen = pl.get_user_path("file_cfg_doxygen")
 

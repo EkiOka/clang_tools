@@ -4,6 +4,8 @@
 {%- set tmpl_inf  = data_095064f18e894dcfaa3f8d12b1d0b9ca -%}
 {%- set data_root = data_d74c99efdbb745129d4e98d2194bc941 -%}
 
+{%- set dir_out_dxy = env_path.dir_out_dxy -%}
+
 ##########################################################################
 # VARIABLES
 ##########################################################################
@@ -13,7 +15,7 @@
 MF_NAME=$(notdir $(MAKEFILE_LIST))
 MF_DIR=$(dir $(MAKEFILE_LIST))
 
-DXY_LOG={{env_path.dir_out_dox}}\doxygen.log
+DXY_LOG={{dir_out_dxy}}\doxygen.log
 
 
 ##########################################################################
@@ -22,20 +24,20 @@ DXY_LOG={{env_path.dir_out_dox}}\doxygen.log
 
 .PHONY : all
 
-all: {{env_path.dir_out_dox}}\doxygen.log
+all: $(DXY_LOG)
 	@echo $(MF_NAME) ^> target : $@
 	@echo $(MF_NAME) ^> depend : $<
 	@echo $(MF_NAME) ^> new    : $?
-	@py_cmd user_make "-src_name:file_tmpl_doxygen_p2_mk" "-dest_name:file_tmp_doxygen_p2_mk" "-target:all"
+	py_cmd user_make "-src_name:file_tmpl_doxygen_p2_mk" "-dest_name:file_tmp_doxygen_p2_mk" "-target:all"
 
 
 ##########################################################################
 # PHASE1
 ##########################################################################
 
-{{env_path.dir_out_dox}}\doxygen.log:
+$(DXY_LOG):
 	@echo $(MF_NAME) ^> target : $@
 	@echo $(MF_NAME) ^> depend : $<
 	@echo $(MF_NAME) ^> new    : $?
 	@tmp2out.bat
-	@py_cmd user_make "-src_name:file_tmpl_doxygen_p1_mk" "-dest_name:file_tmp_doxygen_p1_mk" "-target:all"
+	py_cmd user_make "-src_name:file_tmpl_doxygen_p1_mk" "-dest_name:file_tmp_doxygen_p1_mk" "-target:all"

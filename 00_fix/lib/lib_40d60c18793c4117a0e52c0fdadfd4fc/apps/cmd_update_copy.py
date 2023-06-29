@@ -43,6 +43,10 @@ def main_name(s:cmd_update_copy,src_name:str,dest_name:str):
 
 
 def main_dir_path(s:cmd_update_copy,src_path:str,dest_path:str):
+    if src_path=="":
+        a.raise_Exception("src_pathの指定がありません")
+    if dest_path=="":
+        a.raise_Exception("dest_pathの指定がありません")
     copy_update_files(src_path,dest_path)
 
 def main_dir_name(s:cmd_update_copy,src_name:str,dest_name:str):
