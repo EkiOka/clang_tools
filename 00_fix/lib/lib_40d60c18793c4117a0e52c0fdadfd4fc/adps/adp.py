@@ -319,6 +319,13 @@ def cnv_rel_path(path:str,start:str=None):
     return os.relpath(path,start)
 def cnv_rel_names(path:str,start:str=None):
     """相対パスを含めたファイル名に変換"""
+    if not isinstance(path,str):
+        log_error("pathの指定が異常です")
+        log_error(f"path: value={path} type={type(path)}")
+    if start != None:
+        if not isinstance(start,str):
+                log_error("startの指定が異常です")
+                log_error(f"start: value={start} type={type(start)}")
     res = os.relpath(path,start)
     res = res.replace("\\","_D_")
     res = res.replace("/","_D_")

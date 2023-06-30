@@ -55,7 +55,7 @@ def __main(s:cmd):
     dir_tmpl_mk = upl.get("dir_tmpl_mk", f"{dir_tmpl}\\mk")
 
     #---------------------------------------------------------------------
-    # doxygen関係パス設定
+    # doxygenのoutput関係パス設定
     #---------------------------------------------------------------------
     dir_tmpl_dxy     = upl.get("dir_tmpl_dxy",    f"{dir_tmpl}\\doxygen")
     file_tmpl_dxy    = upl.get("file_tmpl_dxy",   f"{dir_tmpl_dxy}\\Doxyfile")
@@ -85,6 +85,9 @@ def __main(s:cmd):
 
     file_tmp_dxy_mk   = upl.get("file_tmp_dxy_mk",   f"{dir_tmp_mk}\\doxygen.mk")
     file_out_dxy_mk   = upl.get("file_out_dxy_mk",   f"{dir_out_mk}\\doxygen.mk")
+
+    file_tmp_dxy_log  = upl.get("file_tmp_dxy_log",   f"{dir_tmp_dxy}\\doxygen.log")
+    file_out_dxy_log  = upl.get("file_out_dxy_log",   f"{dir_out_dxy}\\doxygen.log")
 
     #---------------------------------------------------------------------
     # notes関係パス設定

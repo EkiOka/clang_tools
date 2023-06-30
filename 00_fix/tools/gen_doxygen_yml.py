@@ -20,6 +20,11 @@ def __main(s, src_path:str, dest_path:str):
     params : dict
         起動引数
     """
+    if not a.is_exist(src_path):
+        a.log_error(f"src_pathで指定したファイル({src_path})が存在しません。")
+        a.sys.exit(1)
+
+
     src_txt = a.load_text(src_path)
     parser = XmlParser()
     xml_data = parser.from_string(src_txt, doxygen.DoxygenType)

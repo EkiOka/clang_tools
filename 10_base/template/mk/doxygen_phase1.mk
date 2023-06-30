@@ -6,10 +6,10 @@
 
 {%- set src_files = user_path.file_out_file_list_target_src | load_json -%}
 
-{%- set dir_tmp_dxy = user_path.dir_tmp_dox -%}
-{%- set dir_tmp_dxy = user_path.dir_tmp_dox -%}
-{%- set dir_tmp_dxy = user_path.file_tmpl_dxy -%}
-
+{%- set dir_tmp_dxy      = user_path.dir_tmp_dxy      -%}
+{%- set file_tmpl_dxy    = user_path.file_tmpl_dxy    -%}
+{%- set file_tmp_dxy_log = user_path.file_tmp_dxy_log -%}
+{%- set file_out_dxy_log = user_path.file_out_dxy_log -%}
 
 ##########################################################################
 # VARIABLES
@@ -21,8 +21,6 @@ MF_NAME=$(notdir $(MAKEFILE_LIST))
 MF_DIR=$(dir $(MAKEFILE_LIST))
 
 SRC_FILES={% for src in src_files %}{{ src }} {% endfor %}
-DXY_LOG={{dir_tmp_dxy}}\doxygen.log
-
 
 ##########################################################################
 # ALL
@@ -30,18 +28,37 @@ DXY_LOG={{dir_tmp_dxy}}\doxygen.log
 
 .PHONY : all
 
-all: $(DXY_LOG)
+all: {{file_out_dxy_log}} {{file_tmp_dxy_log}}
+	@echo $(MF_NAME) ^>
 	@echo $(MF_NAME) ^> target : $@
 	@echo $(MF_NAME) ^> depend : $<
 	@echo $(MF_NAME) ^> new    : $?
-	@tmp2out.bat
+	tmp2out.bat
+
+##########################################################################
+# DOXYGEN LOG OUT
+##########################################################################
+
+{{ file_out_dxy_log }} : {{file_tmp_dxy_log}}
+	@echo $(MF_NAME) ^>
+	@echo $(MF_NAME) ^> target : $@
+	@echo $(MF_NAME) ^> depend : $<
+	@echo $(MF_NAME) ^> new    : $?
+	@if exist "$<" echo $(MF_NAME) ^> exist  : $<
+	tmp2out.bat
 
 ##########################################################################
 # DOXYGEN RUN
 ##########################################################################
 
-$(DXY_LOG): $(SRC_FILES) {{ file_tmpl_dxy }}
-	@py_cmd.bat doxygen "-doxyfile_name:file_tmpl_dxy" > {{dir_tmp_dxy}}\doxygen.log 2>&1
+{{file_tmp_dxy_log}}: {{ file_tmpl_dxy }} $(SRC_FILES)
+	@echo $(MF_NAME) ^>
+	@echo $(MF_NAME) ^> target : $@
+	@echo $(MF_NAME) ^> depend : $<
+	@echo $(MF_NAME) ^> new    : $?
+	@if exist "$<" echo $(MF_NAME) ^> exist  : $<
+	md "{{dir_tmp_dxy}}"
+	py_cmd.bat doxygen "-doxyfile_name:file_tmpl_dxy" > "{{file_tmp_dxy_log}}"
 
 ##########################################################################
 # USER EDIT FILES

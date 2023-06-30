@@ -23,6 +23,7 @@ MF_DIR=$(dir $(MAKEFILE_LIST))
 .PHONY : all
 
 all: {% for xml_file in xml_files %}{{ xml_file | replace(".xml",".yml") | replace("\\xml\\","\\yml\\")  }} {% endfor %}
+	@echo $(MF_NAME) ^>
 	@echo $(MF_NAME) ^> target                 : $@
 	@echo $(MF_NAME) ^> depend                 : $<
 	@echo $(MF_NAME) ^> new                    : $?
@@ -35,9 +36,11 @@ all: {% for xml_file in xml_files %}{{ xml_file | replace(".xml",".yml") | repla
 ##########################################################################
 {% for xml_file in xml_files %}
 {{ xml_file | replace(".xml",".yml") | replace("\\xml\\","\\yml\\") }}: {{ xml_file }}
+	@echo $(MF_NAME) ^>
 	@echo $(MF_NAME) ^> target : $@
 	@echo $(MF_NAME) ^> depend : $<
 	@echo $(MF_NAME) ^> new    : $?
+	@if exist "$<" echo $(MF_NAME) ^> exist  : $<
 	py_cmd gen_doxygen_yml "-src_path:$<" "-dest_path:$@"
 {% endfor %}
 ##########################################################################

@@ -7,7 +7,7 @@
 {%- set inc_dirs  = user_path.file_out_file_list_target_inc | load_json -%}
 
 {%- set dir_target     = user_path.dir_target     -%}
-{%- set dir_tmp_dox    = user_path.dir_tmp_dox    -%}
+{%- set dir_tmp_dox    = user_path.dir_tmp_dxy    -%}
 
 {%- set project_name   = data_root.project.name   -%}
 {%- set project_number = data_root.project.number -%}

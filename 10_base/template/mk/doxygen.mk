@@ -4,7 +4,8 @@
 {%- set tmpl_inf  = data_095064f18e894dcfaa3f8d12b1d0b9ca -%}
 {%- set data_root = data_d74c99efdbb745129d4e98d2194bc941 -%}
 
-{%- set dir_out_dxy = env_path.dir_out_dxy -%}
+{%- set dir_out_dxy = user_path.dir_out_dxy -%}
+{%- set file_out_dxy_log = user_path.file_out_dxy_log -%}
 
 ##########################################################################
 # VARIABLES
@@ -15,16 +16,14 @@
 MF_NAME=$(notdir $(MAKEFILE_LIST))
 MF_DIR=$(dir $(MAKEFILE_LIST))
 
-DXY_LOG={{dir_out_dxy}}\doxygen.log
-
-
 ##########################################################################
 # ALL
 ##########################################################################
 
 .PHONY : all
 
-all: $(DXY_LOG)
+all: {{file_out_dxy_log}}
+	@echo $(MF_NAME) ^>
 	@echo $(MF_NAME) ^> target : $@
 	@echo $(MF_NAME) ^> depend : $<
 	@echo $(MF_NAME) ^> new    : $?
@@ -35,9 +34,10 @@ all: $(DXY_LOG)
 # PHASE1
 ##########################################################################
 
-$(DXY_LOG):
+{{file_out_dxy_log}}:
+	@echo $(MF_NAME) ^>
 	@echo $(MF_NAME) ^> target : $@
 	@echo $(MF_NAME) ^> depend : $<
 	@echo $(MF_NAME) ^> new    : $?
-	@tmp2out.bat
+	tmp2out.bat
 	py_cmd user_make "-src_name:file_tmpl_doxygen_p1_mk" "-dest_name:file_tmp_doxygen_p1_mk" "-target:all"

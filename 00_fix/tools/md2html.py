@@ -11,6 +11,15 @@ def __main(s,src_md_path:str,src_cfg_name:str,src_tmpl_name:str,dest_html_path:s
     a.log_debug(f"{func} > src_cfg_name   : {src_cfg_name}")
     a.log_debug(f"{func} > src_tmpl_name  : {src_tmpl_name}")
     a.log_debug(f"{func} > dest_html_path : {dest_html_path}")
+    if not a.is_exist(src_md_path):
+        a.log_error(f"src_md_pathで指定したファイル({src_md_path})が存在しません。")
+        a.sys.exit(1)
+    if not a.is_exist(src_cfg_name):
+        a.log_error(f"src_cfg_nameで指定したファイル({src_cfg_name})が存在しません。")
+        a.sys.exit(1)
+    if not a.is_exist(src_tmpl_name):
+        a.log_error(f"src_tmpl_nameで指定したファイル({src_tmpl_name})が存在しません。")
+        a.sys.exit(1)
 
     src_cfg_path = src_cfg_name
     src_tmpl_path = src_tmpl_name
