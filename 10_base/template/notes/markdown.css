@@ -1,19 +1,28 @@
 :root{
-  --base_text_color: black;
-  --base_bg_color  : #ffe8eaff;
-  --base_bd_color  : #B61C2C;
-  --base_border    : 1px solid var(--base_bd_color);
-  --rev_text_color : white;
-  --dark_lv_1      : rgba(0, 0, 0, 0.1);
-  --dark_lv_2      : rgba(0, 0, 0, 0.2);
-  --dark_lv_3      : rgba(0, 0, 0, 0.3);
-  --dark_lv_4      : rgba(0, 0, 0, 0.4);
-  --dark_lv_5      : rgba(0, 0, 0, 0.5);
-  --light_lv_1     : rgba(255, 255, 255, 0.1);
-  --light_lv_2     : rgba(255, 255, 255, 0.2);
-  --light_lv_3     : rgba(255, 255, 255, 0.3);
-  --light_lv_4     : rgba(255, 255, 255, 0.4);
-  --light_lv_5     : rgba(255, 255, 255, 0.5);
+
+  --base_r          : 0;  /* 255 or  0 */
+  --base_g          : 0;  /* 255 or  0 */ 
+  --base_b          : 0;  /* 255 or  0 */ 
+  --base_k          : -1; /*   1 or -1 */ 
+
+  --revs_r          : calc( 255 - var(--base_r) );
+  --revs_g          : calc( 255 - var(--base_g) );
+  --revs_b          : calc( 255 - var(--base_b) );
+
+  --inptc_r         : calc( var(--base_r) -  64 * var(--base_k) );
+  --inptc_g         : calc( var(--base_r) - 128 * var(--base_k) );
+  --inptc_b         : calc( var(--base_r) - 128 * var(--base_k) );
+
+  --base_color      : rgb( var( --base_r  ),var( --base_g  ), var(--base_b  ) );
+  --revs_color      : rgb( var( --revs_r  ),var( --revs_g  ), var(--revs_b  ) );
+  --inptc_color     : rgb( var( --inptc_r ),var( --inptc_g ), var(--inptc_b ) );
+
+  --alpha_lv_1     : rgba( var(--revs_r), var(--revs_g), var(--revs_b), 0.1 );
+  --alpha_lv_2     : rgba( var(--revs_r), var(--revs_g), var(--revs_b), 0.2 );
+  --alpha_lv_3     : rgba( var(--revs_r), var(--revs_g), var(--revs_b), 0.3 );
+  --alpha_lv_4     : rgba( var(--revs_r), var(--revs_g), var(--revs_b), 0.4 );
+  --alpha_lv_5     : rgba( var(--revs_r), var(--revs_g), var(--revs_b), 0.5 );
+
 }
 /* ----------------------------------------
   body
@@ -22,16 +31,15 @@
 body {
 
   /* pos / size */
-  top:0px;
-  left:0px;
-  width:95%;
-  margin: 0;
+  top     :  0px ;
+  left    :  0px ;
+  width   : 95%  ;
+  margin  :  0   ;
   padding: 0 1% 0 1%;
 
   /* color */
-  color: var(--base_text_color);
-  background: var(--base_bg_color);
-
+  color      : var( --revs_color );
+  background : var( --base_color );
 }
 
 /* ----------------------------------------
@@ -48,20 +56,20 @@ h1 {
   font-size    : 22pt;
 
   /* color */
-  color        : var(--base_text_color);
-  background   : var(--dark_lv_1); 
+  color        : var( --revs_color    );
+  background   : var( --inptc_color   );
 }
 
 h2 {
 
   /* pos / size */
   position  : relative;
-  padding   : 0 .5em .5em 2em;
+  padding   : 1em .5em .5em 2em;
   font-size : 22pt;
   margin    : 0;
 
   /* color */
-  border-bottom: var(--base_border);
+  border-bottom: var(--revs_color);
 }
 
 h2::before,
@@ -78,26 +86,26 @@ h2::after {
 h2::before {
 
   /* pos / size */
-  top: .2em;
-  left: .2em;
+  top: 1.2em;
+  left: 0.7em;
   z-index: 2;
   width: 18px;
   height: 18px;
 
   /* color */
-  background: var(--dark_lv_2);
+  background: var(--revs_color);
 }
 
 h2::after {
 
   /* pos / size */
-  top: .7em;
-  left: .7em;
+  top: 1.7em;
+  left: 1.2em;
   width: 13px;
   height: 13px;
 
   /* color */
-  background: var(--base_bd_color);
+  background: var(--inptc_color);
 }
 
 h3,
@@ -120,14 +128,14 @@ a {
   /* pos / size */
 
   /* color */
-  color: var(--base_bd_color);
+  color: var(--inptc_color);
 }
 
 a :visited {
   /* pos / size */
 
   /* color */
-  color: var(--base_bd_color);
+  color: var(--inptc_color);
 }
 
 /* ----------------------------------------
@@ -145,13 +153,13 @@ p {
   padding-bottom: 1px;
 
   /* color */
-  background: var(--light_lv_1);
+  background: var(--alpha_lv_1);
 }
 blockquote {
   /* pos / size */
 
   /* color */
-  border-left: var(--base_border);
+  border-left: var(--inptc_color);
 }
 
 /* ----------------------------------------
@@ -166,10 +174,10 @@ hr {
   height: 4px;
 
   /* color */
-  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0));
-  background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0));
-  background-image: -ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0));
-  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0));
+  background-image: -webkit-linear-gradient(left, var(--alpha_lv_1), var(--alpha_lv_5), var(--alpha_lv_1));
+  background-image: -moz-linear-gradient(   left, var(--alpha_lv_1), var(--alpha_lv_5), var(--alpha_lv_1));
+  background-image: -ms-linear-gradient(    left, var(--alpha_lv_1), var(--alpha_lv_5), var(--alpha_lv_1));
+  background-image: -o-linear-gradient(     left, var(--alpha_lv_1), var(--alpha_lv_5), var(--alpha_lv_1));
 }
 
 /* ----------------------------------------
@@ -187,23 +195,23 @@ table {
 
 table th {
   /* pos / size */
-  border-radius: 5px;
-  padding-left: 1em;
+  border-radius : 5px;
+  padding-left  : 1em;
 
   /* color */
-  background-color: var(--dark_lv_5);
-  color: var(--base_text_color);
-  border: var(--base_border);
+  background-color : var(--inptc_color);
+  color            : var(--base_color);
+  border           : var(--base_color);
 }
 
 table td {
   /* pos / size */
-  border-radius: 5px;
-  padding-left: 1em;
+  border-radius : 5px;
+  padding-left  : 1em;
 
   /* color */
-  background-color: var(--dark_lv_3);
-  border: var(--base_border);
+  background-color : var(--alpha_lv_1);
+  border           : var(--base_color);
 }
 
 /* ----------------------------------------
@@ -213,7 +221,7 @@ table td {
 img {
   /* pos / size */
   max-width: 100%;
-  max-height: 300px;
+  max-height: 100%;
 
   /* color */
 }
@@ -233,17 +241,14 @@ code {
 
 code div {
   /* pos / size */
-  width: 100%;
-
-  background: initial;
-  border: initial;
-
+  width      : 100%;
+  background : initial;
+  border     : initial;
   /* color */
-  color: initial;
-  background-color: var(--dark_lv_5);
-  color: var(--base_text_color);
-  border-radius: 10px;
-  border: 1px dashed var(--dark_lv_5);
+  color            : initial;
+  background-color : var(--alpha_lv_1);
+  color            : var(--base_color);
+  border-radius    : 10px;
 }
 
 p code {
@@ -254,7 +259,7 @@ p code {
   padding: 0.3em;
 
   /* color */
-  color: var(--base_text_color);
+  color: var(--base_color);
 }
 
 /* ----------------------------------------
@@ -271,19 +276,29 @@ p code {
   height: 88%;
 
   /* color */
-  background-color: var(--dark_lv_1);
-  color           : var(--base_bg_color);
-  border          : 3px solid var(--base_bd_color);
+  background-color: var(--alpha_lv_3);
+  border          : 3px solid var(--inptc_color);
   border-radius   : 7px 7px 7px 7px;
   overflow        : scroll;
   visibility      : visible;
 }
 
+.toc ul li{
+  list-style-image : url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="0.8em" height="1em" viewBox="-0.5 -0.5 32 42"><defs/><g><path d="M 30.7 6.71 L 30.7 41 L 1 41 L 1 1 L 26.45 1 Z" fill="none" stroke="rgba(255, 255, 255,0.5)" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/><path d="M 26.45 1 C 26.8 2.34 26.23 3.71 24.94 4.67 L 30.7 6.84" fill="none" stroke="rgba(255, 255, 255, 0.5)" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/></g></svg>');
+  background-size:20px;
+  width        : 80%;
+  transform    : rotate(-15deg);
+}
+.toc ul li ul li{
+  width        : 80%;
+  transform    : rotate(0deg);
+}
+
 .mermaid {
 
-  background-color: var(--light_lv_5);
+  background-color: var(--alpha_lv_5);
 
-  border: 3px solid var(--base_bd_color);
+  border: 3px solid var(--inptc_color);
   border-radius: 7px 7px 7px 7px;
   overflow:scroll;
 
@@ -342,6 +357,6 @@ p code {
   /* color */
   border: 1pt solid var(--base_text_color);
   border-radius: 5px 5px 5px 5px;
-  background-color: rgba(255,255,255,0.1);
+  background-color: var(--inptc_color);
   padding: 1pt 1pt 1pt 1pt;
 }
