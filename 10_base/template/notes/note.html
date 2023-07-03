@@ -25,6 +25,11 @@
         {%- include "mermaid.min.js" | safe -%}
     </script>
     <script type="text/javascript">
+
+        //---------------------------------------
+        // TOC表示切り替え
+        //---------------------------------------
+
         function toc_toggle(){
             var toc = document.getElementsByClassName("toc")[0];
             if ( toc.style.visibility == "hidden" ){
@@ -33,6 +38,45 @@
                 toc.style.visibility = "hidden";
             }
         }
+
+        //---------------------------------------
+        // ヒント表示
+        //---------------------------------------
+
+        var ShowHintId = 0;
+        var ShowHintTime = 0;
+        function doShowHint(){
+          ShowHintTime++;
+          var elem = document.getElementById("div_3ae2c4e4641b45699ccd211cbbb4086d");
+          if (ShowHintTime==1){
+            elem.style.visibility = "visible";
+          } else if (ShowHintTime==1+5){
+            elem.style.visibility = "hidden";
+          } else if (ShowHintTime==1+5+5){
+            elem.style.visibility = "visible";
+          } else if (ShowHintTime==1+5+5+5){
+            elem.style.visibility = "hidden";
+          } else if (ShowHintTime==1+5+5+5+5){
+            elem.style.visibility = "visible";
+          } else if (ShowHintTime==1+5+5+5+5+20){
+            elem.style.visibility = "hidden";
+            ShowHintTime = 0;
+            window.clearInterval(ShowHintId)
+          }
+        }
+
+        function startShowHint(text){
+          if (ShowHintTime == 0 ){
+            ShowHintId = window.setInterval(doShowHint, 100);
+            var elem = document.getElementById("div_3ae2c4e4641b45699ccd211cbbb4086d");
+            elem.innerText = text;
+          }
+        }
+
+        //---------------------------------------
+        // 起動時処理
+        //---------------------------------------
+
         function loadFinished(){
             var elem = document.getElementById("json-data");
             var data = JSON.parse(elem.textContent);
