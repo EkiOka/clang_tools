@@ -26,6 +26,8 @@
     </script>
     <script type="text/javascript">
 
+        var data = {};  // json data
+
         //---------------------------------------
         // TOC表示切り替え
         //---------------------------------------
@@ -72,19 +74,40 @@
             elem.innerText = text;
           }
         }
+        //---------------------------------------
+        // mermaid
+        //---------------------------------------
+        var on_click_mermaid = function (e)
+        {
+          var id = e.target.id;
+          if ( id.startsWith("mermaid-", 0) ){
+            console.log(id)
+            console.log(data)
+          }
+        };
 
         //---------------------------------------
         // 起動時処理
         //---------------------------------------
 
         function loadFinished(){
-            var elem = document.getElementById("json-data");
-            var data = JSON.parse(elem.textContent);
-            console.log(data)
 
+            // jsonデータ実体化
+            var elem = document.getElementById("json-data");
+            data = JSON.parse(elem.textContent);
+
+            // TOC表示切替初期設定
             var toc_icon = document.getElementById("toc_icon");
             toc_icon.onclick = event => toc_toggle();
             mermaid.initialize({startOnLoad:true});
+
+            // mermaid図形初期設定
+            let elements = document.getElementsByClassName("mermaid");
+            let len = elements.length;
+            for (let i = 0; i < len; i++){
+                let elem = elements.item(i);
+                elem.addEventListener("click", on_click_mermaid );
+            }
         }
         window.addEventListener("load", loadFinished);
     </script>
