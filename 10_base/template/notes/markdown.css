@@ -360,3 +360,39 @@ p code {
   background-color: var(--inptc_color);
   padding: 1pt 1pt 1pt 1pt;
 }
+#clip_icon {
+
+  /* pos / size */
+  position: fixed;
+  top: 1%;
+  right: calc( 1% + 11pt + 5pt );
+  width: 11pt;
+  height: 11pt;
+
+  /* color */
+  border: 1pt solid var(--base_text_color);
+  border-radius: 5px 5px 5px 5px;
+  background-color: var(--inptc_color);
+  padding: 1pt 1pt 1pt 1pt;
+  visibility: hidden;
+}
+
+#div_3ae2c4e4641b45699ccd211cbbb4086d {
+
+  /* pos / size */
+  position: fixed;
+  top: 1%;
+  right: calc( 1% + 11pt + 5pt + 11pt + 5pt );
+  width: calc( 100% - 1% + 11pt + 5pt + 11pt + 5pt - 1pt - 1pt );
+  height: 11pt;
+  text-align:center;
+  line-height:11pt;
+
+  /* color */
+  color : var(--base_color);
+  border: 1pt solid var(--base_color);
+  border-radius: 5px 5px 5px 5px;
+  background-color: var(--inptc_color);
+  padding: 1pt 1pt 1pt 1pt;
+  visibility: hidden;
+}

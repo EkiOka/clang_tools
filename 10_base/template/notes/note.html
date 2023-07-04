@@ -26,94 +26,121 @@
     </script>
     <script type="text/javascript">
 
-        var data = {};  // json data
+      var data = {};  // json data
 
-        //---------------------------------------
-        // TOC表示切り替え
-        //---------------------------------------
+      //---------------------------------------
+      // TOC表示切り替え
+      //---------------------------------------
 
-        function toc_toggle(){
-            var toc = document.getElementsByClassName("toc")[0];
-            if ( toc.style.visibility == "hidden" ){
-                toc.style.visibility = "visible";
-            } else {
-                toc.style.visibility = "hidden";
-            }
+      function toc_toggle(){
+          var toc = document.getElementsByClassName("toc")[0];
+          if ( toc.style.visibility == "hidden" ){
+              toc.style.visibility = "visible";
+          } else {
+              toc.style.visibility = "hidden";
+          }
+      }
+      //---------------------------------------
+      // clip
+      //---------------------------------------
+      var clip_target_id = null;
+
+      var on_click_clip = function ()
+      {
+          var clip_icon = document.getElementById("clip_icon");
+          if( clip_icon.style.visibility == "visible" ){
+            var target = document.getElementById(clip_target_id);
+            var text = '<?xml version="1.0" encoding="UTF-8"?>' +
+                       '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
+                        target.innerHTML;
+            navigator.clipboard.writeText(text);
+            clip_icon.style.visibility = "hidden";
+            startShowHint("図形がクリップボードにコピーされました")
+          }
+      };
+
+      //---------------------------------------
+      // ヒント表示
+      //---------------------------------------
+
+      var ShowHintId = 0;
+      var ShowHintTime = 0;
+      function doShowHint(){
+        ShowHintTime++;
+        var elem = document.getElementById("div_3ae2c4e4641b45699ccd211cbbb4086d");
+        if (ShowHintTime==1){
+          elem.style.visibility = "visible";
+        } else if (ShowHintTime==1+5){
+          elem.style.visibility = "hidden";
+        } else if (ShowHintTime==1+5+5){
+          elem.style.visibility = "visible";
+        } else if (ShowHintTime==1+5+5+5){
+          elem.style.visibility = "hidden";
+        } else if (ShowHintTime==1+5+5+5+5){
+          elem.style.visibility = "visible";
+        } else if (ShowHintTime==1+5+5+5+5+20){
+          elem.style.visibility = "hidden";
+          ShowHintTime = 0;
+          window.clearInterval(ShowHintId)
         }
+      }
 
-        //---------------------------------------
-        // ヒント表示
-        //---------------------------------------
-
-        var ShowHintId = 0;
-        var ShowHintTime = 0;
-        function doShowHint(){
-          ShowHintTime++;
+      function startShowHint(text){
+        if (ShowHintTime == 0 ){
+          ShowHintId = window.setInterval(doShowHint, 100);
           var elem = document.getElementById("div_3ae2c4e4641b45699ccd211cbbb4086d");
-          if (ShowHintTime==1){
-            elem.style.visibility = "visible";
-          } else if (ShowHintTime==1+5){
-            elem.style.visibility = "hidden";
-          } else if (ShowHintTime==1+5+5){
-            elem.style.visibility = "visible";
-          } else if (ShowHintTime==1+5+5+5){
-            elem.style.visibility = "hidden";
-          } else if (ShowHintTime==1+5+5+5+5){
-            elem.style.visibility = "visible";
-          } else if (ShowHintTime==1+5+5+5+5+20){
-            elem.style.visibility = "hidden";
-            ShowHintTime = 0;
-            window.clearInterval(ShowHintId)
-          }
+          elem.innerText = text;
         }
-
-        function startShowHint(text){
-          if (ShowHintTime == 0 ){
-            ShowHintId = window.setInterval(doShowHint, 100);
-            var elem = document.getElementById("div_3ae2c4e4641b45699ccd211cbbb4086d");
-            elem.innerText = text;
-          }
+      }
+      //---------------------------------------
+      // mermaid
+      //---------------------------------------
+      var on_click_mermaid = function (e)
+      {
+        var id = e.target.id;
+        if ( id.startsWith("mermaid_div_", 0) ){
+          clip_target_id = id;
+          startShowHint("mermaid図形が選択されました。")
+          var clip_icon = document.getElementById("clip_icon");
+          clip_icon.style.visibility = "visible";
         }
-        //---------------------------------------
-        // mermaid
-        //---------------------------------------
-        var on_click_mermaid = function (e)
-        {
-          var id = e.target.id;
-          if ( id.startsWith("mermaid-", 0) ){
-            console.log(id)
-            console.log(data)
+      };
+
+      //---------------------------------------
+      // 起動時処理
+      //---------------------------------------
+
+      function loadFinished(){
+
+          // jsonデータ実体化
+          var elem = document.getElementById("json-data");
+          data = JSON.parse(elem.textContent);
+
+          // TOC表示切替初期設定
+          var toc_icon = document.getElementById("toc_icon");
+          toc_icon.onclick = event => toc_toggle();
+
+          // clipボタン設定            
+          var clip_icon = document.getElementById("clip_icon");
+          clip_icon.onclick = event => on_click_clip();
+
+          // mermaid図形初期設定
+          mermaid.initialize({startOnLoad:true});
+          let elements = document.getElementsByClassName("mermaid");
+          let len = elements.length;
+          for (let i = 0; i < len; i++){
+              let elem = elements.item(i);
+              elem.addEventListener("click", on_click_mermaid );
           }
-        };
-
-        //---------------------------------------
-        // 起動時処理
-        //---------------------------------------
-
-        function loadFinished(){
-
-            // jsonデータ実体化
-            var elem = document.getElementById("json-data");
-            data = JSON.parse(elem.textContent);
-
-            // TOC表示切替初期設定
-            var toc_icon = document.getElementById("toc_icon");
-            toc_icon.onclick = event => toc_toggle();
-            mermaid.initialize({startOnLoad:true});
-
-            // mermaid図形初期設定
-            let elements = document.getElementsByClassName("mermaid");
-            let len = elements.length;
-            for (let i = 0; i < len; i++){
-                let elem = elements.item(i);
-                elem.addEventListener("click", on_click_mermaid );
-            }
-        }
-        window.addEventListener("load", loadFinished);
-    </script>
+      }
+      window.addEventListener("load", loadFinished);
+  </script>
 </head>
 <body>
     {{data_contents}}
+
+    <div id="div_3ae2c4e4641b45699ccd211cbbb4086d"></div>
+
     <svg id="toc_icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="-0.5 -0.5 123 73">
         <defs/>
         <g>
@@ -121,6 +148,14 @@
             <rect x="1" y="31" width="120" height="10" rx="1.5" ry="1.5" fill="black" stroke="rgb(0, 0, 0)" stroke-width="1" pointer-events="all"/>
             <rect x="1" y="61" width="120" height="10" rx="1.5" ry="1.5" fill="black" stroke="rgb(0, 0, 0)" stroke-width="1" pointer-events="all"/>
         </g>
+    </svg>
+    
+    <svg id="clip_icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="30px" height="51px" viewBox="-0.5 -0.5 30 51">
+      <defs/>
+      <g>
+        <rect x="0" y="0" width="29" height="50" fill="none" stroke="none" pointer-events="all"/>
+        <path d="M 20.53 0.07 C 17.45 0.26 14.71 2.04 13.79 4.98 L 13.78 5.02 L 7.88 28.96 C 7.41 30.85 7.22 32.35 7.66 33.75 C 8.11 35.14 9.23 36.14 10.65 36.83 L 10.74 36.88 L 10.85 36.91 C 12.68 37.47 14.48 37.07 15.75 36.06 C 17.02 35.06 17.82 33.58 18.3 31.95 L 18.31 31.92 L 22.78 13.72 C 22.96 13 22.51 12.27 21.79 12.09 C 21.06 11.92 20.33 12.36 20.16 13.08 L 15.72 31.19 C 15.34 32.44 14.74 33.43 14.07 33.95 C 13.43 34.46 12.77 34.63 11.72 34.34 C 10.77 33.85 10.4 33.48 10.23 32.93 C 10.04 32.35 10.07 31.3 10.5 29.6 L 10.5 29.6 L 16.37 5.78 C 17.11 3.42 19.86 2.15 22.88 2.99 C 24.42 3.55 25.25 4.32 25.71 5.21 C 26.17 6.1 26.26 7.23 25.98 8.58 C 25.98 8.58 25.98 8.58 25.98 8.58 L 18.07 40.63 C 17.32 42.86 16.04 44.67 14.47 45.74 C 12.92 46.8 11.1 47.19 8.92 46.63 C 4.93 45.02 2.94 41.36 3.88 37.56 L 3.88 37.55 L 9.51 14.78 C 9.69 14.06 9.25 13.33 8.53 13.15 C 7.81 12.97 7.08 13.41 6.9 14.14 L 1.26 36.91 L 1.26 36.91 C 0 42.04 2.87 47.14 7.98 49.16 L 8.05 49.19 L 8.13 49.21 C 11.05 50 13.82 49.44 15.99 47.96 C 18.15 46.49 19.73 44.17 20.63 41.47 L 20.65 41.42 L 28.61 9.16 L 28.61 9.14 C 29 7.36 28.9 5.55 28.1 3.98 C 27.3 2.41 25.8 1.17 23.75 0.44 L 23.71 0.42 L 23.67 0.41 C 22.62 0.11 21.56 0 20.53 0.07 Z" fill="#000099" stroke="none" pointer-events="all"/>
+      </g>
     </svg>
 </body>
 </html>
