@@ -89,6 +89,9 @@ def __main(s:cmd):
     file_tmp_dxy_log  = upl.get("file_tmp_dxy_log",   f"{dir_tmp_dxy}\\doxygen.log")
     file_out_dxy_log  = upl.get("file_out_dxy_log",   f"{dir_out_dxy}\\doxygen.log")
 
+    file_tmp_dxy_rpt  = upl.get("file_tmp_dxy_rpt",   f"{dir_tmp_dxy}\\doxygen_rpt.yml")
+    file_out_dxy_rpt  = upl.get("file_out_dxy_rpt",   f"{dir_out_dxy}\\doxygen_rpt.yml")
+
     #---------------------------------------------------------------------
     # notes関係パス設定
     #---------------------------------------------------------------------

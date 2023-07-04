@@ -25,8 +25,9 @@ class cmd_rpt(cab.cmd_app):
         checker_report = rpt.get(s.cur_checker_name, {})
         rpt[s.cur_checker_name] = checker_report
 
-        dir_out_dox_yml = pl.get_user_path("dir_out_dox_yml")
-        dox_yml_files = a.get_file_list(f"{dir_out_dox_yml}\\*.yml")
+        file_tmp_dxy_rpt = pl.get_user_path("file_tmp_dxy_rpt")
+        dir_out_dxy_yml = pl.get_user_path("dir_out_dxy_yml")
+        dox_yml_files = a.get_file_list(f"{dir_out_dxy_yml}\\*.yml")
         for file in dox_yml_files:
             yml_data = a.load_yaml(file)
             for k, v in yml_data.items():
@@ -35,7 +36,7 @@ class cmd_rpt(cab.cmd_app):
                 checker_report[k] = dest_file
                 s.check_doxygen_file(v,dest_file)
                 pass
-        a.save_yaml("report.yml",rpt)
+        a.save_yaml(file_tmp_dxy_rpt,rpt)
         return
 
     def check_doxygen_file(s, src: dict,dest:dict):
