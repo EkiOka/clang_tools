@@ -99,6 +99,7 @@ def __main(s:cmd):
     dir_notes     = upl.get("dir_notes",     f"{dir_user}\\notes")
     dir_tmpl_note = upl.get("dir_tmpl_note", f"{dir_tmpl}\\notes")    
     dir_tmp_notes = upl.get("dir_tmp_notes", f"{dir_tmp}\\notes")
+    dir_out_notes = upl.get("dir_out_notes", f"{dir_out}\\notes")
 
     mask_notes     = upl.get("mask_notes",     f"{dir_notes}\\**\\*.md")
     file_note_cfg  = upl.get("file_note_cfg",  f"{dir_cfg}\\note_common.yml")
