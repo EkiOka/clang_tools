@@ -449,7 +449,7 @@ def save_text(path:str,text:any,encoding:str=ENC_DEF,ret_code:str=RET_CODE_DEF):
                     raise Exception(f"改行コードの指定が異常です ret_code={ret_code}")
             text = text.replace("\n",ret_code)
             f.write(text)
-    elif isinstance(text,list[str]):
+    elif isinstance(text,list):
         with open(path, mode="w", encoding=encoding) as f:
             f.writelines([line + ret_code for line in text])
     else:
@@ -533,7 +533,7 @@ def get_file_lists(enable_masks:list[str],disable_masks:list[str]=[],recursive=T
             enb.extend( enable_masks.split(SEP_PATH2PATH) )
         else:
             enb.append(enable_masks)
-    elif isinstance(enable_masks,list[str]):
+    elif isinstance(enable_masks,list):
         enb.extend(enable_masks)
     else:
         raise_Exception(f"未対応の型が指定されました。type={type(enable_masks)}, value={enable_masks}")
@@ -543,7 +543,7 @@ def get_file_lists(enable_masks:list[str],disable_masks:list[str]=[],recursive=T
             dis.extend( disable_masks.split(SEP_PATH2PATH) )
         else:
             dis.append(disable_masks)
-    elif isinstance(disable_masks,list[str]):
+    elif isinstance(disable_masks,list):
         dis.extend(disable_masks)
     else:
         raise_Exception(f"未対応の型が指定されました。type={type(disable_masks)}, value={disable_masks}")
