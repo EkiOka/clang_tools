@@ -64,12 +64,12 @@ h2 {
 
   /* pos / size */
   position  : relative;
-  padding   : 1em .5em .5em 2em;
+  padding   : 2em .5em .5em 2em;
   font-size : 22pt;
   margin    : 0;
 
   /* color */
-  border-bottom: var(--revs_color);
+  border-bottom: 2pt solid var(--inptc_color);
 }
 
 h2::before,
@@ -86,7 +86,7 @@ h2::after {
 h2::before {
 
   /* pos / size */
-  top: 1.2em;
+  top: 2.2em;
   left: 0.7em;
   z-index: 2;
   width: 18px;
@@ -99,7 +99,7 @@ h2::before {
 h2::after {
 
   /* pos / size */
-  top: 1.7em;
+  top: 2.7em;
   left: 1.2em;
   width: 13px;
   height: 13px;
@@ -296,7 +296,7 @@ p code {
 
 .mermaid {
 
-  background-color: var(--alpha_lv_5);
+  background-color: var(--revs_color);
 
   border: 3px solid var(--inptc_color);
   border-radius: 7px 7px 7px 7px;
@@ -305,10 +305,10 @@ p code {
 }
 
 .codehilite {
-  color: var(--rev_text_color);
-  background-color: var(--dark_lv_5);
+  color: var(--revs_color);
+  background-color: var(--alpha_lv_3);
 
-  border: 3px solid var(--base_bd_color);
+  border: 3px solid var(--inptc_color);
   border-radius: 7px 7px 7px 7px;
   overflow:scroll;
 
@@ -355,7 +355,7 @@ p code {
   height: 11pt;
 
   /* color */
-  border: 1pt solid var(--base_text_color);
+  border: 1pt solid var(--revs_color);
   border-radius: 5px 5px 5px 5px;
   background-color: var(--inptc_color);
   padding: 1pt 1pt 1pt 1pt;
@@ -370,7 +370,7 @@ p code {
   height: 11pt;
 
   /* color */
-  border: 1pt solid var(--base_text_color);
+  border: 1pt solid var(--revs_color);
   border-radius: 5px 5px 5px 5px;
   background-color: var(--inptc_color);
   padding: 1pt 1pt 1pt 1pt;
