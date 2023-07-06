@@ -64,6 +64,134 @@ Doxygenなどの生成・変換を行うツールは原則ファイルは上書�
 (※2)ツールのパスやユーザー拡張機能に関するパスの設定。20_user\tools\user_path.pyを参照。
 (※3)現在は解析結果をyml形式に変換するまでしか対応していません。
 
+## データフロー
+
+### ターゲットファイルリスト
+
+```mermaid
+flowchart LR
+
+    subgraph パスリスト
+        dir_target:::user_path
+        dir_tmp:::user_path
+        dir_out:::user_path
+
+        subgraph ファイルマスク
+            masks_target_src["ソース"]:::user_path
+            masks_target_c[".c"]:::user_path
+            masks_target_h[".h"]:::user_path
+            masks_target_cpp[".cpp"]:::user_path
+        end
+
+        subgraph 一時出力ファイルリスト
+            file_tmp_file_list_target_src["ソース"]:::user_path
+            file_tmp_file_list_target_h[".h"]:::user_path
+            file_tmp_file_list_target_c[".c"]:::user_path
+            file_tmp_file_list_target_cpp[".cpp"]:::user_path
+            file_tmp_file_list_target_inc["includeパス"]:::user_path
+        end
+
+        subgraph 更新出力ファイルリスト
+            file_out_file_list_target_src["ソース"]:::user_path
+            file_out_file_list_target_h[".h"]:::user_path
+            file_out_file_list_target_c[".c"]:::user_path
+            file_out_file_list_target_cpp[".cpp"]:::user_path
+            file_out_file_list_target_inc["includeパス"]:::user_path
+        end
+
+        file_tmpl_target_mk["mkテンプレート"]:::user_path
+        file_tmp_target_mk["target.mk"]:::user_path
+    end
+
+    subgraph vscodeワークスペース
+
+        mk_tmpl["target.mkテンプレート"]
+
+        user_make(["user_make.py"]):::process
+
+        c_files["ターゲット内.cファイルリスト"]
+        h_files["ターゲット内.hファイルリスト"]
+        cpp_files["ターゲット内.cppファイルリスト"]
+        src_files["ターゲット内.srcファイルリスト"]
+        inc_dis["ターゲット内includeパスリスト"]
+        updated_c_files["更新.cファイルリスト"]
+        updated_h_files["更新.hファイルリスト"]
+        updated_cpp_files["更新.cppファイルリスト"]
+        updated_src_files["更新.srcファイルリスト"]
+        updated_inc_dis["更新includeパスリスト"]
+
+        subgraph target_mk["target.mk"]
+            gen_filelist_c(["gen_filelist.py"]):::process
+            gen_filelist_h(["gen_filelist.py"]):::process
+            gen_filelist_cpp(["gen_filelist.py"]):::process
+            gen_filelist_src(["gen_filelist.py"]):::process
+            ucpy_c(["ucpy.py"]):::process
+            ucpy_h(["ucpy.py"]):::process
+            ucpy_cpp(["ucpy.py"]):::process
+            ucpy_inc(["ucpy.py"]):::process
+            ucpy_src(["ucpy.py"]):::process
+            gen_inc_dirs(["gen_inc_dirs.py"]):::process
+        end
+    end
+
+    file_tmpl_target_mk--"param:src_name"-->user_make
+    file_tmp_target_mk--"param:dest_name"-->user_make
+    mk_tmpl-->user_make
+    user_make--makefile生成-->target_mk
+
+    dir_target --> masks_target_c
+    dir_target --> masks_target_h
+    dir_target --> masks_target_cpp
+
+    masks_target_c--marge-->masks_target_src
+    masks_target_h--marge-->masks_target_src
+    masks_target_cpp--marge-->masks_target_src
+
+    masks_target_c--"param:src_ena_masks"-->gen_filelist_c
+    file_tmp_file_list_target_c--"param:dest_name"-->gen_filelist_c
+    gen_filelist_c-->c_files
+
+    masks_target_h--"param:src_ena_masks"-->gen_filelist_h
+    file_tmp_file_list_target_h--"param:dest_name"-->gen_filelist_h
+    gen_filelist_h-->h_files
+
+    masks_target_cpp--"param:src_ena_masks"-->gen_filelist_cpp
+    file_tmp_file_list_target_cpp--"param:dest_name"-->gen_filelist_cpp
+    gen_filelist_cpp-->cpp_files
+
+    masks_target_src--"param:src_ena_masks"-->gen_filelist_src
+    file_tmp_file_list_target_src--"param:dest_name"-->gen_filelist_src
+    gen_filelist_src-->src_files
+
+    updated_src_files-->gen_inc_dirs--"includeパスリスト生成"-->inc_dis
+    file_out_file_list_target_inc-->gen_inc_dirs
+
+    dir_tmp-->ucpy_c
+    dir_out-->ucpy_c
+
+    dir_tmp-->ucpy_h
+    dir_out-->ucpy_h
+
+    dir_tmp-->ucpy_cpp
+    dir_out-->ucpy_cpp
+
+    dir_tmp-->ucpy_inc
+    dir_out-->ucpy_inc
+
+    c_files-->ucpy_c-->updated_c_files
+    h_files-->ucpy_h-->updated_h_files
+    cpp_files-->ucpy_cpp-->updated_cpp_files
+    src_files-->ucpy_src-->updated_src_files
+    inc_dis-->ucpy_inc-->updated_inc_dis
+
+
+    classDef process fill:red,fill-opacity:0.1
+    classDef user_path fill:yellow,fill-opacity:0.1
+    classDef env_path fill:green,fill-opacity:0.1
+```
+
+
+
 ## 関連技術情報
 
 ### doxygen XMLデータの読み出しについて
