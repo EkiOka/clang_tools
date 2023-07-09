@@ -132,29 +132,33 @@ flowchart TB
     tmp_src_list --> tmp2out1 --> out_src_list
     tmp_inc_list --> tmp2out2 --> out_inc_list
 
-    click   c_files "#0a00518ebfe54256828562ff67fc6a94"
-    click   h_files "#2d6c8362e6f74ae9a7cf7c5c9550b333"
-    click cpp_files "#60f1350f7b7742e7aac3e613d7fc3aa5"
-
-    click tmp_c_list "#fdec2acf3ef241d999515288ced24b25"
-    click tmp_h_list "#27c864411f294e3ab54179e54f2964a6"
-    click tmp_cpp_list "#a1a5934ba1e444318af3715be04093d8"
-
     classDef process fill:red,fill-opacity:0.1
     classDef user_path fill:yellow,fill-opacity:0.1
     classDef env_path fill:green,fill-opacity:0.1
 ```
 
-| 図内識別子                                           | パス名 | 説明 |
-| ---------------------------------------------------- | ------ | ----------------------------- |
-| <a id="0a00518ebfe54256828562ff67fc6a94">c_files</a> |        | ターゲット内の拡張子.cファイルの検索マスク |
-| <a id="2d6c8362e6f74ae9a7cf7c5c9550b333">h_files</a> |        | ターゲット内の拡張子.hファイルの検索マスク |
-| <a id="60f1350f7b7742e7aac3e613d7fc3aa5">cpp_files</a> |        | ターゲット内の拡張子.cppファイルの検索マスク |
-| <a id="fdec2acf3ef241d999515288ced24b25">tmp_c_list</a> |        | ターゲット内の拡張子.cファイルのファイルリスト一時保存先ファイル(JSON) |
-| <a id="27c864411f294e3ab54179e54f2964a6">tmp_h_list</a> |        | ターゲット内の拡張子.hファイルのファイルリスト一時保存先ファイル(JSON) |
-| <a id="a1a5934ba1e444318af3715be04093d8">tmp_cpp_list</a> |        | ターゲット内の拡張子.cppファイルのファイルリスト一時保存先ファイル(JSON) |
+| 図内識別子    | ユーザーパス名                 | 説明                                                                   |
+| ------------- | ------------------------------ | ---------------------------------------------------------------------- |
+| c_files       | masks_target_c                 | ターゲット内の拡張子.cのファイル検索マスク                             |
+| h_files       | masks_target_h                 | ターゲット内の拡張子.hのファイル検索マスク                             |
+| cpp_files     | masks_target_pp                | ターゲット内の拡張子.cppのファイル検索マスク                           |
+|               | masks_target_src               | ターゲット内の拡張子.c;.h;.cppのファイル検索マスク                     |
+||||
+| tmp_c_list    | file_tmp_file_list_target_c    | ターゲット内の拡張子.cの一時ファイルリスト保存先ファイル(JSON)         |
+| tmp_h_list    | file_tmp_file_list_target_h    | ターゲット内の拡張子.hの一時ファイルリスト保存先ファイル(JSON)         |
+| tmp_cpp_list  | file_tmp_file_list_target_cpp  | ターゲット内の拡張子.cpp一時ファイルリスト保存先ファイル(JSON)         |
+| tmp_src_list  | file_tmp_file_list_target_src  | ターゲット内の拡張子.c;.h;.cppの一時ファイルリスト保存先ファイル(JSON) |
+||||
+| out_c_list    | file_out_file_list_target_c    | ターゲット内の拡張子.cの更新ファイルリスト保存先ファイル(JSON)         |
+| out_h_list    | file_out_file_list_target_h    | ターゲット内の拡張子.hの更新ファイルリスト保存先ファイル(JSON)         |
+| out_cpp_list  | file_out_file_list_target_cpp  | ターゲット内の拡張子.cpp更新ファイルリスト保存先ファイル(JSON)         |
+| out_src_list  | file_out_file_list_target_src  | ターゲット内の拡張子.c;.h;.cppの更新ファイルリスト保存先ファイル(JSON) |
+||||
+| tmp_inc_list    | file_tmp_file_list_target_c   | includeパスリストの一時ファイルリスト保存先ファイル(JSON)             |
+| out_inc_list    | file_out_file_list_target_inc | includeパスリストの拡張子.c一更新ファイルリスト保存先ファイル(JSON)   |
+||||
 
-
+※includeパスはソースファイル(.c、および.h)からの相対パスか外部のパスから構成されているため、前者の検索を行うためのパスリストを生成するため.cと.hのパスリストを入力としている。
 
 
 
@@ -198,6 +202,17 @@ print(root)
 書式は下記にあるので解析して定型化し、チェッカー作れるはず。
 
 https://learn.microsoft.com/ja-jp/cpp/build/formatting-the-output-of-a-custom-build-step-or-build-event?view=msvc-170
+
+> { ファイル名(行番号 [,列番号]) | ツール名 } : [ 任意のテキスト ] {error | warning} コード タイプと数値:ローカライズ可能文字列 [ 任意のテキスト ]
+
+と思ったが残念ながら情報が不完全。
+というのも最初のファイル名はフルパス出力されているため`{ ファイル名(行番号 [,列番号]) | ツール名 } :`で検出される`:`はファイル名内で出力されるため判別が難しい。
+
+また行番号の書式に使用される`(,)`もファイル名内に組み込める文字列のため絶対的な判別は不可能と判断する。
+ただし、ファイルパス内で`(数値,数値)`の記載を入れる、更にVisual Studioのソース管理先のパスにそれを使うケースはレアケース過ぎるので、こちらは実施条件から除く。
+
+プロジェクトファイルからの相対パスで出力する方法はありそうな気がするため調査必要。
+もしくはドライブレターは文字数固定なため解析時にスキップさせれば問題ない？
 
 ### GCCのビルドエラー・警告解析
 
