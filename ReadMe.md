@@ -66,129 +66,95 @@ Doxygenなどの生成・変換を行うツールは原則ファイルは上書�
 
 ## データフロー
 
-### ターゲットファイルリスト
+### ファイルリスト
 
 ```mermaid
-flowchart LR
+flowchart TB
 
-    subgraph パスリスト
-        dir_target:::user_path
-        dir_tmp:::user_path
-        dir_out:::user_path
+    clang_tools -- ref -.->path_list
 
-        subgraph ファイルマスク
-            masks_target_src["ソース"]:::user_path
-            masks_target_c[".c"]:::user_path
-            masks_target_h[".h"]:::user_path
-            masks_target_cpp[".cpp"]:::user_path
+
+    subgraph clang_tools
+        direction LR
+
+        subgraph target
+            direction LR
+
+            c_files
+            h_files
+            cpp_files
         end
 
-        subgraph 一時出力ファイルリスト
-            file_tmp_file_list_target_src["ソース"]:::user_path
-            file_tmp_file_list_target_h[".h"]:::user_path
-            file_tmp_file_list_target_c[".c"]:::user_path
-            file_tmp_file_list_target_cpp[".cpp"]:::user_path
-            file_tmp_file_list_target_inc["includeパス"]:::user_path
+        gen_filelist_c(["gen_filelist.py"]):::process
+        gen_filelist_h(["gen_filelist.py"]):::process
+        gen_filelist_cpp(["gen_filelist.py"]):::process
+        gen_filelist_src(["gen_filelist.py"]):::process
+        gen_inc_dirs(["gen_inc_dirs.py"]):::process
+
+        subgraph tmp
+            direction LR
+
+            tmp_c_list
+            tmp_h_list
+            tmp_cpp_list
+            tmp_src_list
+            tmp_inc_list
         end
 
-        subgraph 更新出力ファイルリスト
-            file_out_file_list_target_src["ソース"]:::user_path
-            file_out_file_list_target_h[".h"]:::user_path
-            file_out_file_list_target_c[".c"]:::user_path
-            file_out_file_list_target_cpp[".cpp"]:::user_path
-            file_out_file_list_target_inc["includeパス"]:::user_path
-        end
+        tmp2out1(["tmp2out.bat"]):::process
+        tmp2out2(["tmp2out.bat"]):::process
 
-        file_tmpl_target_mk["mkテンプレート"]:::user_path
-        file_tmp_target_mk["target.mk"]:::user_path
-    end
+        subgraph out
+            direction LR
 
-    subgraph vscodeワークスペース
-
-        mk_tmpl["target.mkテンプレート"]
-
-        user_make(["user_make.py"]):::process
-
-        c_files["ターゲット内.cファイルリスト"]
-        h_files["ターゲット内.hファイルリスト"]
-        cpp_files["ターゲット内.cppファイルリスト"]
-        src_files["ターゲット内.srcファイルリスト"]
-        inc_dis["ターゲット内includeパスリスト"]
-        updated_c_files["更新.cファイルリスト"]
-        updated_h_files["更新.hファイルリスト"]
-        updated_cpp_files["更新.cppファイルリスト"]
-        updated_src_files["更新.srcファイルリスト"]
-        updated_inc_dis["更新includeパスリスト"]
-
-        subgraph target_mk["target.mk"]
-            gen_filelist_c(["gen_filelist.py"]):::process
-            gen_filelist_h(["gen_filelist.py"]):::process
-            gen_filelist_cpp(["gen_filelist.py"]):::process
-            gen_filelist_src(["gen_filelist.py"]):::process
-            ucpy_c(["ucpy.py"]):::process
-            ucpy_h(["ucpy.py"]):::process
-            ucpy_cpp(["ucpy.py"]):::process
-            ucpy_inc(["ucpy.py"]):::process
-            ucpy_src(["ucpy.py"]):::process
-            gen_inc_dirs(["gen_inc_dirs.py"]):::process
+            out_c_list
+            out_h_list
+            out_cpp_list
+            out_src_list
+            out_inc_list
         end
     end
+    
+    c_files   -- src_ena_masks --> gen_filelist_c   -- dest_name --> tmp_c_list
+    h_files   -- src_ena_masks --> gen_filelist_h   -- dest_name --> tmp_h_list
+    cpp_files -- src_ena_masks --> gen_filelist_cpp -- dest_name --> tmp_cpp_list
 
-    file_tmpl_target_mk--"param:src_name"-->user_make
-    file_tmp_target_mk--"param:dest_name"-->user_make
-    mk_tmpl-->user_make
-    user_make--makefile生成-->target_mk
+    c_files          -- src_ena_masks --> gen_filelist_src
+    h_files          -- src_ena_masks --> gen_filelist_src
+    cpp_files        -- src_ena_masks --> gen_filelist_src
+    gen_filelist_src -- dest_name     --> tmp_src_list
 
-    dir_target --> masks_target_c
-    dir_target --> masks_target_h
-    dir_target --> masks_target_cpp
+    out_src_list --> gen_inc_dirs --> tmp_inc_list
 
-    masks_target_c--marge-->masks_target_src
-    masks_target_h--marge-->masks_target_src
-    masks_target_cpp--marge-->masks_target_src
+    tmp_c_list   --> tmp2out1 --> out_c_list
+    tmp_h_list   --> tmp2out1 --> out_h_list
+    tmp_cpp_list --> tmp2out1 --> out_cpp_list
+    tmp_src_list --> tmp2out1 --> out_src_list
+    tmp_inc_list --> tmp2out2 --> out_inc_list
 
-    masks_target_c--"param:src_ena_masks"-->gen_filelist_c
-    file_tmp_file_list_target_c--"param:dest_name"-->gen_filelist_c
-    gen_filelist_c-->c_files
+    click   c_files "#0a00518ebfe54256828562ff67fc6a94"
+    click   h_files "#2d6c8362e6f74ae9a7cf7c5c9550b333"
+    click cpp_files "#60f1350f7b7742e7aac3e613d7fc3aa5"
 
-    masks_target_h--"param:src_ena_masks"-->gen_filelist_h
-    file_tmp_file_list_target_h--"param:dest_name"-->gen_filelist_h
-    gen_filelist_h-->h_files
-
-    masks_target_cpp--"param:src_ena_masks"-->gen_filelist_cpp
-    file_tmp_file_list_target_cpp--"param:dest_name"-->gen_filelist_cpp
-    gen_filelist_cpp-->cpp_files
-
-    masks_target_src--"param:src_ena_masks"-->gen_filelist_src
-    file_tmp_file_list_target_src--"param:dest_name"-->gen_filelist_src
-    gen_filelist_src-->src_files
-
-    updated_src_files-->gen_inc_dirs--"includeパスリスト生成"-->inc_dis
-    file_out_file_list_target_inc-->gen_inc_dirs
-
-    dir_tmp-->ucpy_c
-    dir_out-->ucpy_c
-
-    dir_tmp-->ucpy_h
-    dir_out-->ucpy_h
-
-    dir_tmp-->ucpy_cpp
-    dir_out-->ucpy_cpp
-
-    dir_tmp-->ucpy_inc
-    dir_out-->ucpy_inc
-
-    c_files-->ucpy_c-->updated_c_files
-    h_files-->ucpy_h-->updated_h_files
-    cpp_files-->ucpy_cpp-->updated_cpp_files
-    src_files-->ucpy_src-->updated_src_files
-    inc_dis-->ucpy_inc-->updated_inc_dis
-
+    click tmp_c_list "#fdec2acf3ef241d999515288ced24b25"
+    click tmp_h_list "#27c864411f294e3ab54179e54f2964a6"
+    click tmp_cpp_list "#a1a5934ba1e444318af3715be04093d8"
 
     classDef process fill:red,fill-opacity:0.1
     classDef user_path fill:yellow,fill-opacity:0.1
     classDef env_path fill:green,fill-opacity:0.1
 ```
+
+| 図内識別子                                           | パス名 | 説明 |
+| ---------------------------------------------------- | ------ | ----------------------------- |
+| <a id="0a00518ebfe54256828562ff67fc6a94">c_files</a> |        | ターゲット内の拡張子.cファイルの検索マスク |
+| <a id="2d6c8362e6f74ae9a7cf7c5c9550b333">h_files</a> |        | ターゲット内の拡張子.hファイルの検索マスク |
+| <a id="60f1350f7b7742e7aac3e613d7fc3aa5">cpp_files</a> |        | ターゲット内の拡張子.cppファイルの検索マスク |
+| <a id="fdec2acf3ef241d999515288ced24b25">tmp_c_list</a> |        | ターゲット内の拡張子.cファイルのファイルリスト一時保存先ファイル(JSON) |
+| <a id="27c864411f294e3ab54179e54f2964a6">tmp_h_list</a> |        | ターゲット内の拡張子.hファイルのファイルリスト一時保存先ファイル(JSON) |
+| <a id="a1a5934ba1e444318af3715be04093d8">tmp_cpp_list</a> |        | ターゲット内の拡張子.cppファイルのファイルリスト一時保存先ファイル(JSON) |
+
+
 
 
 
