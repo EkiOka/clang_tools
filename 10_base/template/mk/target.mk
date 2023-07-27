@@ -28,14 +28,12 @@ MF_DIR=$(dir $(MAKEFILE_LIST))
 # ALL
 ##########################################################################
 
-.PHONY : all
+.PHONY : \
+ all \
+ tmps \
+
 
 all: \
- {{ file_tmp_file_list_target_h   }} \
- {{ file_tmp_file_list_target_c   }} \
- {{ file_tmp_file_list_target_cpp }} \
- {{ file_tmp_file_list_target_inc }} \
- {{ file_tmp_file_list_target_src }} \
  {{ file_out_file_list_target_h   }} \
  {{ file_out_file_list_target_c   }} \
  {{ file_out_file_list_target_cpp }} \
@@ -100,22 +98,24 @@ all: \
 # tmp
 ##########################################################################
 
-{{file_tmp_file_list_target_src }}:
+tmps : 
 	@echo $(MF_NAME) ^>
 	@echo $(MF_NAME) ^> target : $@
 	py_cmd.bat gen_filelist "-src_ena_masks:masks_target_src" "-src_dis_masks:" "-dest_name:file_tmp_file_list_target_src"
-
-{{ file_tmp_file_list_target_c }}:
 	@echo $(MF_NAME) ^>
 	@echo $(MF_NAME) ^> target : $@
 	py_cmd.bat gen_filelist "-src_ena_masks:masks_target_c"   "-src_dis_masks:" "-dest_name:file_tmp_file_list_target_c"
-
-{{ file_tmp_file_list_target_h }}:
 	@echo $(MF_NAME) ^>
 	@echo $(MF_NAME) ^> target : $@
 	py_cmd.bat gen_filelist "-src_ena_masks:masks_target_h"   "-src_dis_masks:" "-dest_name:file_tmp_file_list_target_h"
-
-{{ file_tmp_file_list_target_cpp }}:
 	@echo $(MF_NAME) ^>
 	@echo $(MF_NAME) ^> target : $@
 	py_cmd.bat gen_filelist "-src_ena_masks:masks_target_cpp" "-src_dis_masks:" "-dest_name:file_tmp_file_list_target_cpp"
+
+{{file_tmp_file_list_target_src }}:
+
+{{ file_tmp_file_list_target_c }}:
+
+{{ file_tmp_file_list_target_h }}:
+
+{{ file_tmp_file_list_target_cpp }}:
