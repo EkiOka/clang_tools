@@ -1,5 +1,10 @@
 {
   "files.exclude": {
+    ".clt":false,
+    ".vscode":false,
+    "vscode_win.py":true,
+    "LICENSE":true,
+    "temporary_files/":true,
     "**/.git": true,
     "**/.svn": true,
     "**/.hg": true,
@@ -8,17 +13,12 @@
     "**/Thumbs.db": true,
     "**/__pycache__": true
   },
-  "python.analysis.extraPaths": [
-    "${workspaceFolder}/00_fix/lib",
-    "${workspaceFolder}/20_user/lib",
-    "${workspaceFolder}/10_base/lib"
-  ],
   "terminal.integrated.defaultProfile.windows": "cmd",
   "terminal.integrated.profiles.windows": {
     "cmd": {
       "icon": "terminal-cmd",
       "path": [
-        "${workspaceFolder}\\00_fix\\cmd\\vscode_terminal.bat"
+        "${workspaceFolder}\\.clt\\fix\\hook_vscode\\vscode_terminal.bat"
       ],
       "color": "terminal.ansiYellow"
     }
@@ -68,8 +68,7 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.autopep8",
     "editor.formatOnPaste": true,
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.formatOnType": true,
   },
-  "python.formatting.provider": "none"
 }
