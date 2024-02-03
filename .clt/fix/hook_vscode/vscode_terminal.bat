@@ -4,9 +4,9 @@ chcp 65001 > nul
 
 set "bat_name=%~nx0"
 
-echo %proc_name% ^> =========================================================
-echo %proc_name% ^>  clt(clang_tools) configration
-echo %proc_name% ^> =========================================================
+echo %bat_name% ^> =========================================================
+echo %bat_name% ^>  clt(clang_tools) configration
+echo %bat_name% ^> =========================================================
 
 set "cur_bat_dir=%~dp0"
 set "cur_bat_dir=%cur_bat_dir:~,-1%"
