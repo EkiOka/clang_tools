@@ -64,8 +64,7 @@ goto :end_proc
 rem ----------------------------------------------------------------------
 :cfg_env_doxygen
 rem ----------------------------------------------------------------------
-setlocal
-set "clt_doxygen_cfg_yml=%clt_cfg_dir%\doxygen\default.yml"
+set "clt_doxygen_cfg_yml=%clt_cfg_dir%\doxygen\default_env_vars.yml"
 set "clt_doxygen_cfg_bat=%clt_tmp_dir%\doxygen.bat"
 
 md "%clt_cfg_dir%\doxygen" 2> nul

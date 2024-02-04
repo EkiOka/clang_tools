@@ -7,9 +7,13 @@ import lib_40d60c18793c4117a0e52c0fdadfd4fc.apps.cmd_app_base as cab
 class application(cab.cmd_app):
     def main(s):
         a.log_setup("d8658ed222954badbfba1295d1a6eb9d",level="DEBUG")
-        for k,v in s.cfg.items():
-            a.log_info(f"{k}:{v}")
-        a.log_info("！！！作成中！！！")
+        src_path = s.cfg["src_path"]
+        dest_path = s.cfg["dest_path"]
+        yml_data = a.load_yaml(src_path)
+        dst = list()
+        for k,v in yml_data.items():
+            dst.append(f"set \"{k}={v}\"")
+        a.save_text(dest_path,dst)
 
 
 
