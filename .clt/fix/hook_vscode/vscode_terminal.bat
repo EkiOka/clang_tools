@@ -47,6 +47,7 @@ echo %bat_name% ^>  configration / user
 echo %bat_name% ^> ---------------------------------------------------------
 
 call :cfg_path %clt_root_dir%\usr\_default\050_cfg\vscode_env_vars.yml %clt_tmp_dir%\cfg_33881d18deb24675ad5b4e6e65cee7a1.bat
+call :cfg_path %clt_cfg_dir%\vscode_env_vars.yml %clt_tmp_dir%\cfg_33881d18deb24675ad5b4e6e65cee7a1.bat
 
 goto :end_proc
 
@@ -59,6 +60,11 @@ set "dst_path=%2"
 
 echo %bat_name%:cfg_path ^> src_path : %src_path%
 echo %bat_name%:cfg_path ^> dst_path : %dst_path%
+
+if not exist "%src_path%" (
+    echo %bat_name%:cfg_path ^> config file not found.(%src_path%)
+    exit /b 1
+)
 
 md "%~dp2" 2> nul
 
