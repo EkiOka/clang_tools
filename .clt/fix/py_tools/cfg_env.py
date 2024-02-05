@@ -13,9 +13,8 @@ class application(cab.cmd_app):
         dst = list()
         for k,v in yml_data.items():
             dst.append(f"set \"{k}={v}\"")
+        dst.append(f"exit /b 0")
         a.save_text(dest_path,dst)
-
-
 
 app = application("4b399ded59144cad95ec678d4ea5f4c5")
 app.start()

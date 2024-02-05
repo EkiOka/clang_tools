@@ -46,36 +46,28 @@ echo %bat_name% ^> ---------------------------------------------------------
 echo %bat_name% ^>  configration / user
 echo %bat_name% ^> ---------------------------------------------------------
 
-set "clt_doxygen_tmp_dir=%clt_tmp_dir%\doxygen"
-set "clt_doxygen_xml_dir=%clt_tmp_dir%\doxygen\xml"
-set "clt_doxygen_yml_dir=%clt_tmp_dir%\doxygen\yml"
-
-md %clt_doxygen_tmp_dir% 2> nul
-md %clt_doxygen_xml_dir% 2> nul
-md %clt_doxygen_yml_dir% 2> nul
-
-echo %bat_name% ^> clt_doxygen_tmp_dir : %clt_doxygen_tmp_dir%
-echo %bat_name% ^> clt_doxygen_xml_dir : %clt_doxygen_xml_dir%
-echo %bat_name% ^> clt_doxygen_yml_dir : %clt_doxygen_yml_dir%
-
-call :cfg_env_doxygen
+call :cfg_path %clt_root_dir%\usr\_default\050_cfg\vscode_env_vars.yml %clt_tmp_dir%\cfg_33881d18deb24675ad5b4e6e65cee7a1.bat
 
 goto :end_proc
+
 rem ----------------------------------------------------------------------
-:cfg_env_doxygen
+:cfg_path
 rem ----------------------------------------------------------------------
-set "clt_doxygen_cfg_yml=%clt_cfg_dir%\doxygen\default_env_vars.yml"
-set "clt_doxygen_cfg_bat=%clt_tmp_dir%\doxygen.bat"
+setlocal
+set "src_path=%1"
+set "dst_path=%2"
 
-md "%clt_cfg_dir%\doxygen" 2> nul
+echo %bat_name%:cfg_path ^> src_path : %src_path%
+echo %bat_name%:cfg_path ^> dst_path : %dst_path%
 
-echo %bat_name% ^> clt_doxygen_cfg_yml : %clt_doxygen_cfg_yml%
-echo %bat_name% ^> clt_doxygen_cfg_bat : %clt_doxygen_cfg_bat%
+md "%~dp2" 2> nul
 
-py "%clt_tools_dir%\cfg_env.py" "-src_path:%clt_doxygen_cfg_yml%" "-dest_path:%clt_doxygen_cfg_bat%"
-if exist "%clt_doxygen_cfg_bat%" (
-    call %clt_doxygen_cfg_bat%
-    del %clt_doxygen_cfg_bat% 2> nul
+py "%clt_tools_dir%\cfg_env.py" "-src_path:%src_path%" "-dest_path:%dst_path%"
+endlocal
+
+if exist "%2" (
+    call "%2"
+    del %2 2> nul
 )
 exit /b 0
 
