@@ -58,24 +58,30 @@ setlocal
 set "src_path=%1"
 set "dst_path=%2"
 
+if not exist "%src_path%" goto :cfg_path_file_not_found
+
 echo %bat_name%:cfg_path ^> src_path : %src_path%
 echo %bat_name%:cfg_path ^> dst_path : %dst_path%
-
-if not exist "%src_path%" (
-    echo %bat_name%:cfg_path ^> config file not found.(%src_path%)
-    exit /b 1
-)
 
 md "%~dp2" 2> nul
 
 py "%clt_tools_dir%\cfg_env.py" "-src_path:%src_path%" "-dest_path:%dst_path%"
+
 endlocal
 
-if exist "%2" (
-    call "%2"
-    del %2 2> nul
-)
+if not exist "%2" goto :cfg_path_end
+call "%2"
+del %2 2> nul
+
+:cfg_path_end
 exit /b 0
+
+:cfg_path_file_not_found
+
+echo %bat_name%:cfg_path ^> warning : configration file not found.(%src_path%)
+
+exit /b 0
+
 
 rem ----------------------------------------------------------------------
 :end_proc

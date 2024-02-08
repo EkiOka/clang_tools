@@ -11,8 +11,8 @@ class application(cab.cmd_app):
         dest_path = s.cfg["dest_path"]
         yml_data = a.load_yaml(src_path)
         dst = list()
-        for k,v in yml_data.items():
-            dst.append(f"set \"{k}={v}\"")
+        for item in yml_data:
+            dst.append(f"set \"{item['name']}={item['value']}\"")
         dst.append(f"exit /b 0")
         a.save_text(dest_path,dst)
 

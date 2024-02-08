@@ -1,1 +1,20 @@
-clt_default_cfg_dir : '%clt_root_dir%\usr\_default\050_cfg'
+- name  : clt_default_cfg_dir
+  note  : 標準設定ファイル格納先ディレクトリ
+  type  : dir_path
+  value : '%clt_root_dir%\usr\_default\050_cfg'
+
+- name  : clt_cfg_dir
+  note  : ユーザー別設定ファイル格納先ディレクトリ
+  type  : dir_path
+  value : '%clt_root_dir%\usr\%username%\050_cfg'
+
+- name  : clt_gnuwin32_install_dir
+  note  : GnuWin32インストール先ディレクトリ
+  type  : dir_path
+  value : '%ProgramFiles(x86)%'
+
+- name  : clt_gnuwin32_make_exe
+  note  : make(GnuWin32)の実行パス
+  type  : file_path
+  value : '%clt_gnuwin32_install_dir%\bin\make.exe'
+
