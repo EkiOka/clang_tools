@@ -1,20 +1,200 @@
+#--------------------------------------------------------------------------------------------------
+# input
+#--------------------------------------------------------------------------------------------------
+
 - name  : clt_default_cfg_dir
   note  : 標準設定ファイル格納先ディレクトリ
-  type  : dir_path
+  type  : set
   value : '%clt_root_dir%\usr\_default\050_cfg'
+
+- name  : clt_usr_dir
+  note  : ユーザー別ディレクトリ
+  type  : set
+  value : '%clt_root_dir%\usr\%username%'
 
 - name  : clt_cfg_dir
   note  : ユーザー別設定ファイル格納先ディレクトリ
-  type  : dir_path
-  value : '%clt_root_dir%\usr\%username%\050_cfg'
+  type  : set
+  value : '%clt_usr_dir%\050_cfg'
+
+#--------------------------------------------------------------------------------------------------
+# output
+#--------------------------------------------------------------------------------------------------
+
+- name  : clt_out_dir
+  note  : ユーザー別出力ルートディレクトリ
+  type  : set
+  value : '%clt_usr_dir%\010_out'
+
+- name  : clt_tmp_dir
+  note  : ユーザー別一時出力ルートディレクトリ
+  type  : set
+  value : '%clt_out_dir%\tmp'
+
+#--------------------------------------------------------------------------------------------------
+# install directory / exe files
+#--------------------------------------------------------------------------------------------------
 
 - name  : clt_gnuwin32_install_dir
   note  : GnuWin32インストール先ディレクトリ
-  type  : dir_path
-  value : '%ProgramFiles(x86)%'
+  type  : set
+  value : '%ProgramFiles(x86)%\GnuWin32'
 
 - name  : clt_gnuwin32_make_exe
-  note  : make(GnuWin32)の実行パス
-  type  : file_path
+  note  : make(GnuWin32)の実行ファイルパス
+  type  : set
   value : '%clt_gnuwin32_install_dir%\bin\make.exe'
 
+- name  : clt_doxygen_install
+  note  : Doxygenインストール先ディレクトリ
+  type  : set
+  value : '%ProgramFiles%\doxygen'
+
+- name  : clt_doxygen_exe
+  note  : Doxygenの実行ファイルパス
+  type  : set
+  value : '%clt_doxygen_install%\bin\doxygen.exe'
+
+- name  : clt_doxywizard_exe
+  note  : DoxyWizardの実行ファイルパス
+  type  : set
+  value : '%clt_doxygen_install%\bin\doxywizard.exe'
+
+- name  : clt_git_install
+  note  : Gitインストールディレクトリ
+  type  : set
+  value : '%ProgramFiles%\Git'
+
+- name  : clt_git_exe
+  note  : Gitの実行ファイルパス
+  type  : set
+  value : '%clt_git_install%\bin\git.exe'
+
+- name  : clt_grep_exe_for_git
+  note  : Grepの実行ファイルパス(Git添付のもの)
+  type  : set
+  value : '%clt_git_install%\usr\bin\grep.exe'
+
+- name  : clt_diff_exe_for_git
+  note  : diffの実行ファイルパス(Git添付のもの)
+  type  : set
+  value : '%clt_git_install%\usr\bin\diff.exe'
+
+- name  : clt_diff3_exe_for_git
+  note  : diff3の実行ファイルパス(Git添付のもの)
+  type  : set
+  value : '%clt_git_install%\usr\bin\diff3.exe'
+
+- name  : clt_graphviz_install
+  note  : Graphvizインストールディレクトリ
+  type  : set
+  value : '%ProgramFiles%\Graphviz'
+
+- name  : clt_dot_exe
+  note  : Graphvizの実行ファイルパス(dox.exe)
+  type  : set
+  value : '%clt_graphviz_install%\bin\dot.exe'
+
+- name  : clt_llvm_install
+  note  : LLVMインストールディレクトリ
+  type  : set
+  value : '%ProgramFiles%\LLVM'
+
+- name  : clt_clang_exe
+  note  : LLVMの実行ファイルパス(clang.exe)
+  type  : set
+  value : '%clt_llvm_install%\clang.exe'
+
+- name  : clt_clangpp_exe
+  note  : LLVMの実行ファイルパス(clang++.exe)
+  type  : set
+  value : '%clt_llvm_install%\clang++.exe'
+
+- name  : clt_winmarge_install
+  note  : WinMargeインストールディレクトリ
+  type  : set
+  value : '%ProgramFiles%\WinMerge'
+
+- name  : clt_winmarge_exe
+  note  : WinMarge実行パス
+  type  : set
+  value : '%clt_winmarge_install%\WinMergeU.exe'
+
+- name  : clt_msbuild_exe_v2_0
+  note  : MsBuildの実行ファイルパス
+  type  : set
+  value : '%SystemRoot%Microsoft.NET\Framework\v2.0.50727\MSBuild.exe'
+
+- name  : clt_msbuild_exe_v3_5
+  note  : MsBuildの実行ファイルパス
+  type  : set
+  value : '%SystemRoot%Microsoft.NET\Framework\v3.5\MSBuild.exe'
+
+- name  : clt_msbuild_exe_v4_0
+  note  : MsBuildの実行ファイルパス
+  type  : set
+  value : '%SystemRoot%Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
+
+- name  : clt_msbuild_exe_v2_0_64
+  note  : MsBuildの実行ファイルパス
+  type  : set
+  value : '%SystemRoot%Microsoft.NET\Framework64\v2.0.50727\MSBuild.exe'
+
+- name  : clt_msbuild_exe_v3_5_64
+  note  : MsBuildの実行ファイルパス
+  type  : set
+  value : '%SystemRoot%Microsoft.NET\Framework64\v3.5\MSBuild.exe'
+
+- name  : clt_msbuild_exe_v4_0_64
+  note  : MsBuildの実行ファイルパス
+  type  : set
+  value : '%SystemRoot%Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe'
+
+- name  : clt_notepad_exe
+  note  : メモ帳の実行ファイルパス
+  type  : set
+  value : '%SystemRoot%\system32\notepad.exe'
+
+- name  : clt_sakura_install
+  note  : サクラエディタインストールパス
+  type  : set
+  value : '%ProgramFiles(x86)%\sakura'
+
+- name  : clt_sakura_exe
+  note  : サクラエディタ実行パス
+  type  : set
+  value : '%clt_sakura_install%sakura.exe'
+
+#--------------------------------------------------------------------------------------------------
+# default application
+#--------------------------------------------------------------------------------------------------
+
+- name  : clt_text_editor_exe
+  note  : 標準テキストエディタ実行パス
+  type  : set
+  value : 'clt_notepad_exe'
+
+- name  : clt_make_exe
+  note  : make.exeの実行ファイルパス
+  type  : set
+  value : '%clt_gnuwin32_make_exe%'
+
+- name  : clt_grep_exe
+  note  : grep.exeの実行ファイルパス
+  type  : set
+  value : '%clt_grep_exe_for_git%'
+
+- name  : clt_diff_exe
+  note  : diff.exeの実行ファイルパス
+  type  : set
+  value : '%clt_diff_exe_for_git%'
+
+- name  : clt_diff3_exe
+  note  : diff3.exeの実行ファイルパス
+  type  : set
+  value : '%clt_diff3_exe_for_git%'
+
+- name  : clt_msbuild_exe
+  note  : MsBuildの実行ファイルパス
+  type  : set
+  value : '%clt_msbuild_exe_v4_0_64%'
