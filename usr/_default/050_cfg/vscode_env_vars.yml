@@ -7,15 +7,34 @@
   type  : set
   value : '%clt_root_dir%\usr\_default\050_cfg'
 
+- name  : clt_default_cmd_dir
+  note  : 標準コマンド格納先ディレクトリ
+  type  : set
+  value : '%clt_root_dir%\usr\_default\030_cmd'
+  make_dir : true
+
 - name  : clt_usr_dir
   note  : ユーザー別ディレクトリ
   type  : set
   value : '%clt_root_dir%\usr\%username%'
+  make_dir : true
 
 - name  : clt_cfg_dir
   note  : ユーザー別設定ファイル格納先ディレクトリ
   type  : set
   value : '%clt_usr_dir%\050_cfg'
+  make_dir : true
+
+- name  : clt_cmd_dir
+  note  : ユーザーコマンド格納先ディレクトリ
+  type  : set
+  value : '%clt_usr_dir%\030_cmd'
+  make_dir : true
+
+- name  : clt_default_doxygen_cfg_file
+  note  : Doxygen
+  type  : set
+  value : '%clt_default_cfg_dir%\Doxyfile'
 
 #--------------------------------------------------------------------------------------------------
 # output
@@ -25,11 +44,19 @@
   note  : ユーザー別出力ルートディレクトリ
   type  : set
   value : '%clt_usr_dir%\010_out'
+  make_dir : true
+
+- name  : clt_doxygen_out_dir
+  note  : Doxygen出力ルートディレクトリ
+  type  : set
+  value : '%clt_out_dir%\Doxygen'
+  make_dir : true
 
 - name  : clt_tmp_dir
   note  : ユーザー別一時出力ルートディレクトリ
   type  : set
   value : '%clt_out_dir%\tmp'
+  make_dir : true
 
 #--------------------------------------------------------------------------------------------------
 # install directory / exe files
@@ -198,3 +225,17 @@
   note  : MsBuildの実行ファイルパス
   type  : set
   value : '%clt_msbuild_exe_v4_0_64%'
+
+#--------------------------------------------------------------------------------------------------
+# path
+#--------------------------------------------------------------------------------------------------
+
+- name  : PATH
+  note  : コマンド検索パス追加
+  type  : add
+  value : '%clt_default_cmd_dir%'
+
+- name  : PATH
+  note  : コマンド検索パス追加
+  type  : add
+  value : '%clt_cmd_dir%'

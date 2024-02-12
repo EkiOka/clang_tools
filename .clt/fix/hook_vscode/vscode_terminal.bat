@@ -19,29 +19,11 @@ echo %bat_name% ^>  configration / standard environment variable
 echo %bat_name% ^> ---------------------------------------------------------
 
 set "clt_root_dir=%cd%"
-
 set "clt_tools_dir=%clt_root_dir%\.clt\fix\py_tools"
-set "clt_usr_dir=%clt_root_dir%\usr\%username%"
-set "clt_cfg_dir=%clt_root_dir%\usr\%username%\050_cfg"
-set "clt_out_dir=%clt_root_dir%\usr\%username%\010_out"
 set "clt_tmp_dir=%clt_root_dir%\usr\%username%\010_out\tmp"
 
 echo %bat_name% ^> clt_root_dir  : %clt_root_dir%
 echo %bat_name% ^> clt_tools_dir : %clt_tools_dir%
-echo %bat_name% ^> clt_usr_dir   : %clt_usr_dir%
-echo %bat_name% ^> clt_cfg_dir   : %clt_cfg_dir%
-echo %bat_name% ^> clt_out_dir   : %clt_out_dir%
-echo %bat_name% ^> clt_tmp_dir   : %clt_tmp_dir%
-
-echo %bat_name% ^> ---------------------------------------------------------
-echo %bat_name% ^>  configration / make user directory
-echo %bat_name% ^> ---------------------------------------------------------
-
-md %clt_usr_dir% 2> nul
-md %clt_cfg_dir% 2> nul
-md %clt_out_dir% 2> nul
-md %clt_tmp_dir% 2> nul
-
 echo %bat_name% ^> ---------------------------------------------------------
 echo %bat_name% ^>  configration / user
 echo %bat_name% ^> ---------------------------------------------------------

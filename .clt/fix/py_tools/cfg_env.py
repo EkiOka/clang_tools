@@ -12,7 +12,14 @@ class application(cab.cmd_app):
         yml_data = a.load_yaml(src_path)
         dst = list()
         for item in yml_data:
-            dst.append(f"set \"{item['name']}={item['value']}\"")
+            match(item.get("type","set")):
+                case "add":
+                    dst.append(f"set \"{item['name']}={item['value']};%{item['name']}%\"")
+                case _:
+                    dst.append(f"set \"{item['name']}={item['value']}\"")
+            if item.get("make_dir",False) == True:
+                dst.append(f"md \"{item['value']}\"2>nul")
+
         dst.append(f"exit /b 0")
         a.save_text(dest_path,dst)
 
