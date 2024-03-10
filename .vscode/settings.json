@@ -18,7 +18,7 @@
     "cmd": {
       "icon": "terminal-cmd",
       "path": [
-        "${workspaceFolder}\\.clt\\fix\\hook_vscode\\vscode_terminal.bat"
+        "${workspaceFolder}\\.clt\\hooks\\clt_hook_vscode_terminal.bat"
       ],
       "color": "terminal.ansiYellow"
     }

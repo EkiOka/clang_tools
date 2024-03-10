@@ -1,3 +1,5 @@
 */__pycache__/
 *.pyc
 logger.log
+20_usr/
+.clt/py_lib/
