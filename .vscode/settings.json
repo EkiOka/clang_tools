@@ -71,4 +71,5 @@
     "editor.formatOnSave": false,
     "editor.formatOnType": true,
   },
+  "editor.fontFamily": "'MyricaM M', Consolas, 'Courier New', monospace",
 }
