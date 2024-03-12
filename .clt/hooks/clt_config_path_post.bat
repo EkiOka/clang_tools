@@ -32,13 +32,13 @@ rem make directory
 rem ------------------------------------------------------------------------------------------------
 
 rem output
-md "%clt_out_dir%" > nul
-md "%clt_tmp_dir%" > nul
-md "%clt_doxygen_out_dir%" > nul
+md "%clt_out_dir%" 2> nul
+md "%clt_tmp_dir%" 2> nul
+md "%clt_doxygen_out_dir%" 2> nul
 
 rem user directory
-md "%clt_py_lib_dir%" > nul
-md "%clt_cmd_dir%" > nul
-md "%clt_term_cfg_dir%" > nul
+md "%clt_py_lib_dir%" 2> nul
+md "%clt_cmd_dir%" 2> nul
+md "%clt_term_cfg_dir%" 2> nul
 
 exit /b 0
