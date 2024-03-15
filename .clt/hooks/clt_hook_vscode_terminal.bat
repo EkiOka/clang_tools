@@ -12,6 +12,7 @@ set "clt_env_id=2edd8282662e4ceaa09f3e7284fd9521"
 
 pushd %~dp0..\..\
 set "clt_dir=%cd%"
+if "%clt_dir:~-1%"=="\" set "clt_dir=%clt_dir:~0,-1%"
 popd
 set "clt_hooks_dir=%~dp0"
 set "clt_hooks_dir=%clt_hooks_dir:~0,-1%"
