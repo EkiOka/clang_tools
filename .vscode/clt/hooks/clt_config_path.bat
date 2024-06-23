@@ -6,9 +6,9 @@ rem If necessary, overwrite the file specified in clt_term_cfg_dir.
 rem ------------------------------------------------------------------------------------------------
 rem CLT standard path
 rem ------------------------------------------------------------------------------------------------
-set "clt_def_cfg_dir=%clt_dir%\.clt\term_cfg"
-set "clt_def_cmd_dir=%clt_dir%\.clt\term_cmd"
-set "clt_def_py_lib_dir=%clt_dir%\.clt\py_lib"
+set "clt_def_cfg_dir=%clt_dir%\.vscode\clt\term_cfg"
+set "clt_def_cmd_dir=%clt_dir%\.vscode\clt\term_cmd"
+set "clt_codes_dir=%clt_dir%\.vscode\clt\dev\codes"
 set "clt_out_dir=%clt_dir%\10_out\out"
 set "clt_tmp_dir=%clt_dir%\10_out\tmp"
 set "clt_doxygen_out_dir=%clt_tmp_dir%\Doxygen"
@@ -22,7 +22,6 @@ set "clt_term_cfg_dir=%clt_usr_dir%\cfg\term"
 set "clt_term_cfg_path=%clt_term_cfg_dir%\clt_config_path.bat"
 set "clt_term_cfg_path_post=%clt_term_cfg_dir%\clt_config_path_post.bat"
 set "clt_cmd_dir=%clt_usr_dir%\cmd"
-set "clt_py_lib_dir=%clt_usr_dir%\py_lib"
 
 rem ------------------------------------------------------------------------------------------------
 rem application path

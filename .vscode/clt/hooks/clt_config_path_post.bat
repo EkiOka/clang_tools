@@ -10,13 +10,8 @@ rem path
 set "path=%clt_def_cmd_dir%;%path%"
 set "path=%clt_cmd_dir%;%path%"
 
-rem pythonpath
-if "%pythonpath%"=="" (
-    set "pythonpath=%clt_def_py_lib_dir%"
-) else (
-    set "pythonpath=%clt_def_py_lib_dir%;%pythonpath%"
-)
-set "pythonpath=%clt_py_lib_dir%;%pythonpath%"
+rem pathext
+set "pathext=%pathext%;.PY"
 
 rem ------------------------------------------------------------------------------------------------
 rem default applocation configration
@@ -37,7 +32,6 @@ md "%clt_tmp_dir%" 2> nul
 md "%clt_doxygen_out_dir%" 2> nul
 
 rem user directory
-md "%clt_py_lib_dir%" 2> nul
 md "%clt_cmd_dir%" 2> nul
 md "%clt_term_cfg_dir%" 2> nul
 

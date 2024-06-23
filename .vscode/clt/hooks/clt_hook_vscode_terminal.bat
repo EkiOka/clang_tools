@@ -1,6 +1,6 @@
 @echo off
 
-chcp 65001 > nul
+chcp 65001 > nul 2>&1
 
 set "cur_exe_name=%~nx0"
 
@@ -10,7 +10,7 @@ echo %cur_exe_name% ^> =========================================================
 
 set "clt_env_id=2edd8282662e4ceaa09f3e7284fd9521"
 
-pushd %~dp0..\..\
+pushd %~dp0..\..\..
 set "clt_dir=%cd%"
 if "%clt_dir:~-1%"=="\" set "clt_dir=%clt_dir:~0,-1%"
 popd
@@ -27,6 +27,14 @@ call :run_bat "%clt_hooks_dir%\clt_config_path_post.bat" ""
 call :run_bat "%clt_term_cfg_path_post%" "If you use a path other than the default, please create the this file."
 
 call :disp_and_run "set clt_"
+
+echo ---------------------------------------------------------------------
+echo.
+echo %path:;=&echo.%
+echo.
+echo %pathext:;=&echo.%
+echo.
+echo ---------------------------------------------------------------------
 
 goto :end_proc
 rem ----------------------------------------------------------------------

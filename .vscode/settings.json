@@ -1,10 +1,9 @@
 {
   "files.exclude": {
-    ".clt":false,
-    ".vscode":false,
-    "vscode_win.py":true,
-    "LICENSE":true,
-    "temporary_files/":true,
+    ".vscode": false,
+    ".vscode/clt": false,
+    "vscode_win.py": true,
+    "LICENSE": true,
     "**/.git": true,
     "**/.svn": true,
     "**/.hg": true,
@@ -13,63 +12,23 @@
     "**/Thumbs.db": true,
     "**/__pycache__": true
   },
-  "terminal.integrated.defaultProfile.windows": "cmd",
-  "terminal.integrated.profiles.windows": {
-    "cmd": {
-      "icon": "terminal-cmd",
-      "path": [
-        "${workspaceFolder}\\.clt\\hooks\\clt_hook_vscode_terminal.bat"
-      ],
-      "color": "terminal.ansiYellow"
-    }
-  },
-  "window.zoomLevel": 0,
-  "workbench.colorCustomizations": {
-    "scrollbar.shadow": "#8000ff",
-    "sideBar.border": "#8000ff",
-    "sideBarSectionHeader.border": "#8000ff"
-  },
-  "C_Cpp_Runner.cCompilerPath": "gcc",
-  "C_Cpp_Runner.cppCompilerPath": "g++",
-  "C_Cpp_Runner.debuggerPath": "gdb",
-  "C_Cpp_Runner.cStandard": "",
-  "C_Cpp_Runner.cppStandard": "",
-  "C_Cpp_Runner.msvcBatchPath": "",
-  "C_Cpp_Runner.useMsvc": false,
-  "C_Cpp_Runner.warnings": [
-    "-Wall",
-    "-Wextra",
-    "-Wpedantic",
-    "-Wshadow",
-    "-Wformat=2",
-    "-Wconversion",
-    "-Wnull-dereference",
-    "-Wsign-conversion"
-  ],
-  "C_Cpp_Runner.enableWarnings": true,
-  "C_Cpp_Runner.warningsAsError": false,
-  "C_Cpp_Runner.compilerArgs": [],
-  "C_Cpp_Runner.linkerArgs": [],
-  "C_Cpp_Runner.includePaths": [],
-  "C_Cpp_Runner.includeSearch": [
-    "*",
-    "**/*"
-  ],
-  "C_Cpp_Runner.excludeSearch": [
-    "**/build",
-    "**/build/**",
-    "**/.*",
-    "**/.*/**",
-    "**/.vscode",
-    "**/.vscode/**"
-  ],
-  "C_Cpp_Runner.useAddressSanitizer": false,
-  "C_Cpp.clang_format_fallbackStyle": "GNU",
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.autopep8",
+  "[python][json][jsonc][yaml]": {
     "editor.formatOnPaste": true,
-    "editor.formatOnSave": false,
+    "editor.formatOnSave": true,
     "editor.formatOnType": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.autoIndent": "advanced",
+    "diffEditor.ignoreTrimWhitespace": false
   },
-  "editor.fontFamily": "'MyricaM M', Consolas, 'Courier New', monospace",
+  "[json][jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.fontFamily": "'MyricaM M', Consolas, 'Courier New', monospace"
 }
