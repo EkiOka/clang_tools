@@ -276,6 +276,15 @@ ERR_MSG_6AFEADB1CA94487D9504EBB88FBED2D4 = "未定義の機能が呼ばれまし
 AREA_PARAM_LIST_NAMES = ["depend"]
 
 
+class func_type(enum.StrEnum):
+    CODE_PARAMS = "code_params"
+    CODE_START = "code_start"
+    CODE_END = "code_end"
+    INC_PARAMS = "inc_params"
+    INC_START = "inc_start"
+    INC_END = "inc_end"
+
+
 class configration(application_config_base):
 
     @property
@@ -312,6 +321,7 @@ class application(application_base):
         return
 
     def run(self):
+
         s = self
         cfg = s.config
         masks = cfg.masks
@@ -321,7 +331,7 @@ class application(application_base):
         for mask in masks:
             files = glob.glob(mask, recursive=True)
             for file in files:
-                lines = s.read_text_lines(file, enc)
+                lines = s.load_text_lines(file, enc)
                 s.extract_codes(os.path.basename(file), lines, dst_data)
         s.save_yaml(dst, dst_data, enc)
         return
@@ -361,38 +371,43 @@ class application(application_base):
                 dst_id_data: dict = dst.get(param_id, {})
                 dst[param_id] = dst_id_data
                 match mat_func:
-                    case "code_params":
-                        param_name = params.get("name", "")
-                        param_value = params.get("value", "")
-                        if param_name in AREA_PARAM_LIST_NAMES:
-                            cur_param_value: list = dst_id_data.get(param_name, [])
-                            if param_value in cur_param_value:
-                                pass
-                            else:
-                                cur_param_value.append(param_value)
-                            dst_id_data[param_name] = cur_param_value
-                        else:
-                            dst_id_data[param_name] = param_value
-
-                    case "code_start":
+                    case func_type.CODE_PARAMS:
+                        s.cnv_code_param(params, dst_id_data)
+                    case func_type.CODE_START:
                         param_type = params.get("type", "unique_area")
                         dst_id_data["type"] = param_type
                         if param_type == "unique_area":
                             dst_id_data["lines"] = []
                         cur_area.append(dst_id_data)
                         pass
-                    case "code_end":
+                    case func_type.CODE_END:
                         cur_area.remove(dst_id_data)
                         pass
-                    case "inc_start":
+                    case func_type.INC_PARAMS:
                         pass
-                    case "inc_end":
+                    case func_type.INC_START:
+                        pass
+                    case func_type.INC_END:
                         pass
                     case _:
                         print(
                             f'{ERR_MSG_6AFEADB1CA94487D9504EBB88FBED2D4}(src_file={src_file},line_no={line_no},func="{mat_func}")'
                         )
                 pass
+        return None
+
+    def cnv_code_param(self, params: dict, dst_id_data: dict) -> None:
+        param_name = params.get("name", "")
+        param_value = params.get("value", "")
+        if param_name in AREA_PARAM_LIST_NAMES:
+            cur_param_value: list = dst_id_data.get(param_name, [])
+            if param_value in cur_param_value:
+                pass
+            else:
+                cur_param_value.append(param_value)
+            dst_id_data[param_name] = cur_param_value
+        else:
+            dst_id_data[param_name] = param_value
         return None
 
     def cnv_params(self, src: str) -> dict:

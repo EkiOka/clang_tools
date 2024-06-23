@@ -273,6 +273,7 @@ import re
 
 ERR_MSG_6AFEADB1CA94487D9504EBB88FBED2D4 = "未定義の機能が呼ばれました。"
 ERR_MSG_E1F6176226E649D9B2F66A52A1C79F84 = "存在しない値が指定されました。"
+
 DEBUG_ARGV = [
     __file__,
     "src_dir:.vscode/clt/dev/codes",
@@ -280,6 +281,22 @@ DEBUG_ARGV = [
     "src_codes:10_out/tmp/extract_code.yml",
     "dst:10_out/tmp/export_code",
 ]
+
+
+class area_param(enum.StrEnum):
+    DISABLE = "disabled"
+
+
+class func_type(enum.StrEnum):
+    CODE_PARAMS = "code_params"
+    CODE_START = "code_start"
+    CODE_END = "code_end"
+    INC_PARAMS = "inc_params"
+    INC_START = "inc_start"
+    INC_END = "inc_end"
+
+
+AREA_PARAM_LIST_NAMES = [area_param.DISABLE]
 
 
 class configration(application_config_base):
@@ -319,6 +336,10 @@ class application(application_base):
 
     config: configration
 
+    cur_file_disabled_ids = []
+    cur_file_exist_ids = []
+    cur_file_need_ids = []
+
     def __init__(self) -> None:
         """アプリケーションクラスを生成します"""
         self.config = configration()
@@ -339,27 +360,43 @@ class application(application_base):
         for mask in src_masks:
             src_files = glob.glob(src_dir + "\\" + mask, recursive=True)
             rel_files = [os.path.relpath(path, src_dir) for path in src_files]
-            dirs = list(set([os.path.dirname(file) for file in rel_files]))
-            for d in dirs:
-                os.makedirs(f"{dst}\\{d}", exist_ok=True)
+
+            s.make_dirs(dst, rel_files)
+
             for file in rel_files:
+
+                # load input data
                 lines = s.load_text_lines(src_dir + "/" + file, enc)
-                dst_lines, need_ids, exist_ids = s.export_codes(file, lines, cfg_codes)
-                error_ids = list(set(need_ids) - set(exist_ids))
+
+                # init
+                s.cur_file_disabled_ids = []
+                s.cur_file_exist_ids = []
+                s.cur_file_need_ids = []
+
+                # analize
+                dst_lines = s.export_codes(file, lines, cfg_codes)
+
+                # post procces
+                error_ids = list(set(s.cur_file_need_ids) - set(s.cur_file_exist_ids))
                 for id in error_ids:
                     print(f"出力先({file})にincコード領域(id={id})が足りません。")
+
+                # save result
                 s.save_text_lines(dst + "/" + file, dst_lines, encoding=enc)
 
-    def export_codes(
-        self, src_file: str, src_lines: list[str], cfg: dict
-    ) -> tuple[list[str], list[str], list[str]]:
+    def make_dirs(self, dst_dir: str, rel_files: list):
+        dirs = list(set([os.path.dirname(file) for file in rel_files]))
+        for d in dirs:
+            os.makedirs(f"{dst_dir}\\{d}", exist_ok=True)
+
+    def export_codes(self, src_file: str, src_lines: list[str], cfg: dict) -> list[str]:
         s = self
         res: list[str] = []
         ptn = s.config.ptn
         cmp = re.compile(ptn)
         cur_area = []
-        need_ids = []
-        exist_ids = []
+        need_ids = s.cur_file_need_ids
+        exist_ids = s.cur_file_exist_ids
         for line_index in range(0, len(src_lines), 1):
             line_no = line_index + 1
             line = src_lines[line_index].replace("\n", "").replace("\r", "")
@@ -380,33 +417,57 @@ class application(application_base):
                 param_id = params.get("id", "")
                 cfg_id_data: dict = cfg.get(param_id, {})
                 match mat_func:
-                    case "code_params":
+                    case func_type.CODE_PARAMS:
                         pass
-                    case "code_start":
+                    case func_type.CODE_START:
                         pass
-                    case "code_end":
+                    case func_type.CODE_END:
                         pass
-                    case "inc_start":
-                        if not (param_id in exist_ids):
-                            exist_ids.append(param_id)
-                        sub_lines: list = cfg_id_data.get("lines", [])
-                        cur_area.append(param_id)
-                        # need_ids追加
-                        sub_dst_lines, sub_need_ids, sub_exist_ids = s.export_codes(
-                            src_file + "/" + param_id, sub_lines, cfg
-                        )
-                        res.extend(sub_dst_lines)
-                        need_ids.extend(sub_need_ids)
-                        exist_ids.extend(sub_exist_ids)
+                    case func_type.INC_PARAMS:
+
                         pass
-                    case "inc_end":
-                        cur_area.remove(param_id)
+                    case func_type.INC_START:
+                        if param_id in s.cur_file_disabled_ids:
+                            pass
+                        else:
+                            if not (param_id in exist_ids):
+                                exist_ids.append(param_id)
+                            sub_lines: list = cfg_id_data.get("lines", [])
+                            cur_area.append(param_id)
+                            # need_ids追加
+                            sub_dst_lines = s.export_codes(
+                                src_file + "/" + param_id, sub_lines, cfg
+                            )
+                            res.extend(sub_dst_lines)
+                            pass
+                        pass
+                    case func_type.INC_END:
+                        if param_id in s.cur_file_disabled_ids:
+                            pass
+                        else:
+                            cur_area.remove(param_id)
                         pass
                     case _:
                         raise Exception(
                             f'{ERR_MSG_6AFEADB1CA94487D9504EBB88FBED2D4}(src_file={src_file},line_no={line_no},func="{mat_func}")'
                         )
-        return res, need_ids, exist_ids
+        return res
+
+    def cnv_inc_param(self, params: dict) -> None:
+        param_name = params.get("name", "")
+        param_value = params.get("value", "")
+        if param_name in AREA_PARAM_LIST_NAMES:
+            match param_name:
+                case area_param.DISABLE:
+                    self.cur_file_disabled_ids.append(param_value)
+                    pass
+                case _:
+                    raise Exception(
+                        f"{ERR_MSG_E1F6176226E649D9B2F66A52A1C79F84}(name={param_name},value={param_value})"
+                    )
+        else:
+            pass
+        return None
 
     def cnv_params(self, src: str) -> dict:
         res = dict()
