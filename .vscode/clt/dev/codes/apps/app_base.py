@@ -30,8 +30,11 @@ EXE_DIR = os.path.dirname(__file__)
 EXE_FILE_NAME = os.path.basename(__file__)
 EXE_FILE_EXT = EXE_FILE_NAME.split(SEP_EXT)[-1:]
 EXE_FILE_LEBAL = SEP_EXT.join(EXE_FILE_NAME.split(SEP_EXT)[0:-1])
-SD = os.getcwd()  # Startup Directory
+SD = os.getcwd()  # Startup current Directory
 # $code_end(id=afa85816584641f29a9cd8b3cae4dfdf)
+
+APP_CFG_DEF = {"aaa": "aaaaa"}
+
 
 # $code_params(id=b76ca5a1d6c14e76a7e1352b4b033b76,name=depend,value=afa85816584641f29a9cd8b3cae4dfdf)
 # $code_params(id=b76ca5a1d6c14e76a7e1352b4b033b76,name=depend,value=cf01a64851664ffdb8c55101b541e83f)
@@ -215,6 +218,16 @@ class application_config_base:
 
         return res
 
+    def _get_str(self, name: str) -> str:
+        """通常の文字列設定値を取得します"""
+        return self.get(name, APP_CFG_DEF.get(name, STR_EMPTY))
+
+    def _get_list(self, name: str, sep=SEP_P2P) -> list[str]:
+        """通常の文字列設定値を取得します"""
+        str_value: str = self.get(name, APP_CFG_DEF.get(name, STR_EMPTY))
+        res = str_value.split(sep)
+        return res
+
 
 class application_base:
     """アプリケーション基礎クラス"""
@@ -238,7 +251,7 @@ class application_base:
             res = yaml.safe_load(f)
         return res
 
-    # $code_start(id=1330c06cf0a24a13a1ea25de22e5d774,type=option)
+    # $code_start(id=1330c06cf0a24a13a1ea25de22e5d774,type=unique_area)
 
     def save_yaml(self, path: str, data: Any, encoding=DEF_ENC):
         """YAMLファイルの保存
@@ -253,7 +266,7 @@ class application_base:
 
     # $code_end(id=1330c06cf0a24a13a1ea25de22e5d774)
 
-    # $code_start(id=9b7739cfd54748d388cf74eb3dac834c,type=option)
+    # $code_start(id=9b7739cfd54748d388cf74eb3dac834c,type=unique_area)
 
     def load_text_lines(self, path: str, encoding=DEF_ENC) -> list[str]:
         lines = []
@@ -267,7 +280,7 @@ class application_base:
 
     # $code_end(id=9b7739cfd54748d388cf74eb3dac834c)
 
-    # $code_start(id=d734a2fac0fb4aa1b1ccc71137562e4c,type=option)
+    # $code_start(id=d734a2fac0fb4aa1b1ccc71137562e4c,type=unique_area)
 
     def save_text_lines(
         self, path: str, lines: list[str], ret_code: str = LF, encoding=DEF_ENC

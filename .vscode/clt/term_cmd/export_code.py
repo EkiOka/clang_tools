@@ -30,7 +30,7 @@ EXE_DIR = os.path.dirname(__file__)
 EXE_FILE_NAME = os.path.basename(__file__)
 EXE_FILE_EXT = EXE_FILE_NAME.split(SEP_EXT)[-1:]
 EXE_FILE_LEBAL = SEP_EXT.join(EXE_FILE_NAME.split(SEP_EXT)[0:-1])
-SD = os.getcwd()  # Startup Directory
+SD = os.getcwd()  # Startup current Directory
 # $inc_end(id=afa85816584641f29a9cd8b3cae4dfdf)
 
 # $inc_start(id=b76ca5a1d6c14e76a7e1352b4b033b76)
@@ -212,6 +212,16 @@ class application_config_base:
 
         return res
 
+    def _get_str(self, name: str) -> str:
+        """通常の文字列設定値を取得します"""
+        return self.get(name, APP_CFG_DEF.get(name, STR_EMPTY))
+
+    def _get_list(self, name: str, sep=SEP_P2P) -> list[str]:
+        """通常の文字列設定値を取得します"""
+        str_value: str = self.get(name, APP_CFG_DEF.get(name, STR_EMPTY))
+        res = str_value.split(sep)
+        return res
+
 
 class application_base:
     """アプリケーション基礎クラス"""
@@ -288,13 +298,15 @@ import re
 ERR_MSG_6AFEADB1CA94487D9504EBB88FBED2D4 = "未定義の機能が呼ばれました。"
 ERR_MSG_E1F6176226E649D9B2F66A52A1C79F84 = "存在しない値が指定されました。"
 
-DEBUG_ARGV = [
-    __file__,
-    "src_dir:.vscode/clt/dev/codes",
-    "src_mask:**/*.py",
-    "src_codes:10_out/tmp/extract_code.yml",
-    "dst:10_out/tmp/export_code",
-]
+APP_CFG_DEF = {
+    "lang": "py",
+    "pattern": "^[\\t ]*#[\\t ]+\\$(?P<func>[a-zA-Z][a-zA-Z_]*)\\((?P<params>.*)\\).*$",
+    "src_dir": SD,
+    "src_mask:": "**/*.py",
+    "src_codes": "extract_code_output.yml",
+    "dst_dir": SD,
+    "enc": DEF_ENC,
+}
 
 
 class area_param(enum.StrEnum):
@@ -317,33 +329,28 @@ class configration(application_config_base):
 
     @property
     def ptn(self) -> str:
-        return self.get(
-            "pattern",
-            "^[\\t ]*#[\\t ]+\\$(?P<func>[a-zA-Z][a-zA-Z_]*)\\((?P<params>.*)\\).*$",
-        )
+        return self._get_str("pattern")
 
     @property
     def src_masks(self) -> list[str]:
         """入力元のファイルマスクリスト"""
-        masks_value: str = self.get("src_mask", "/**/*.py")
-        res = masks_value.split(SEP_P2P)
-        return res
+        return self._get_list("src_mask")
 
     @property
     def enc(self) -> str:
-        return self.get("enc", DEF_ENC)
+        return self._get_str("enc")
 
     @property
     def src_dir(self) -> str:
-        return self.get("src_dir", ".")
+        return self._get_str("src_dir")
 
     @property
     def src_codes(self) -> str:
-        return self.get("src_codes", "extract_codes_output.yml")
+        return self._get_str("src_codes")
 
     @property
     def dst(self) -> str:
-        return self.get("dst", "output_export_code")
+        return self._get_str("dst")
 
 
 class application(application_base):
