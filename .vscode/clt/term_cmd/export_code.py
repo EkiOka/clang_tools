@@ -17,6 +17,12 @@ SEP_EXT = "."
 DEF_ENC = "utf-8"
 R = "r"
 W = "w"
+STR_EMPTY = ""
+LIST_EMPTY = []
+CR = "\r"  # Carriage Return
+LF = "\n"  # Line Feed
+CRLF = "\r\n"  # Carriage Return and Line Feed
+COLON = ":"
 # $inc_end(id=67bb2db60f664911aa8463a560f5802a)
 
 # $inc_start(id=afa85816584641f29a9cd8b3cae4dfdf)
@@ -24,13 +30,15 @@ EXE_DIR = os.path.dirname(__file__)
 EXE_FILE_NAME = os.path.basename(__file__)
 EXE_FILE_EXT = EXE_FILE_NAME.split(SEP_EXT)[-1:]
 EXE_FILE_LEBAL = SEP_EXT.join(EXE_FILE_NAME.split(SEP_EXT)[0:-1])
-CD = os.getcwd()
+SD = os.getcwd()  # Startup Directory
 # $inc_end(id=afa85816584641f29a9cd8b3cae4dfdf)
 
 # $inc_start(id=b76ca5a1d6c14e76a7e1352b4b033b76)
-PRM_NAME_CFG_FILE = "cfg"
+START_PRM_SEP = COLON
+"""起動引数の引数名と値の区切り文字"""
+START_PRM_NAME_CFG_FILE = "cfg"
 """コンフィグファイルパスを指示する起動引数名"""
-PRM_DEF_CFG_FILE_NAME = EXE_FILE_LEBAL + ".yml"
+START_PRM_DEF_CFG_FILE = EXE_FILE_LEBAL + ".yml"
 """デフォルトコンフィグ：コンフィグファイル名"""
 ERR_MSG_57DD103A3B5D46FAAE2088B3754C3EA3 = (
     "未対応のコンフィグデータソースが指定されました"
@@ -71,7 +79,7 @@ class application_config_base:
     cfg_priority_list: list[cfg_pri]
     """コンフィグ設定値読み出し優先度設定"""
 
-    startup_param_cfg_file_path: str = PRM_DEF_CFG_FILE_NAME
+    startup_param_cfg_file_path: str = START_PRM_DEF_CFG_FILE
     """引数で指定されたコンフィグファイルのパス"""
 
     def __init__(self) -> None:
@@ -103,9 +111,9 @@ class application_config_base:
 
         params = s.startup_params[1:]
         for p in params:
-            value_list = p.split(":")
-            name = ""
-            value = ""
+            value_list = p.split(START_PRM_SEP)
+            name = STR_EMPTY
+            value = STR_EMPTY
             value_list_len = len(value_list)
             if value_list_len == 0:
                 pass
@@ -114,11 +122,11 @@ class application_config_base:
                 value = True
             elif value_list_len >= 2:
                 name = value_list[0].lower()
-                value = ":".join(value_list[1:])
+                value = START_PRM_SEP.join(value_list[1:])
             res[name] = value
 
         cfg[application_config_base.cfg_pri.START_PARAM] = res
-        cfg_path = res.get(PRM_NAME_CFG_FILE, "")
+        cfg_path = res.get(START_PRM_NAME_CFG_FILE, STR_EMPTY)
         s.startup_param_cfg_file_path = cfg_path
         return res
 
@@ -227,6 +235,7 @@ class application_base:
             res = yaml.safe_load(f)
         return res
 
+
     def save_yaml(self, path: str, data: Any, encoding=DEF_ENC):
         """YAMLファイルの保存
 
@@ -238,22 +247,27 @@ class application_base:
         with open(path, mode=W, encoding=encoding) as f:
             yaml.dump(data, f, default_flow_style=False, allow_unicode=True)
 
+
+
     def load_text_lines(self, path: str, encoding=DEF_ENC) -> list[str]:
         lines = []
         if os.path.exists(path):
             with open(path, R, encoding=encoding) as file:
                 lines = [
-                    line.replace("\n", "").replace("\r", "")
+                    line.replace(CR, STR_EMPTY).replace(LF, STR_EMPTY)
                     for line in file.readlines()
                 ]
         return lines
 
+
+
     def save_text_lines(
-        self, path: str, lines: list[str], ret_code: str = "\n", encoding=DEF_ENC
+        self, path: str, lines: list[str], ret_code: str = LF, encoding=DEF_ENC
     ):
         with open(path, W, encoding=encoding) as file:
             file.writelines([line + ret_code for line in lines])
         return
+
 
     def run(self):
         """アプリケーションの動作を実行します
@@ -424,7 +438,7 @@ class application(application_base):
                     case func_type.CODE_END:
                         pass
                     case func_type.INC_PARAMS:
-
+                        s.cnv_inc_param(param_id, params)
                         pass
                     case func_type.INC_START:
                         if param_id in s.cur_file_disabled_ids:
@@ -453,13 +467,13 @@ class application(application_base):
                         )
         return res
 
-    def cnv_inc_param(self, params: dict) -> None:
+    def cnv_inc_param(self, param_id: str, params: dict) -> None:
         param_name = params.get("name", "")
         param_value = params.get("value", "")
         if param_name in AREA_PARAM_LIST_NAMES:
             match param_name:
                 case area_param.DISABLE:
-                    self.cur_file_disabled_ids.append(param_value)
+                    self.cur_file_disabled_ids.append(param_id)
                     pass
                 case _:
                     raise Exception(
